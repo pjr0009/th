@@ -5,7 +5,7 @@
       = link_to t("homepage.index.post_new_listing"), new_listing_path, :class => "new-listing-link", :id => "new-listing-link"
 
     .header-right.visible-tablet
-      #header-menu-desktop-anchor.header-menu-container.toggle.hidden{data: {toggle: '#header-menu-toggle-menu', 'toggle-position' => 'absolute'}}
+ 
 
     - if logged_in
       .header-right
@@ -45,15 +45,8 @@
       keep the logo here after buttons
     .header-left.header-logo-container
       = link_to landing_page_path, :class => "header-logo", :id => "header-logo" do
-        - if @current_community.logo.present?
-          %i.header-square-logo.hidden-tablet
-            -# Logo is here, it's a CSS background
-        - else
-          %span.header-square-logo-text.hidden-tablet
-            = @current_community.name(I18n.locale)[0]
-        - if @current_community.wide_logo.present?
-          %i.header-wide-logo.visible-tablet
-            -# Logo is here, it's a CSS background
-        - else
-          %span.header-wide-logo-text.visible-tablet
-            = @current_community.name(I18n.locale)
+        %i.header-square-logo.hidden-tablet
+          -# Logo is here, it's a CSS background
+     
+        %i.header-wide-logo.visible-tablet
+          -# Logo is here, it's a CSS background

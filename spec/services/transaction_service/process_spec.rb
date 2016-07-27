@@ -24,11 +24,11 @@ describe TransactionService::Process do
       id_3 = process.create(community_id: 222, process: :postpay, author_is_seller: true).data[:id]
 
       expect(process.get(community_id: 111).data)
-        .to eql([{community_id: 111, id: id_1, process: :none, author_is_seller: false},
+        .to include_all?([{community_id: 111, id: id_1, process: :none, author_is_seller: false},
                     {community_id: 111, id: id_2, process: :preauthorize, author_is_seller: true}])
 
       expect(process.get(community_id: 222).data)
-        .to eql([{community_id: 222, id: id_3, process: :postpay, author_is_seller: true}])
+        .to include_all?([{community_id: 222, id: id_3, process: :postpay, author_is_seller: true}])
 
       expect(process.get(community_id: 333).data).to eql([])
     end

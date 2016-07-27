@@ -33,7 +33,7 @@ end
 ActiveRecord::Base.shared_connection = ActiveRecord::Base.connection
 
 def clean_db
-  DatabaseCleaner.clean_with :deletion
+  DatabaseCleaner.clean_with :truncation
   load_default_test_data_to_db_before_suite
   load_default_test_data_to_db_before_test
 end
@@ -43,9 +43,7 @@ def set_strategy(strategy)
   Cucumber::Rails::Database.javascript_strategy = strategy
 end
 
-if !defined?(Zeus)
-  clean_db()
-end
+clean_db()
 set_strategy(:transaction)
 
 Before('@no-transaction') do

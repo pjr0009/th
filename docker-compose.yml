@@ -4,7 +4,7 @@ version: '2'
 services:
   migration:
     build: .
-    command: '/bin/bash -l -c "rake db:create db:schema:load"'
+    command: '/bin/bash -l -c "rake db:create"'
     volumes:
       - .:/app
     volumes_from:
@@ -17,7 +17,7 @@ services:
     depends_on:
       - migration
     build: .
-    command: '/bin/bash -l -c "foreman start -f Procfile.static"'
+    command: '/bin/bash -l -c "bundle install; foreman start -f Procfile.static"'
     tty: true
     stdin_open: true
     volumes:
@@ -25,19 +25,18 @@ services:
     volumes_from:
       - container:ruby_gems
     environment:
-      ZEUSSOCK: 'zeus/.zeus.sock'
       SPHINX_HOST: search
+      BUTTER_TOKEN: 03cad913262d44335d34f1c28e011a45126c2790
     ports:
       - "3000:3000"
       - "9001:9001"
   db:
-    image: postgres
-    volumes_from:
-      - container:pgdata
-    environment:
-      PGDATA: "/var/lib/postgresql/data/pgdata"
+    image: mysql
     ports:
-      - "5432:5432"
+      - "3306:3306"
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: "true"
+
   search:
     build: .
     command: '/bin/bash -l -c "bundle exec rake ts:configure ts:index; searchd --nodetach --pidfile --config config/development.sphinx.conf"'

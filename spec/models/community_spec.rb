@@ -141,11 +141,18 @@ describe Community, type: :model do
   describe "#get_new_listings_to_update_email" do
 
     def get_listing(created_at, updates_email_at)
-      FactoryGirl.create(:listing,
-        :created_at => created_at.days.ago,
-        :updates_email_at => updates_email_at.days.ago,
-        :listing_shape_id => 123,
-        :community_id => @community.id)
+      if created_at == updates_email_at
+        FactoryGirl.create(:listing,
+          :created_at => created_at.days.ago,
+          :listing_shape_id => 123,
+          :community_id => @community.id)
+      else
+        FactoryGirl.create(:listing,
+          :created_at => created_at.days.ago,
+          :updates_email_at => updates_email_at.days.ago,
+          :listing_shape_id => 123,
+          :community_id => @community.id)
+      end
     end
 
     before(:each) do
@@ -177,7 +184,7 @@ describe Community, type: :model do
       listings_to_email = @community.get_new_listings_to_update_email(@p1)
 
       expect(listings_to_email).to include(@l1, @l4, @l5, @l6, @l7, @l8, @l9, @l10, @l11, @l12)
-      expect(listings_to_email).not_to include(@l2, @l3)
+      expect(listings_to_email).not_to include(@l3, @l2)
     end
     it "should order listings using updates_email_at" do
       @l5 = get_listing(13,3)

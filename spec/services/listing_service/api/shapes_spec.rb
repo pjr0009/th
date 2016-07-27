@@ -78,13 +78,13 @@ describe ListingService::API::Shapes do
 
         units = shape[:units]
 
-        expect(units[0][:type]).to eql(:day)
-        expect(units[0][:quantity_selector]).to eql(:day)
-        expect(units[1][:type]).to eql(:custom)
-        expect(units[1][:kind]).to eql(:quantity)
-        expect(units[1][:quantity_selector]).to eql(:number)
-        expect(units[1][:name_tr_key]).to eql('my.custom.units.translation')
-        expect(units[1][:selector_tr_key]).to eql('my.custom.selector.translation')
+        expect(units[1][:type]).to eql(:day)
+        expect(units[1][:quantity_selector]).to eql(:day)
+        expect(units[0][:type]).to eql(:custom)
+        expect(units[0][:kind]).to eql(:quantity)
+        expect(units[0][:quantity_selector]).to eql(:number)
+        expect(units[0][:name_tr_key]).to eql('my.custom.units.translation')
+        expect(units[0][:selector_tr_key]).to eql('my.custom.selector.translation')
       end
     end
 
@@ -189,11 +189,11 @@ describe ListingService::API::Shapes do
 
         units = shape[:units]
 
-        expect(units[0][:type]).to eql(:day)
-        expect(units[0][:quantity_selector]).to eql(:number)
-        expect(units[1][:type]).to eql(:custom)
-        expect(units[1][:name_tr_key]).to eql('my.custom.units.translation')
-        expect(units[1][:selector_tr_key]).to eql('my.custom.selector.translation')
+        expect(units[1][:type]).to eql(:day)
+        expect(units[1][:quantity_selector]).to eql(:number)
+        expect(units[0][:type]).to eql(:custom)
+        expect(units[0][:name_tr_key]).to eql('my.custom.units.translation')
+        expect(units[0][:selector_tr_key]).to eql('my.custom.selector.translation')
       end
 
       it "updates only one field" do
@@ -216,10 +216,10 @@ describe ListingService::API::Shapes do
 
         units = shape[:units]
 
-        expect(units[0][:type]).to eql(:day)
-        expect(units[1][:type]).to eql(:custom)
-        expect(units[1][:name_tr_key]).to eql('my.custom.units.translation')
-        expect(units[1][:selector_tr_key]).to eql('my.custom.selector.translation')
+        expect(units[1][:type]).to eql(:day)
+        expect(units[0][:type]).to eql(:custom)
+        expect(units[0][:name_tr_key]).to eql('my.custom.units.translation')
+        expect(units[0][:selector_tr_key]).to eql('my.custom.selector.translation')
       end
 
       it "updates by name" do

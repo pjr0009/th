@@ -395,7 +395,7 @@ describe EmailService::API::Addresses do
             id: created[:id])
 
           address = addresses_with_ses.get_user_defined(community_id: created[:community_id]).data
-          expect(address[:updated_at]).to eq(now + 2.seconds)
+          expect(address[:updated_at].change(:usec => 0)).to eq(now + 2.seconds)
         end
       end
     end
@@ -439,7 +439,7 @@ describe EmailService::API::Addresses do
             id: created[:id])
 
           address = addresses_with_ses.get_user_defined(community_id: created[:community_id]).data
-          expect(address[:verification_requested_at]).to eq(now + 4.seconds)
+          expect(address[:verification_requested_at].change(:usec => 0)).to eq(now + 4.seconds)
         end
       end
     end
@@ -489,7 +489,7 @@ describe EmailService::API::Addresses do
                        addresses_with_ses.get_user_defined(community_id: 321).data]
 
           addresses.each do |address|
-            expect(address[:updated_at]).to eq(now + 3.seconds)
+            expect(address[:updated_at].change(:usec => 0)).to eq(now + 3.seconds)
           end
         end
       end
@@ -517,7 +517,7 @@ describe EmailService::API::Addresses do
                        addresses_wo_ses.get_user_defined(community_id: 321).data]
 
           addresses.each do |address|
-            expect(address[:updated_at]).to eq(now)
+            expect(address[:updated_at].change(:usec => 0)).to eq(now)
           end
         end
       end

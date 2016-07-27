@@ -12,6 +12,7 @@ gem 'sass-rails', '~> 4.0.0'
 gem 'compass-rails', '~> 2.0'
 
 gem 'foreman'
+gem 'buttercms-rails'
 
 # Requiring 'compass' gem directly is not normally needed,
 # 'compass-rails' already does that.
@@ -28,7 +29,6 @@ gem 'jquery-rails', '3.1.3'
 # gem 'heroku' install the Heroku toolbelt (https://toolbelt.heroku.com/) instead (as gem had some problems)
 gem "passenger", "~> 5.0.18"
 
-gem "pg"
 gem "mysql2", "~> 0.3.14"
 gem 'haml', "~> 4.0.5"
 gem 'sass', "  ~> 3.2.9"
@@ -147,7 +147,6 @@ group :development do
   gem 'rb-fsevent', "~> 0.9.4", require: false
   gem 'guard-rspec', "~> 4.6.5", require: false
   gem 'annotate', "~> 2.6.5"
-  gem 'zeus', '~> 0.15.4', require: false
   gem 'quiet_assets', "~> 1.1.0"
   gem 'better_errors', "~> 2.1.1"
   gem 'web-console', '~> 2.0'
@@ -169,6 +168,8 @@ group :test do
   gem 'rack-test', "~> 0.6.2"
   gem 'database_cleaner', '~> 1.1'
   gem 'connection_pool', "~> 0.9.3"
+  # gem 'poltergeist'
+  # gem 'phantomjs', :require => 'phantomjs/poltergeist'
 end
 
 group :development, :test do

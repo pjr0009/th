@@ -50,8 +50,6 @@
       .wrapper
         = render :partial => "layouts/notifications"
         = yield
-        - if display_branding_info?
-          = render partial: "layouts/non_whitelabel_branding", locals: {link_to_sharetribe: "https://www.sharetribe.com/?utm_source=#{@current_community.ident}.sharetribe.com&utm_medium=referral&utm_campaign=nowl-footer"}
   -#
     This is not pretty, but works.
     On homepage, we want to wrap the whole page content (search bar and the "real" content) to a form, so that
@@ -66,7 +64,8 @@
       = content_for(:page_content)
   - else
     = content_for(:page_content)
-
+  = render partial: "layouts/footer"
+  
   -# Most of the JavaScript should be for performance reasons at the end of the body
 
   -# load Facebook SDK for the whole page

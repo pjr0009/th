@@ -24,7 +24,7 @@ if docker-machine ls -q | grep '^tackhunter$'; then
   docker-machine rm tackhunter
 fi
 
-docker-machine create --driver virtualbox --virtualbox-memory 2048 --virtualbox-cpu-count 2 tackhunter
+docker-machine create --driver virtualbox --virtualbox-memory 8192 --virtualbox-cpu-count 4 tackhunter
 #set up port forwarding rules so that you can connect from other machines on the network
 #via the host machine's ip
 #[--natpf<1-N> [<rulename>],tcp|udp,[<hostip>], <hostport>,[<guestip>],<guestport>]

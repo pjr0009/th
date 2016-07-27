@@ -235,7 +235,6 @@ ul {
 
   @include media(tablet) {
     display: block;
-    position: absolute;
     a {
       position: relative;
       padding: $selected-highlight-padding lines(0.5);

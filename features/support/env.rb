@@ -13,6 +13,8 @@ require 'rspec/expectations'
 
 require 'cucumber/rails'
 require 'email_spec/cucumber'
+require 'capybara/poltergeist'
+
 
 # Uncomment this if needed to keep the browser open after the test
 # Capybara::Selenium::Driver.class_eval do
@@ -31,6 +33,8 @@ require 'email_spec/cucumber'
 # steps to use the XPath syntax.
 Capybara.default_selector = :css
 Capybara.ignore_hidden_elements = true
+Capybara.javascript_driver = :poltergeist
+
 # These settigs could be in prefork block, but Zeus wouldn't run that, so moved here.
 
 # By default, any exception happening in your Rails application will bubble up

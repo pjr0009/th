@@ -91,6 +91,7 @@ class Listing < ActiveRecord::Base
 
   before_validation :set_valid_until_time
 
+
   validates_presence_of :author_id
   validates_length_of :title, :in => 2..60, :allow_nil => false
 
@@ -101,7 +102,7 @@ class Listing < ActiveRecord::Base
 
   before_create :set_updates_email_at_to_now
   def set_updates_email_at_to_now
-    self.updates_email_at ||= Time.now
+    self.updates_email_at ||= self.created_at
   end
 
   before_validation do

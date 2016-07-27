@@ -1,0 +1,24 @@
+@import "mixins/all";
+footer{ 
+  background: #064f2f;
+  width: 100%;
+  .row {
+    padding: 3rem 0;
+    max-width: 63em;
+    margin: auto;
+    .col-3 {
+      h4 {
+        padding-left: 1.5em;
+        color: $background;
+        margin-bottom: 0.3em;
+      }
+      ul {
+        list-style: none;
+        li a {
+          color: $background;
+        }
+      }
+    }
+  }
+
+}

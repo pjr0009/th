@@ -35,7 +35,7 @@ $primary-hue: 25;
 $notification-hue: 80;
 $error-hue: 0;
 
-$background:  hsl($primary-hue, 0%, 100%);
+$background:  #eee9de;
 $highlight:   hsl($primary-hue, 0%, 91%);
 $border:      hsl($primary-hue, 0%, 76.4%);
 
@@ -56,10 +56,10 @@ $red:         hsl($error-hue, 73.4%, 38.2%);
 $error-red:   hsl($error-hue, 73.4%, 45.2%);
 $yellow:      #D1C905;
 
-$cover-photo-url: "cover_photos/header/default.jpg";
+$cover-photo-url: "cover_photos/original/cover_photo_large.jpeg";
 $small-cover-photo-url: "cover_photos/header/default.jpg";
-$wide-logo-lowres-url: "";
-$wide-logo-highres-url: "";
+$wide-logo-lowres-url: "logos/header/logo-wide.png";
+$wide-logo-highres-url: "logos/header/logo-wide.png";
 $square-logo-lowres-url: "";
 $square-logo-highres-url: "";
 $cover-photo-height: 453;

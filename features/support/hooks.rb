@@ -8,7 +8,7 @@ end
 Before('@javascript') do
   if ENV['PHANTOMJS']
     Capybara.current_driver = :webdriver_phantomjs
-    page.driver.browser.manage.window.resize_to(1024, 768)
+    Capybara.page.driver.resize(1024, 768)
 
     # Store the reference to original confirm() function
     # (this might be mocked later)
@@ -63,9 +63,9 @@ After do |scenario|
     puts ""
     puts "*** Browser logs:"
     puts ""
-    puts page.driver.browser.manage.logs.get("browser").map { |log_entry|
-      "[#{Time.at(log_entry.timestamp.to_i)}] [#{log_entry.level}] #{log_entry.message}"
-    }.join("\n")
+    # puts page.driver.browser.manage.logs.get("browser").map { |log_entry|
+    #   "[#{Time.at(log_entry.timestamp.to_i)}] [#{log_entry.level}] #{log_entry.message}"
+    # }.join("\n")
   end
 end
 

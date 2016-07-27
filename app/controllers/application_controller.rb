@@ -587,7 +587,7 @@ class ApplicationController < ActionController::Base
   def header_props
     user = Maybe(@current_user).map { |u|
       {
-        unread_count: MarketplaceService::Inbox::Query.notification_count(u.id, @current_community.id),
+        unread_count: MarketplaceService::Inbox::Query.notification_count(u.id, @current_community.id).try(:to_i),
         avatar_url: u.image.present? ? u.image.url(:thumb) : view_context.image_path("profile_image/thumb/missing.png"),
         current_user_name: u.name(@current_community),
         inbox_path: person_inbox_path(u),

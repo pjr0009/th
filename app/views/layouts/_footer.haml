@@ -1,0 +1,53 @@
+%footer
+  .row
+    .col-3.visible-tablet
+      .header-left.header-logo-container
+        = link_to landing_page_path, :id => "header-logo" do
+          %i.header-wide-logo.visible-tablet
+            -# Logo is here, it's a CSS backgroun
+
+    .col-3
+      %h4
+        Seller FAQs
+      %ul
+        %li
+          %a
+            Why Sell On Tack Hunter?
+        %li
+          %a
+            Payment & Fees
+        %li
+          %a
+            Shipping
+    .col-3
+      %h4
+        About
+      %ul
+        %li
+          %a
+            How it works
+        %li
+          %a
+            Privacy
+        %li
+          %a
+            Terms of use
+    .col-3
+      %h4
+        Contact
+      %ul
+        %li
+          %a
+            Feedback
+        %li
+          %a
+            Email Us
+        %li
+          %a
+            - if @current_user && @current_community && @current_user.has_admin_rights?
+              = link_to "Admin", admin_details_edit_path
+
+
+                        
+
+    .col-3
