@@ -1,0 +1,142 @@
+.menuMobile {
+
+  &:focus,
+  & :focus {
+    outline: none;
+    color: var(--Menu_textColorFocus);
+  }
+
+  &:focus .menuLabelMobile,
+  &.canvasOpen .menuLabelMobile {
+    color: var(--Menu_textColorFocus);
+  }
+
+  &:focus .menuLabelMobileIcon g,
+  &.canvasOpen .menuLabelMobileIcon g {
+    fill: var(--Menu_textColorFocus);
+  }
+}
+
+.menuLabelMobile {
+  display: inline-block;
+  padding: var(--Menu_mobileLabelPaddingVertical) var(--Menu_mobileLabelPaddingHorizontal);
+  cursor: pointer;
+}
+
+.overlay {
+  display: none;
+  cursor: pointer;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9;
+  height: 100vh;
+  width: 100vw;
+  background-color: #000;
+  opacity: 0;
+  transition-duration: 500ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-property: opacity;
+}
+
+.canvasOpen .overlay {
+  display: block;
+  opacity: 0.95;
+}
+
+.offScreenMenu {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  width: var(--MobileMenu_offscreenMenuWidth);
+  height: 100%;
+  max-height: 100%;
+  background-color: white;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: auto;
+  z-index: 10;
+  overflow-x: hidden;
+  overflow-y: auto;
+  will-change: transform;
+  transform: translateX(calc(-1 * var(--MobileMenu_offscreenMenuWidth)));
+  transform-style: preserve-3d;
+  transition-duration: 500ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-property: transform;
+}
+
+.canvasOpen .offScreenMenu {
+  display: flex;
+  transform: translateX(0);
+  box-shadow: 10px 0 30px 0 rgba(0, 0, 0, 0.15);
+}
+
+.offScreenHeader {
+  display: flex;
+  margin: var(--MenuItem_paddingOffScreenVertical) 0 var(--MenuItem_paddingOffScreenVertical) var(--MenuItem_paddingOffScreenHorizontal);
+  flex-shrink: 0;
+
+  @media (--medium-viewport) {
+    margin-left: var(--MenuItem_paddingOffScreenHorizontalTablet);
+  }
+
+  & a:first-child {
+    padding-left: 0;
+  }
+}
+
+.offScreenHeaderNewListingButton span {
+  height: var(--MobileMenu_offscreenHeaderItemHeight);
+  line-height: var(--MobileMenu_offscreenHeaderItemHeight);
+  padding: 0 0 0 0.5em;
+}
+
+.offScreenMain {
+  flex-grow: 1;
+}
+
+.offScreenFooter {
+  height: 30px;
+}
+
+.menuSection {
+
+  & .menuSectionMenuItem {
+    border-bottom: 0;
+  }
+
+  & .menuSectionMenuItemLink {
+    padding: var(--MenuItem_paddingOffScreenVertical) var(--MenuItem_paddingOffScreenHorizontal);
+    letter-spacing: 0;
+
+    @media (--medium-viewport) {
+      padding: var(--MenuItem_paddingOffScreenVertical) var(--MenuItem_paddingOffScreenHorizontalTablet);
+    }
+
+    &:focus,
+    &:hover {
+      color: var(--MenuItem_textColorFocus);
+      background-color: var(--MenuItem_backgroundColorHover);
+    }
+  }
+}
+
+.menuSectionTitle {
+  font-size: var(--MenuSection_fontSizeTitle);
+  position: relative;
+  min-width: 144px;
+  list-style: none;
+  display: inline-block;
+  padding: var(--MenuSection_paddingOffScreenVertical) var(--MenuSection_paddingOffScreenHorizontal);
+  color: var(--MenuSection_titleColor);
+  width: 100%;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  font-weight: 600;
+
+  @media (--medium-viewport) {
+    padding: var(--MenuItem_paddingOffScreenVertical) var(--MenuItem_paddingOffScreenHorizontalTablet);
+  }
+}

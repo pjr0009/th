@@ -1,0 +1,53 @@
+#currently only used for our development environment
+
+version: '2'
+services:
+  migration:
+    build: .
+    command: '/bin/bash -l -c "rake db:create db:schema:load"'
+    volumes:
+      - .:/app
+    volumes_from:
+      - container:ruby_gems
+    depends_on:
+      - db
+    environment:
+      RAILS_ENV: development
+  web:
+    depends_on:
+      - migration
+    build: .
+    command: '/bin/bash -l -c "foreman start -f Procfile.static"'
+    tty: true
+    stdin_open: true
+    volumes:
+      - .:/app
+    volumes_from:
+      - container:ruby_gems
+    environment:
+      ZEUSSOCK: 'zeus/.zeus.sock'
+      SPHINX_HOST: search
+    ports:
+      - "3000:3000"
+      - "9001:9001"
+  db:
+    image: postgres
+    volumes_from:
+      - container:pgdata
+    environment:
+      PGDATA: "/var/lib/postgresql/data/pgdata"
+    ports:
+      - "5432:5432"
+  search:
+    build: .
+    command: '/bin/bash -l -c "bundle exec rake ts:configure ts:index; searchd --nodetach --pidfile --config config/development.sphinx.conf"'
+    depends_on: 
+      - migration
+    volumes:
+      - .:/app
+    volumes_from:
+      - container:ruby_gems
+    ports:
+      - "3563:3563"
+    environment:
+      SPHINX_HOST: ""
