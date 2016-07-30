@@ -44,10 +44,10 @@ fi
 eval $(docker-machine env tackhunter)
 docker-machine regenerate-certs tackhunter
 
-if docker ps -a | grep 'pgdata'; then
+if docker ps -a | grep 'mysqldata'; then
   printf '\ndata volume already exists, skipping\n'
 else
-  docker run -v /var/lib/postgresql/data/pgdata --name="pgdata" ubuntu:14.04
+  docker run -v /var/lib/mysql --name="mysqldata" ubuntu:14.04
 fi
 
 if docker ps -a | grep 'ruby_gems'; then

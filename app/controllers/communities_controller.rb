@@ -25,7 +25,7 @@ class CommunitiesController < ApplicationController
                         :marketplace_type,
                         :marketplace_country,
                         :marketplace_language)
-        .merge(payment_process: :none)
+        .merge(payment_process: :preauthorize)
       )
 
       user = UserService::API::Users.create_user({

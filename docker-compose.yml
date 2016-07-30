@@ -32,6 +32,8 @@ services:
       - "9001:9001"
   db:
     image: mysql
+    volumes_from:
+      - container:mysqldata
     ports:
       - "3306:3306"
     environment:
