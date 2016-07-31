@@ -72,11 +72,11 @@ $elementSpacing: lines(0.5);
   color: white;
 
   &:hover {
-    color: $body;
+    color: $link2;
   }
 
   .toggled & {
-    color: $background;
+    color: $link2;
   }
 }
 
@@ -90,6 +90,11 @@ $elementSpacing: lines(0.5);
 
 .new-listing-link {
   @include header-menu-button($link2);
+  background: transparent;
+  border: 2px solid $link2;
+  &:hover {
+    background: $link2;
+  }
 }
 
 .header-menu-container {
@@ -249,4 +254,36 @@ $elementSpacing: lines(0.5);
   @include background-size(em(40) auto);
 
   display: inline-block;
+}
+
+
+.header-search {
+  margin-left: 1em;
+  width: 40%;
+  input {
+    margin: 0.75em 0;
+    min-height: 36px;
+    border: none;
+    border-radius: 4px 0 0 4px;
+    height: 36px;
+    float: left;
+    background: #fafafa;
+    border: 1px solid #6f6f6f;
+    border-right: none;
+    &:focus {
+      background: #fff;
+    }
+    width: 80%;  
+  }
+  button{
+    width: 15%;
+    float: left;
+    height: 36px;
+    border: 1px solid #6f6f6f;
+    border-left: none;
+    border-radius: 0 4px 4px 0;
+    display: inline;
+    background: #00a26c;
+    padding: 0;
+  }
 }
