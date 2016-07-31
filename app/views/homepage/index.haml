@@ -26,42 +26,36 @@
         %a.inline-big-button{href: sign_up_path}
           .content
             = t("layouts.application.connect")
-      - else
-        - if(location_search_in_use)
-          = render partial: "location_bar"
-        - else
-          = render partial: "search_bar"
+  - else
+    - if(location_search_in_use)
+      = render partial: "location_bar"
+    - else
+      = render partial: "search_bar"
 
 - if @current_community.private? && @big_cover_photo
-  - if @community_customization && @community_customization.private_community_homepage_content
-    .community-customization-wrapper
-      = @community_customization.private_community_homepage_content.html_safe
-  - else
-    = t(".this_is_private_community")
+  = t(".this_is_private_community")
 
 - else
   .home-toolbar
   .row
-    - if @category_menu_enabled
-      .col-3.visible-tablet
-        - if @show_categories
-          .row.home-categories-container
-            .col-12
-              = link_to "All Categories", search_path(params.merge({category: "all"})), :class => "home-categories-main #{if @selected_category.nil? then 'selected' end}"
-              - @main_categories.each do |category|
-                - show_subcategories = show_subcategory_list(category, Maybe(@selected_category).id.to_i.or_else(nil))
-                = link_to category.display_name(I18n.locale), search_path(params.merge({category: category})), :class => "home-categories-main #{if show_subcategories then 'selected' end} #{if category.has_subcategories? then 'has-subcategories' end}", :data => {category: category.id}
-                - if category.children
-                  - if show_subcategories
-                    - category.children.each do |child|
-                      - is_selected = @selected_category == child
-                      = link_to child.display_name(I18n.locale), search_path(params.merge({category: child})), :class => "home-categories-sub #{if is_selected then 'selected' end}", :data => {:"sub-category" =>child.id}
+    .col-3.visible-tablet
+      - if @show_categories
+        .row.home-categories-container
+          .col-12
+            = link_to "All Categories", search_path(params.merge({category: "all"})), :class => "home-categories-main #{if @selected_category.nil? then 'selected' end}"
+            - @main_categories.each do |category|
+              - show_subcategories = show_subcategory_list(category, Maybe(@selected_category).id.to_i.or_else(nil))
+              = link_to category.display_name(I18n.locale), search_path(params.merge({category: category})), :class => "home-categories-main #{if show_subcategories then 'selected' end} #{if category.has_subcategories? then 'has-subcategories' end}", :data => {category: category.id}
+              - if category.children
+                - if show_subcategories
+                  - category.children.each do |child|
+                    - is_selected = @selected_category == child
+                    = link_to child.display_name(I18n.locale), search_path(params.merge({category: child})), :class => "home-categories-sub #{if is_selected then 'selected' end}", :data => {:"sub-category" =>child.id}
 
-        #desktop-filters
-          - # Filters will be relocated here when in desktop
+      #desktop-filters
+        - # Filters will be relocated here when in desktop
 
-    - main_container_class = if @category_menu_enabled then "col-9" else "col-12" end
-    %div{:class => main_container_class}
+    .col-9
       - if @listings.total_entries > 0
         - if @view_type.eql?("map")
           .home-map
