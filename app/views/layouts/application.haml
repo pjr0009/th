@@ -56,7 +56,6 @@
       = content_for(:page_content)
   - else
     = content_for(:page_content)
-  = render partial: "layouts/footer"
   
   -# Most of the JavaScript should be for performance reasons at the end of the body
 
@@ -105,5 +104,6 @@
     $(document).ready(function() { initialize_defaults("#{I18n.locale}"); #{yield :javascript} });
 
   = render :partial => "layouts/noscript"
+= render partial: "layouts/footer"
 
 

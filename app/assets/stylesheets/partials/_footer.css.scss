@@ -1,5 +1,6 @@
 @import "mixins/all";
 footer{ 
+  text-align: center;
   background: #064f2f;
   width: 100%;
   .row {
@@ -20,5 +21,7 @@ footer{
       }
     }
   }
-
+  @include media(tablet) {
+    text-align: left;
+  }
 }
