@@ -27,9 +27,7 @@
           .content
             = t("layouts.application.connect")
   - else
-    - if(location_search_in_use)
-      = render partial: "location_bar"
-    - else
+    .browse-view-search-form
       = render partial: "search_bar"
 
 - if @current_community.private? && @big_cover_photo

@@ -2062,7 +2062,7 @@ figure.fluidratio {
   }
 
   button.action-button {
-    @include cover-photo-button($link);
+    @include cover-photo-button($link2);
     border: 0;
     @include media(tablet) {
       margin: 0 0 0 lines(0.5);
