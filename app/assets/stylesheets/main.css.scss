@@ -1333,6 +1333,8 @@ $noscript-height: lines(4);
     display: block;
     width: 100%;
     @include border-radius(em(5));
+    background: #fff;
+    color: $body;
     border: 2px solid $border;
     min-height: 42px;
     &:hover {

@@ -54,6 +54,10 @@ Kassi::Application.routes.draw do
     get '' => "getting_started_guide#index"
   end
 
+  namespace :marketplace do
+    get "/:category", :to => "/homepage#index", :as => :category
+  end
+
   # Internal API
   namespace :int_api do
     post "/create_trial_marketplace" => "marketplaces#create"
