@@ -168,8 +168,8 @@ group :test do
   gem 'rack-test', "~> 0.6.2"
   gem 'database_cleaner', '~> 1.1'
   gem 'connection_pool', "~> 0.9.3"
-  # gem 'poltergeist'
-  # gem 'phantomjs', :require => 'phantomjs/poltergeist'
+  gem 'poltergeist'
+  gem 'phantomjs', :require => 'phantomjs/poltergeist'
 end
 
 group :development, :test do

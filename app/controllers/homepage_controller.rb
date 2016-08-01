@@ -180,7 +180,7 @@ class HomepageController < ApplicationController
       page: Maybe(params)[:page].to_i.map { |n| n > 0 ? n : 1 }.or_else(1),
       price_min: params[:price_min],
       price_max: params[:price_max],
-      locale: I18n.locale,
+      locale: :en,
       include_closed: false
     }.merge(search_extra)
 
