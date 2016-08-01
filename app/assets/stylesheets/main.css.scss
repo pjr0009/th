@@ -1939,6 +1939,7 @@ figure.fluidratio {
 
 .marketplace-lander {
   position: relative;
+  background: none;
 
   figure.marketplace-cover {
     background-image: url(image-path($cover-photo-url));
@@ -1961,8 +1962,6 @@ figure.fluidratio {
     width: 100%;
     margin-left: auto;
     margin-right: auto;
-    background: rgba($highlight, 0.9);
-
     &.without-text {
       background: rgba($highlight, 0.625);
     }
@@ -1986,7 +1985,7 @@ figure.fluidratio {
     margin-top: 0;
     position: relative;
     padding: 0;
-    color: $background;
+    color: white;
     @include larger-type;
     line-height: em(18);
     @include media(tablet) {
@@ -2020,7 +2019,7 @@ figure.fluidratio {
     display: table;
 
     h1 {
-      color: $light-body;
+      color: $body;
       @include normal-type;
       font-weight: bold;
       line-height: lines(0.8);

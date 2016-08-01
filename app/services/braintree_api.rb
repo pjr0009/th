@@ -62,7 +62,6 @@ class BraintreeApi
     def transaction_sale(community, options)
       with_braintree_config(community) do
         b = Braintree::Transaction.create(options)
-        puts b.errors.to_json
       end
     end
 
