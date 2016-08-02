@@ -345,22 +345,6 @@ class Community < ActiveRecord::Base
     custom_color1 || custom_color2 || cover_photo.present? || small_cover_photo.present? || wide_logo.present? || logo.present?
   end
 
-  def has_custom_stylesheet?
-    if APP_CONFIG.preproduction
-      preproduction_stylesheet_url.present?
-    else
-      stylesheet_url.present?
-    end
-  end
-
-  def custom_stylesheet_url
-    if APP_CONFIG.preproduction
-      self.preproduction_stylesheet_url
-    else
-      self.stylesheet_url
-    end
-  end
-
   def self.with_customizations
     customization_columns = [
       "custom_color1",

@@ -646,17 +646,6 @@ module ApplicationHelper
     s.match /^https?:\/\//
   end
 
-  def with_stylesheet_url(community, &block)
-    stylesheet_url = if community.has_custom_stylesheet?
-      stylesheet = community.custom_stylesheet_url
-      is_uri?(stylesheet)  ? stylesheet : "/assets/#{stylesheet}"
-    else
-      'application'
-    end
-
-    block.call(stylesheet_url)
-  end
-
   def sort_link_direction(column)
     params[:sort].eql?(column) && params[:direction].eql?("asc") ? "desc" : "asc"
   end
