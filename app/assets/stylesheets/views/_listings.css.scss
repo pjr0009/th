@@ -203,7 +203,7 @@ $listing-author-avatar-height: 108;
 
 // Transaction action button
 .book-button {
-  @include big-button($link);
+  @include big-button($button);
   margin-top: 0;
   width: 100%;
   text-align: center;

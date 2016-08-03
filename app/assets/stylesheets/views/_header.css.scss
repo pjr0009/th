@@ -90,11 +90,11 @@ $elementSpacing: lines(0.5);
 }
 
 .new-listing-link {
-  @include header-menu-button($link2);
+  @include header-menu-button($button);
   background: transparent;
-  border: 2px solid $link2;
+  border: 2px solid $button;
   &:hover {
-    background: $link2;
+    background: $button;
   }
 }
 

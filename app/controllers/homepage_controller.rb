@@ -185,7 +185,6 @@ class HomepageController < ApplicationController
     }.merge(search_extra)
 
     raise_errors = Rails.env.development?
-
     ListingIndexService::API::Api.listings.search(
       community_id: @current_community.id,
       search: search,

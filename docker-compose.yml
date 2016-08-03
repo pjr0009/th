@@ -17,7 +17,7 @@ services:
     depends_on:
       - migration
     build: .
-    command: '/bin/bash -l -c "bundle install; foreman start -f Procfile.static"'
+    command: '/bin/bash -l -c "bundle install; foreman start -f Procfile.hot"'
     tty: true
     stdin_open: true
     volumes:
