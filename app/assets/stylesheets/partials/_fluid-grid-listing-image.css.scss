@@ -38,7 +38,7 @@ h4.fluid-thumbnail-grid-listing-title {
   font-weight: 600;
   padding: 0 lines(0.5) 0.25em lines(0.5);
   background: white;
-  color: #6f6f6f;
+  color: $button;
   @include ellipsis;
 }
 

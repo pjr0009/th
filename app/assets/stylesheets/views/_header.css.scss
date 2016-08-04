@@ -49,10 +49,6 @@ $elementSpacing: lines(0.5);
 }
 
 .header-hover {
-  &:hover {
-    background-color: $highlight;
-  }
-
   &.toggled {
     background-color: $light-body;
   }
@@ -72,12 +68,11 @@ $elementSpacing: lines(0.5);
   color: white;
 
   &:hover {
-
-    color: $link2;
+    color: $button;
   }
 
   .toggled & {
-    color: $link2;
+    color: $button;
   }
 }
 
@@ -129,12 +124,12 @@ $elementSpacing: lines(0.5);
 }
 
 .header-user-avatar {
-  @include border-radius($default-border-radius);
+  @include border-radius(100%);
   @include header-block;
 }
 
 .header-user-toggle {
-  padding-left: $elementSpacing;
+  padding: 0 $elementSpacing;
   display: block;
   @include clearfix;
 }

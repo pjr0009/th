@@ -1942,6 +1942,7 @@ figure.fluidratio {
 .marketplace-lander {
   position: relative;
   background: none;
+  height: em($small-cover-photo-mobile-height);
 
   figure.marketplace-cover {
     background-image: url(image-path($cover-photo-url));
@@ -1950,7 +1951,6 @@ figure.fluidratio {
   }
 
   figure.marketplace-cover-small {
-    background-image: url(image-path($small-cover-photo-url));
     height: em($small-cover-photo-mobile-height);
     @include media(tablet) {
       @include fluid-ratio(em(1920) em($small-cover-photo-height), em(300) em($small-cover-photo-height));

@@ -24,20 +24,12 @@
   
   - if params[:controller] == "homepage" && params[:action] == "index"
     %section.marketplace-lander.hidden-tablet
-      .coverimage
-        %figure.marketplace-cover-small.fluidratio
-        .coverimage-fade{:class => yield(:coverfade_class)}
-          %figure.marketplace-cover-small-fade.fluidratio
       .title-container
         .title-header-wrapper
           .marketplace-title-header
             = yield :title_header
   - else
     %section.marketplace-lander.visible-tablet
-      .coverimage
-        %figure.marketplace-cover-small.fluidratio
-        .coverimage-fade{:class => yield(:coverfade_class)}
-          %figure.marketplace-cover-small-fade.fluidratio
       .title-container
         .title-header-wrapper
           .marketplace-title-header
