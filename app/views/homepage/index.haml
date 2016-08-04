@@ -34,7 +34,6 @@
 
 - else
   .home-toolbar
-
     - if listing_shape_menu_enabled || @category_menu_enabled
       .home-toolbar-show-filters-button-container
         .home-toolbar-show-filters-button#home-toolbar-show-filters
@@ -101,8 +100,8 @@
                     - is_selected = @selected_category == child
                     = link_to child.display_name(I18n.locale), search_path(params.merge({category: child})), :class => "home-categories-sub #{if is_selected then 'selected' end}", :data => {:"sub-category" =>child.id}
 
-      #desktop-filters
-        - # Filters will be relocated here when in desktop
+          #desktop-filters
+            - # Filters will be relocated here when in desktop
 
     .col-9
       - if @listings.total_entries > 0
