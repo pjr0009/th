@@ -54,7 +54,7 @@
         %i.header-wide-logo.visible-tablet
           -# Logo is here, it's a CSS background
     .header-left.header-search.cf-clearfix.visible-tablet
-      %form{method: "get", id: "homepage-filters"}
+      %form{method: "get", id: "homepage-filters", action: "/"}
         - params.except("action", "controller", "q", "lc", "ls", "view", "utf8", "boundingbox", "distance_max").each do |param, value|
           - unless param.match(/^filter_option/) || param.match(/^checkbox_filter_option/) || param.match(/^nf_/) || param.match(/^price_/)
             = hidden_field_tag param, value
