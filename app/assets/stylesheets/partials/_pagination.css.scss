@@ -17,7 +17,7 @@
     margin-top: lines(0.25);
     font-style: normal;
     font-weight: bold;
-    background: $link;
+    background: $button;
     @include border-radius($default-border-radius);
     margin-right: lines(0.25);
     padding: em(5) em(15);

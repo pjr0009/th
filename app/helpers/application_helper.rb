@@ -117,20 +117,6 @@ module ApplicationHelper
     end
   end
 
-  def pageless(total_pages, target_id, url=nil, loader_message='Loading more results')
-
-    opts = {
-      :totalPages => total_pages,
-      :url        => url,
-      :loaderMsg  => loader_message,
-      :targetDiv  => target_id # extra parameter for jquery.pageless.js patch
-    }
-
-    content_for :extra_javascript do
-      javascript_tag("$('#{target_id}').pageless(#{opts.to_json});")
-    end
-  end
-
   # Class is selected if conversation type is currently selected
   def get_profile_extras_tab_class(tab_name)
     "inbox_tab_#{controller_name.eql?(tab_name) ? 'selected' : 'unselected'}"

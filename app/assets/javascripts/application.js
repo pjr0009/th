@@ -24,7 +24,6 @@
 //= require jquery_ujs
 //= require jquery.form
 //= require jquery.validate
-//= require jquery.pageless
 //= require jquery.autosize-min
 //= require jquery.lightbox_me
 //= require jquery.transit.min

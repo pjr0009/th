@@ -7,7 +7,6 @@
     = render :partial => "inbox_row", :collection => inbox_rows, :as => :conversation, locals: { payments_in_use: payments_in_use }
 
     = will_paginate(inbox_rows)
-    = pageless(inbox_rows.total_pages, '#conversations', request.path, t('conversations.index.loading_more_messages'))
 
   - else
     #no_conversations

@@ -7,7 +7,7 @@ class InboxesController < ApplicationController
 
   def show
     # We use pageless scroll, so the page should be always the first one (1) when request was not AJAX request
-    params[:page] = 1 unless request.xhr?
+    # params[:page] = 1 unless request.xhr?
 
     pagination_opts = PaginationViewUtils.parse_pagination_opts(params)
 
