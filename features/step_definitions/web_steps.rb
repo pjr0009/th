@@ -68,7 +68,7 @@ end
 
 When /^(?:|I )press submit(?: within "([^"]*)")?$/ do |selector|
   with_scope(selector) do
-    find("[type=submit]").click
+    all("[type=submit]").last.click
   end
 end
 
