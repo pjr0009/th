@@ -1,5 +1,4 @@
 source 'http://rubygems.org'
-source 'http://rubygems.org'
 
 ruby '2.3.1'
 
@@ -154,6 +153,9 @@ group :development do
 end
 
 group :test do
+  gem "spring"
+  gem 'spring-commands-rspec'
+  gem 'spring-commands-cucumber'
   gem 'capybara', '~> 2.6.2'
   gem "rspec-rails", "~>3.0"
 

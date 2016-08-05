@@ -4,7 +4,7 @@ version: '2'
 services:
   migration:
     build: .
-    command: '/bin/bash -l -c "rake db:create"'
+    command: '/bin/bash -l -c "bundle install; rake db:create"'
     volumes:
       - .:/app
     volumes_from:
@@ -17,7 +17,7 @@ services:
     depends_on:
       - migration
     build: .
-    command: '/bin/bash -l -c "bundle install; foreman start -f Procfile.hot"'
+    command: '/bin/bash -l -c "foreman start -f Procfile.hot"'
     tty: true
     stdin_open: true
     volumes:
