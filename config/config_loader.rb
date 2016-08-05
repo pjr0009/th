@@ -28,7 +28,7 @@ module ConfigLoader
   def read_yaml_file(file)
     abs_path = "#{Rails.root}/#{file}"
     file_content = if File.exists?(abs_path)
-      YAML.load_file(ERB.new(abs_path).result)[Rails.env]
+      YAML.load(ERB.new(File.read(abs_path)).result)[Rails.env]
     end
 
     Maybe(file_content).or_else({})
