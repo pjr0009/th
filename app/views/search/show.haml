@@ -18,7 +18,6 @@
           = "(#{@listings.total_entries})"
         = render :partial => "listings/listed_listing", :collection => @listings, :as => :listing, :spacer_template => "listings/listing_spacer"
         = will_paginate(@listings)
-        = pageless(@listings.total_pages, '#search_results', "search?q=#{@query}", t('.loading_more_search_results'))
       - else
         #no_results_found
           = t(".search_returned_no_results")
