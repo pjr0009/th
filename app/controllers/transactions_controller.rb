@@ -271,6 +271,7 @@ class TransactionsController < ApplicationController
         Result::Success.new(listing_model.author)
       },
       ->(_, listing_model, *rest) {
+        #get the transaction process that is used for the listing, should be preauthorize
         TransactionService::API::Api.processes.get(community_id: @current_community.id, process_id: listing_model.transaction_process_id)
       },
       ->(*) {

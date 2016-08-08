@@ -32,7 +32,6 @@ class PaypalAccountsController < ApplicationController
       community_ready_for_payments: community_ready_for_payments,
       left_hand_navigation_links: settings_links_for(@current_user, @current_community),
       order_permission_action: ask_order_permission_person_paypal_account_path(@current_user),
-      billing_agreement_action: ask_billing_agreement_person_paypal_account_path(@current_user),
       paypal_account_email: m_account[:email].or_else(""),
       commission_from_seller: t("paypal_accounts.commission", commission: payment_settings[:commission_from_seller]),
       minimum_commission: Money.new(payment_settings[:minimum_transaction_fee_cents], community_currency),
@@ -70,40 +69,40 @@ class PaypalAccountsController < ApplicationController
   end
 
   def ask_billing_agreement
-    return redirect_to action: :index unless PaypalHelper.community_ready_for_payments?(@current_community)
+    # return redirect_to action: :index unless PaypalHelper.community_ready_for_payments?(@current_community)
 
-    account_response = accounts_api.get(
-      community_id: @current_community.id,
-      person_id: @current_user.id
-    )
-    m_account = account_response.maybe
+    # account_response = accounts_api.get(
+    #   community_id: @current_community.id,
+    #   person_id: @current_user.id
+    # )
+    # m_account = account_response.maybe
 
-    case m_account[:order_permission_state]
-    when Some(:verified)
+    # case m_account[:order_permission_state]
+    # when Some(:verified)
 
-      response = accounts_api.billing_agreement_request(
-        community_id: @current_community.id,
-        person_id: @current_user.id,
-        body: PaypalService::API::DataTypes.create_create_billing_agreement_request(
-          {
-            description: t("paypal_accounts.new.billing_agreement_description"),
-            success_url:  billing_agreement_success_person_paypal_account_url,
-            cancel_url:   billing_agreement_cancel_person_paypal_account_url
-          }
-        ))
+    #   response = accounts_api.billing_agreement_request(
+    #     community_id: @current_community.id,
+    #     person_id: @current_user.id,
+    #     body: PaypalService::API::DataTypes.create_create_billing_agreement_request(
+    #       {
+    #         description: t("paypal_accounts.new.billing_agreement_description"),
+    #         success_url:  billing_agreement_success_person_paypal_account_url,
+    #         cancel_url:   billing_agreement_cancel_person_paypal_account_url
+    #       }
+    #     ))
 
-      billing_agreement_url = response.data[:redirect_url]
+    #   billing_agreement_url = response.data[:redirect_url]
 
-      if billing_agreement_url.blank?
-        flash[:error] = t("paypal_accounts.new.could_not_fetch_redirect_url")
-        return redirect_to action: :index
-      else
-        render json: {redirect_url: billing_agreement_url}
-      end
+    #   if billing_agreement_url.blank?
+    #     flash[:error] = t("paypal_accounts.new.could_not_fetch_redirect_url")
+    #     return redirect_to action: :index
+    #   else
+    #     render json: {redirect_url: billing_agreement_url}
+    #   end
 
-    else
-      redirect_to action: ask_order_permission
-    end
+    # else
+    #   redirect_to action: ask_order_permission
+    # end
   end
 
   def permissions_verified
@@ -131,34 +130,34 @@ class PaypalAccountsController < ApplicationController
   end
 
   def billing_agreement_success
-    response = accounts_api.billing_agreement_create(
-      community_id: @current_community.id,
-      person_id: @current_user.id,
-      billing_agreement_request_token: params[:token]
-    )
+    # response = accounts_api.billing_agreement_create(
+    #   community_id: @current_community.id,
+    #   person_id: @current_user.id,
+    #   billing_agreement_request_token: params[:token]
+    # )
 
-    if response[:success]
-      redirect_to paypal_account_settings_payment_path(@current_user.username)
-    else
-      case response.error_msg
-      when :billing_agreement_not_accepted
-        flash_error_and_redirect_to_settings(error_msg: t("paypal_accounts.new.billing_agreement_not_accepted"))
-      when :wrong_account
-        flash_error_and_redirect_to_settings(error_msg: t("paypal_accounts.new.billing_agreement_wrong_account"))
-      else
-        flash_error_and_redirect_to_settings(error_response: response)
-      end
-    end
+    # if response[:success]
+    #   redirect_to paypal_account_settings_payment_path(@current_user.username)
+    # else
+    #   case response.error_msg
+    #   when :billing_agreement_not_accepted
+    #     flash_error_and_redirect_to_settings(error_msg: t("paypal_accounts.new.billing_agreement_not_accepted"))
+    #   when :wrong_account
+    #     flash_error_and_redirect_to_settings(error_msg: t("paypal_accounts.new.billing_agreement_wrong_account"))
+    #   else
+    #     flash_error_and_redirect_to_settings(error_response: response)
+    #   end
+    # end
   end
 
   def billing_agreement_cancel
-    accounts_api.delete_billing_agreement(
-      community_id: @current_community.id,
-      person_id: @current_user.id
-    )
+    # accounts_api.delete_billing_agreement(
+    #   community_id: @current_community.id,
+    #   person_id: @current_user.id
+    # )
 
-    flash[:error] = t("paypal_accounts.new.billing_agreement_canceled")
-    redirect_to paypal_account_settings_payment_path(@current_user.username)
+    # flash[:error] = t("paypal_accounts.new.billing_agreement_canceled")
+    # redirect_to paypal_account_settings_payment_path(@current_user.username)
   end
 
 
@@ -167,8 +166,6 @@ class PaypalAccountsController < ApplicationController
   def next_action(paypal_account_state)
     if paypal_account_state == :verified
       :none
-    elsif paypal_account_state == :connected
-      :ask_billing_agreement
     else
       :ask_order_permission
     end

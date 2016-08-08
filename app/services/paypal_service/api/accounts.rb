@@ -70,6 +70,7 @@ module PaypalService::API
     # }
     #
     def create(community_id:, person_id: nil, order_permission_request_token:, body:, flow: :old)
+      
       if flow == :new
         validation = @onboarding.validate_result_params(body[:onboarding_params])
         unless validation[:success]

@@ -7,17 +7,8 @@ module PaypalService
       @logger = logger
       @api_builder = api_builder || self.method(:build_api)
       @action_handlers = action_handlers
-
       unless (config.nil?)
-        PayPal::SDK.configure(
-          {
-            mode: config[:endpoint][:endpoint_name],
-            username: config[:api_credentials][:username],
-            password: config[:api_credentials][:password],
-            signature: config[:api_credentials][:signature],
-            app_id: config[:api_credentials][:app_id],
-          }
-          )
+        PayPal::SDK.load('config/paypal.yml',  ENV['RACK_ENV'] || 'development')
       end
     end
 
