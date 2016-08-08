@@ -17,8 +17,10 @@ module PaypalService
     end
 
     def do_request(request)
+      puts "fasfas"
       action_def = @action_handlers[request[:method]]
       return exec_action(action_def, @api_builder.call(request), @config, request) if action_def
+
 
       raise ArgumentError.new("Unknown request method #{request[:method]}")
     end
@@ -27,9 +29,9 @@ module PaypalService
     def build_api(request)
       req = request.to_h
       if (req[:receiver_username])
-        PayPal::SDK::Merchant.new(nil, { subject: req[:receiver_username] })
+        PayPal::SDK::AdaptivePayments::API.new(nil, { subject: req[:receiver_username] })
       else
-        PayPal::SDK::Merchant.new
+        PayPal::SDK::AdaptivePayments::API.new
       end
     end
 
@@ -45,11 +47,12 @@ module PaypalService
       input = input_transformer.call(request, config)
       request_id = @logger.log_request_input(request, input)
       wrapped = wrapper_method.call(input)
-
+      response = action_method.call(wrapped)
+      puts "rara"
+      puts response.error[0].message
       begin
         response = action_method.call(wrapped)
 
-        @logger.log_response(response, request_id)
         if (response.success?)
           output_transformer.call(response, api)
         else
@@ -77,10 +80,10 @@ module PaypalService
 
 
     def create_failure_response(res)
-      if (res.errors.length > 0)
+      if (res.payment_exec_status == "ERROR")
         DataTypes.create_failure_response({
           error_code: res.errors[0].error_code.to_s,
-          error_msg: res.errors[0].long_message.to_s
+          error_msg: res.errors[0].message.to_s
         })
       else
         DataTypes.create_failure_response({})

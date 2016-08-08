@@ -122,7 +122,11 @@ class PreauthorizeTransactionsController < ApplicationController
     end
 
     transaction_id = transaction_response[:data][:transaction][:id]
-
+    puts transaction_response
+    puts transaction_response
+    puts transaction_response
+    puts transaction_response
+    puts transaction_response
     if (transaction_response[:data][:gateway_fields][:redirect_url])
       redirect_to transaction_response[:data][:gateway_fields][:redirect_url]
     else

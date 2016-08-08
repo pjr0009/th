@@ -265,6 +265,30 @@ module PaypalService
           })
         }
       ),
+      
+      set_chained_payment_authorization: PaypalAction.def_action(
+        input_transformer: -> (req, config) {
+          req_details = {
+            actionType: "CREATE",
+            cancelUrl: req[:cancel],
+            currencyCode: "USD",
+            returnUrl: req[:success],
+            receiverList: {:receiver => [{accountId: req[:payer_id], amount: 1.0}]}
+
+          }
+
+          req_details
+        },
+        wrapper_method_name: :build_pay,
+        action_method_name: :pay,
+        output_transformer: -> (res, api) {
+          DataTypes::Merchant.create_set_chained_payment_authorization_response({
+            token: res.payKey,
+            redirect_url: api.payment_url(res),
+            receiver_username: api.config.subject || api.config.username
+          })
+        }
+      ),
 
       do_express_checkout_payment: PaypalAction.def_action(
         input_transformer: -> (req, config) {

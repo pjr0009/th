@@ -33,10 +33,11 @@ module PaypalService::API
 
     ## POST /payments/request
     def request(community_id, create_payment, async: false)
+      puts "payments#request"
       @lookup.with_active_account(
         community_id, create_payment[:merchant_id]
       ) do |m_acc|
-        if (async)
+        if (false)
           proc_token = Worker.enqueue_payments_op(
             community_id: community_id,
             transaction_id: create_payment[:transaction_id],
@@ -45,20 +46,25 @@ module PaypalService::API
 
           proc_status_response(proc_token)
         else
+          puts "calling do_request"
           do_request(community_id, create_payment, m_acc)
         end
       end
     end
 
     def do_request(community_id, create_payment, m_acc)
+      puts "hereeeeee1e"
       create_payment_data = create_payment.merge(
-        { receiver_username: m_acc[:payer_id],
+        { payer_id: m_acc[:payer_id],
           invnum: Invnum.create(community_id, create_payment[:transaction_id], :payment)})
+      puts "hereeeeeee"
+
+     
       request =
-        if (create_payment[:payment_action] == :order)
-          MerchantData.create_set_express_checkout_order(create_payment_data)
+        if (create_payment[:payment_action] == :pay)
+          MerchantData.create_chained_payment(create_payment_data)
         else
-          MerchantData.create_set_express_checkout_authorization(create_payment_data)
+          MerchantData.create_set_chained_payment_authorization(create_payment_data)
         end
 
       with_success(community_id, create_payment[:transaction_id],

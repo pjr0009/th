@@ -17,7 +17,7 @@ module TransactionService::Gateway
       create_payment_info = DataTypes.create_create_payment_request(
         {
          transaction_id: tx[:id],
-         payment_action: :authorization,
+         actionType: :create,
          item_name: tx[:listing_title],
          item_quantity: tx[:listing_quantity],
          item_price: tx[:unit_price],
@@ -32,13 +32,13 @@ module TransactionService::Gateway
       result = paypal_api.payments.request(
         tx[:community_id],
         create_payment_info,
-        async: prefer_async)
+        async: false)
 
       unless result[:success]
         return SyncCompletion.new(result)
       end
 
-      if prefer_async
+      if false
         AsyncCompletion.new(Result::Success.new({ process_token: result[:data][:process_token] }))
       else
         AsyncCompletion.new(Result::Success.new({ redirect_url: result[:data][:redirect_url] }))

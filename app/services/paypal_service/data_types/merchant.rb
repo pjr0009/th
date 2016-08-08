@@ -119,11 +119,37 @@ module PaypalService
         [:invnum, :mandatory, :string],
         [:merchant_brand_logo_url, :optional, :string])
 
+      SetChainedPaymentAuthorization = EntityUtils.define_builder(
+        [:method, const_value: :set_chained_payment_authorization],
+        [:item_name, :mandatory, :string],
+        [:item_quantity, :fixnum, default: 1],
+
+        [:require_shipping_address, :to_bool],
+        [:item_price, :mandatory, :money],
+
+        # If specified, require_shipping_address must be true
+        [:shipping_total, :optional],
+
+        # Must match item_price * item_quantity + shipping_total
+        [:order_total, :mandatory, :money],
+        [:success, :mandatory, :string],
+        [:cancel, :mandatory, :string],
+        [:payer_id, :mandatory, :string],
+        [:invnum, :mandatory, :string],
+        [:merchant_brand_logo_url, :optional, :string])
+      
+      SetChainedPaymentAuthorizationResponse = EntityUtils.define_builder(
+        [:success, const_value: true],
+        [:token, :mandatory, :string],
+        [:redirect_url, :mandatory, :string],
+        [:receiver_username, :mandatory, :string])
+
       SetExpressCheckoutAuthorizationResponse = EntityUtils.define_builder(
         [:success, const_value: true],
         [:token, :mandatory, :string],
         [:redirect_url, :mandatory, :string],
         [:receiver_username, :mandatory, :string])
+
 
       # Should contain the same fields as in set express checkout order / authorization
       DoExpressCheckoutPayment = EntityUtils.define_builder(
@@ -257,6 +283,8 @@ module PaypalService
       def create_set_express_checkout_order_response(opts); SetExpressCheckoutOrderResponse.call(opts) end
 
       def create_set_express_checkout_authorization(opts); SetExpressCheckoutAuthorization.call(opts) end
+      def create_set_chained_payment_authorization(opts); SetChainedPaymentAuthorization.call(opts) end
+      def create_set_chained_payment_authorization_response(opts); SetChainedPaymentAuthorizationResponse.call(opts) end
       def create_set_express_checkout_authorization_response(opts); SetExpressCheckoutAuthorizationResponse.call(opts) end
 
       def create_do_express_checkout_payment(opts); DoExpressCheckoutPayment.call(opts) end
