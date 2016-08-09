@@ -33,7 +33,6 @@ module PaypalService::API
 
     ## POST /payments/request
     def request(community_id, create_payment, async: false)
-      puts "payments#request"
       @lookup.with_active_account(
         community_id, create_payment[:merchant_id]
       ) do |m_acc|
@@ -46,19 +45,15 @@ module PaypalService::API
 
           proc_status_response(proc_token)
         else
-          puts "calling do_request"
           do_request(community_id, create_payment, m_acc)
         end
       end
     end
 
     def do_request(community_id, create_payment, m_acc)
-      puts "hereeeeee1e"
       create_payment_data = create_payment.merge(
         { payer_id: m_acc[:payer_id],
           invnum: Invnum.create(community_id, create_payment[:transaction_id], :payment)})
-      puts "hereeeeeee"
-
      
       request =
         if (create_payment[:payment_action] == :pay)

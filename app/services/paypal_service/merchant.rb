@@ -17,7 +17,6 @@ module PaypalService
     end
 
     def do_request(request)
-      puts "fasfas"
       action_def = @action_handlers[request[:method]]
       return exec_action(action_def, @api_builder.call(request), @config, request) if action_def
 
@@ -48,8 +47,6 @@ module PaypalService
       request_id = @logger.log_request_input(request, input)
       wrapped = wrapper_method.call(input)
       response = action_method.call(wrapped)
-      puts "rara"
-      puts response.error[0].message
       begin
         response = action_method.call(wrapped)
 
