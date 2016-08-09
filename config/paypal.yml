@@ -18,8 +18,10 @@ development: &default
 test:
   <<: *default
 production:
-  mode: live
-  username: USERNAME
-  password: PASSWORD
-  signature: SIGNATURE
-  app_id: APP_ID
+  username: admin-facilitator_api1.tackhunter.com
+  password: 9WZPG8PJKG73ZZ46
+  signature: AC5YHZoILywPAMWQ4-6lMckFrgzjAZ-rp67.l5GyiQwp6ByVUzPJTaIO
+  app_id: APP-80W284485P519543T
+  http_timeout: 30
+  mode: sandbox
+  sandbox_email_address: admin-facilitator@tackhunter.com
