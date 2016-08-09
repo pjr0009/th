@@ -37,7 +37,7 @@ module PaypalService::API
       @lookup.with_active_account(
         community_id, create_payment[:merchant_id]
       ) do |m_acc|
-        if (false)
+        if (async)
           proc_token = Worker.enqueue_payments_op(
             community_id: community_id,
             transaction_id: create_payment[:transaction_id],

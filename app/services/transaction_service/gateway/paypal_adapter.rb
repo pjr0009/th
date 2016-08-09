@@ -28,17 +28,16 @@ module TransactionService::Gateway
          success: gateway_fields[:success_url],
          cancel: gateway_fields[:cancel_url],
          merchant_brand_logo_url: gateway_fields[:merchant_brand_logo_url]})
-
       result = paypal_api.payments.request(
         tx[:community_id],
         create_payment_info,
-        async: false)
+        async: prefer_async)
 
       unless result[:success]
         return SyncCompletion.new(result)
       end
 
-      if false
+      if prefer_async
         AsyncCompletion.new(Result::Success.new({ process_token: result[:data][:process_token] }))
       else
         AsyncCompletion.new(Result::Success.new({ redirect_url: result[:data][:redirect_url] }))
