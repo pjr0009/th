@@ -9,6 +9,7 @@ class PaypalService::CheckoutOrdersController < ApplicationController
 
 
   def success
+
     return redirect_to error_not_found_path if params[:token].blank?
 
     token = paypal_payments_service.get_request_token(@current_community.id, params[:token])

@@ -35,7 +35,7 @@ class ErrorsController < ActionController::Base
   private
 
   def current_community
-    @current_community ||= CurrentMarketplaceResolver.resolve_from_host(request.host, URLUtils.strip_port_from_host(APP_CONFIG.domain))
+    @current_community ||= Community.first
   end
 
   def title(status)
