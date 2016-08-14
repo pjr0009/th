@@ -44,17 +44,16 @@ module PaypalService
         [:fee, :money],
         [:username_to, :mandatory, :string])
 
-      GetExpressCheckoutDetails = EntityUtils.define_builder(
-        [:method, const_value: :get_express_checkout_details],
+      GetChainedPaymentDetails = EntityUtils.define_builder(
+        [:method, const_value: :get_chained_payment_details],
         [:receiver_username, :optional, :string],
         [:token, :mandatory, :string])
 
 
-      GetExpressCheckoutDetailsResponse = EntityUtils.define_builder(
+      GetChainedPaymentDetailsResponse = EntityUtils.define_builder(
         [:success, const_value: true],
         [:token, :mandatory, :string],
-        [:checkout_status, :mandatory, :string],
-        [:billing_agreement_accepted],
+        [:payment_status, :mandatory, :string],
         [:payer, :string],
         [:payer_id, :string],
         [:order_total, :money],
@@ -276,8 +275,8 @@ module PaypalService
       def create_do_reference_transaction(opts); DoReferenceTransaction.call(opts) end
       def create_do_reference_transaction_response(opts); DoReferenceTransactionResponse.call(opts) end
 
-      def create_get_express_checkout_details(opts); GetExpressCheckoutDetails.call(opts) end
-      def create_get_express_checkout_details_response(opts); GetExpressCheckoutDetailsResponse.call(opts) end
+      def create_get_chained_payment_details(opts); GetChainedPaymentDetails.call(opts) end
+      def create_get_chained_payment_details_response(opts); GetChainedPaymentDetailsResponse.call(opts) end
 
       def create_set_express_checkout_order(opts); SetExpressCheckoutOrder.call(opts) end
       def create_set_express_checkout_order_response(opts); SetExpressCheckoutOrderResponse.call(opts) end

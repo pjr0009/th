@@ -144,31 +144,18 @@ module PaypalService
         }
       ),
 
-      get_express_checkout_details: PaypalAction.def_action(
-        input_transformer: -> (req, _) { { Token: req[:token] } },
-        wrapper_method_name: :build_get_express_checkout_details,
-        action_method_name: :get_express_checkout_details,
+      get_chained_payment_details: PaypalAction.def_action(
+        input_transformer: -> (req, _) { { payKey: req[:token] } },
+        wrapper_method_name: :build_payment_details,
+        action_method_name: :payment_details,
         output_transformer: -> (res, api) {
-          details = res.get_express_checkout_details_response_details
-          shipping_address = details.payment_details[0].ship_to_address
-          DataTypes::Merchant.create_get_express_checkout_details_response(
+          DataTypes::Merchant.create_get_chained_payment_details_response(
             {
-              token: details.token,
-              checkout_status: details.checkout_status,
-              billing_agreement_accepted: !!details.billing_agreement_accepted_status,
-              payer: details.payer_info.payer,
-              payer_id: details.payer_info.payer_id,
-              order_total: to_money(details.payment_details[0].order_total),
-              shipping_address_status: shipping_address.address_status,
-              shipping_address_city: shipping_address.city_name,
-              shipping_address_country: shipping_address.country_name,
-              shipping_address_country_code: shipping_address.country,
-              shipping_address_name: shipping_address.name,
-              shipping_address_phone: shipping_address.phone,
-              shipping_address_postal_code: shipping_address.postal_code,
-              shipping_address_state_or_province: shipping_address.state_or_province,
-              shipping_address_street1: shipping_address.street1,
-              shipping_address_street2: shipping_address.street2
+              token: res.payKey,
+              payment_status: "completed",
+              payer: res.sender.accountId,
+              payer_id: res.paymentInfoList.paymentInfo[0].receiver.accountId,
+              order_total: res.paymentInfoList.paymentInfo[0].receiver.amount.to_money(res.currencyCode),
             }
           )
         }

@@ -277,9 +277,11 @@ module PaypalService::API
     end
 
     def create_payment(token)
+      #find the merchant account via the token, then use the merchant account payer id
+      #to create the request that gets the payment details
       @lookup.with_merchant_account(token[:community_id], token) do |m_acc|
         with_success(token[:community_id], token[:transaction_id],
-          MerchantData.create_get_express_checkout_details(
+          MerchantData.create_get_chained_payment_details(
             { receiver_username: m_acc[:payer_id], token: token[:token] }
           ),
           error_policy: {
@@ -298,51 +300,27 @@ module PaypalService::API
                           .merge({community_id: token[:community_id], transaction_id: token[:transaction_id]})
           @events.send(:order_details, :success, order_details)
 
-          with_success(token[:community_id], token[:transaction_id],
-            MerchantData.create_do_express_checkout_payment({
-              payment_action: token[:payment_action],
-              receiver_username: m_acc[:payer_id],
-              token: token[:token],
-              payer_id: ec_details[:payer_id],
-              order_total: ec_details[:order_total],
-              item_name: token[:item_name],
-              item_quantity: token[:item_quantity],
-              item_price: token[:item_price],
-              shipping_total: token[:shipping_total],
-              shipping_address_city: ec_details[:shipping_address_city],
-              shipping_address_country_code: ec_details[:shipping_address_country_code],
-              shipping_address_name: ec_details[:shipping_address_name],
-              shipping_address_phone: ec_details[:shipping_address_phone],
-              shipping_address_postal_code: ec_details[:shipping_address_postal_code],
-              shipping_address_state_or_province: ec_details[:shipping_address_state_or_province],
-              shipping_address_street1: ec_details[:shipping_address_street1],
-              shipping_address_street2: ec_details[:shipping_address_street2],
-              invnum: Invnum.create(token[:community_id], token[:transaction_id], :payment)
-            }),
-            error_policy: {
-              codes_to_retry: ["10001", "x-timeout", "x-servererror"],
-              try_max: 3,
-              finally: (method :handle_failed_create_payment).call(token)
-            }
-          ) do |payment_res|
+          puts ec_details
+          puts ec_details
+          puts ec_details
+          puts ec_details
+          puts ec_details
+          puts "hihihiih"
+          # Save payment
+          payment = PaymentStore.create(
+            token[:community_id],
+            token[:transaction_id],
+            ec_details
+              .merge({receiver_id: m_acc[:payer_id], merchant_id: m_acc[:person_id]})
+          )
 
-            # Save payment
-            payment = PaymentStore.create(
-              token[:community_id],
-              token[:transaction_id],
-              ec_details
-                .merge(payment_res)
-                .merge({receiver_id: m_acc[:payer_id], merchant_id: m_acc[:person_id]})
-            )
+          payment_entity = APIDataTypes.create_payment(payment)
 
-            payment_entity = APIDataTypes.create_payment(payment)
+          # Send event payment_crated
+          @events.send(:payment_created, :success, payment_entity)
 
-            # Send event payment_crated
-            @events.send(:payment_created, :success, payment_entity)
-
-            # Return as payment entity
-            Result::Success.new(payment_entity)
-          end
+          # Return as payment entity
+          Result::Success.new(payment_entity)
         end
       end
     end

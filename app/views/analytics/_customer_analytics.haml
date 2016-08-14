@@ -8,7 +8,7 @@
 
   (function(){
     var communityGaKey = "#{@current_community.google_analytics_key}";
-    var communityCookieDomain = "#{PublicSuffix.parse(request.host).domain}";
+    var communityCookieDomain = "#{Rails.env.production? ? PublicSuffix.parse(request.host).domain: 'localhost'}";
 
     gaCustomer('create', communityGaKey, 'auto', {'legacyCookieDomain': communityCookieDomain, 'allowLinker': true});
     gaCustomer('send', 'pageview');

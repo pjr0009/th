@@ -9,7 +9,7 @@ module PaypalService::Store::PaypalPayment
     [:receiver_id, :mandatory, :string],
     [:merchant_id, :mandatory, :string],
     [:payment_status, const_value: :pending],
-    [:pending_reason, :string],
+    [:pending_reason, const_value: :authorization],
     [:order_id, :string],
     [:order_date, :time],
     [:authorization_id, :string],

@@ -11,12 +11,16 @@ class PaypalService::CheckoutOrdersController < ApplicationController
   def success
 
     return redirect_to error_not_found_path if params[:token].blank?
-
+    #lookup paypal taoken
     token = paypal_payments_service.get_request_token(@current_community.id, params[:token])
+
+    #if promise success didn't happen, redirect
     return redirect_to error_not_found_path if !token[:success]
 
+    #find the transaction based on token
     transaction = transaction_service.query(token[:data][:transaction_id])
 
+    #now create the paypal payment based on token
     proc_status = paypal_payments_service.create(
       @current_community.id,
       token[:data][:token],

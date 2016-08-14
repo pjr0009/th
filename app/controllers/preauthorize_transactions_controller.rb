@@ -496,7 +496,7 @@ class PreauthorizeTransactionsController < ApplicationController
 
         {
           merchant_brand_logo_url: logo_url,
-          success_url: success_paypal_service_checkout_orders_url + "?token=${payKey}",
+          success_url: success_paypal_service_checkout_orders_url + "?token=${payKey}", #paypal does not automatically append, important to include this
           cancel_url: cancel_paypal_service_checkout_orders_url(listing_id: opts[:listing].id)
         }
       else
