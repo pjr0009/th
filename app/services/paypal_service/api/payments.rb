@@ -69,6 +69,25 @@ module PaypalService::API
           try_max: 3
         }
       ) do |response|
+        api = PayPal::SDK::AdaptivePayments::API.new
+        @set_payment_options = api.build_set_payment_options({
+            :payKey => response[:token],
+            :senderOptions => {
+              :requireShippingAddressSelection => true,
+              :invoiceData => {
+                :item => [{
+                 :name => create_payment[:item_name],
+                 :itemPrice => create_payment[:item_price] || create_payment[:order_total]
+                }] 
+              }
+            },
+            :displayOptions => {
+                :emailHeaderImageUrl => "https://s3.amazonaws.com/tackhunter/www/logo-black.png", 
+                :headerImageUrl => "https://s3.amazonaws.com/tackhunter/www/logo-black.png",
+                :businessName => "Tack Hunter"
+              }
+          })
+        puts api.set_payment_options(@set_payment_options).to_json
         TokenStore.create({
           community_id: community_id,
           token: response[:token],

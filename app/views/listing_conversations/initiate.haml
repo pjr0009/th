@@ -3,8 +3,10 @@
   ST.transaction.initializePayPalBuyForm("transaction-form");
 
 - content_for :extra_javascript do
+  = javascript_include_tag "https://www.paypalobjects.com/js/external/apdg.js"
   :javascript
     $('#transaction-agreement-read-more').click(function() { $('#transaction-agreement-content').lightbox_me({centered: true, zIndex: 1000000}); });
+    var embeddedPPFlow = new PAYPAL.apps.DGFlowMini({trigger: 'submitBtn'});
 
 - content_for :title_header do
   %h1
@@ -27,15 +29,6 @@
       %li
         = render partial: "transactions/price_break_down", locals: price_break_down_locals
 
-  = form_for preauthorize_form,
-    :url => form_action,
-      :method => "post",
-      :html => { :id => "transaction-form" } do |form|
-
-    -# TODO Fix this, no respond_to?
-    - if preauthorize_form.respond_to?(:start_on) && preauthorize_form.respond_to?(:end_on)
-      = form.date_select :start_on, { value: preauthorize_form.start_on }, { class: "hidden" }
-      = form.date_select :end_on, { value: preauthorize_form.end_on }, { class: "hidden" }
 
     .preauthorize-section
       %h2
@@ -43,21 +36,18 @@
 
       .row
         .col-12
-          = form.text_area :content, :class => "text_area"
-          = form.hidden_field :sender_id, :value => @current_user.id
 
       - if @current_community.transaction_agreement_in_use
         = render :partial => "listing_conversations/transaction_agreement_checkbox", locals: { form: form }
 
-      - if local_assigns.has_key?(:quantity)
-        = form.hidden_field :quantity, value: quantity
-
-      - if delivery_method
-        = form.hidden_field :delivery_method, value: delivery_method
-
       .row
         .col-12.paypal-button-wrapper
-          = form.button t("paypal.pay_with_paypal"), class: "checkout-with-paypal-button"
+          %form.standard{:action => "https://www.sandbox.paypal.com/webapps/adaptivepayment/flow/pay", :target => "PPDGFrame", :class => "standard"}
+            %label{:for => "buy"} Buy Now:
+            %input#submitBtn{:src => "https://www.paypalobjects.com/en_US/i/btn/btn_paynowCC_LG.gif", :type => "image", :value => "Pay with PayPal"}/
+            %input#type{:name => "expType", :type => "hidden", :value => "mini"}/
+            %input#paykey{:name => "paykey", :type => "hidden", :value => "AP-36B13376KL592481F"}/
+
 
       .row
         .col-12

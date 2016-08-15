@@ -259,6 +259,7 @@ module PaypalService
             actionType: "CREATE",
             cancelUrl: req[:cancel],
             currencyCode: "USD",
+            memo: "test",
             returnUrl: req[:success],
             receiverList: {:receiver => [{accountId: req[:payer_id], amount: 1.0}]}
 
@@ -274,69 +275,6 @@ module PaypalService
             redirect_url: api.payment_url(res),
             receiver_username: api.config.subject || api.config.username
           })
-        }
-      ),
-
-      do_express_checkout_payment: PaypalAction.def_action(
-        input_transformer: -> (req, config) {
-          req_details = {
-            PaymentAction: payment_action_str(req[:payment_action]),
-            Token: req[:token],
-            PayerID: req[:payer_id],
-            ButtonSource: config[:button_source],
-            PaymentDetails: [{
-              InvoiceID: req[:invnum],
-              NotifyURL: hook_url(config[:ipn_hook]),
-              OrderTotal: from_money(req[:order_total]),
-              ItemTotal: from_money(req[:item_price] * req[:item_quantity]),
-              PaymentDetailsItem: [{
-                Name: req[:item_name],
-                Quantity: req[:item_quantity],
-                Amount: from_money(req[:item_price])
-              }]
-            }]
-          }
-
-          if(req[:shipping_total])
-            req_details[:PaymentDetails][0][:ShippingTotal] = from_money(req[:shipping_total])
-            req_details[:PaymentDetails][0][:ShipToAddress] = {
-              Name: req[:shipping_address_name],
-              Phone: req[:shipping_address_phone],
-              Street1: req[:shipping_address_street1],
-              Street2: req[:shipping_address_street2],
-              PostalCode: req[:shipping_address_postal_code],
-              CityName: req[:shipping_address_city],
-              StateOrProvince: req[:shipping_address_state_or_province],
-              Country: req[:shipping_address_country_code]
-            }
-          end
-
-          { DoExpressCheckoutPaymentRequestDetails: req_details }
-        },
-        wrapper_method_name: :build_do_express_checkout_payment,
-        action_method_name: :do_express_checkout_payment,
-        output_transformer: -> (res, api) {
-          payment_info = res.do_express_checkout_payment_response_details.payment_info[0]
-
-          if (payment_info.pending_reason == "order")
-            DataTypes::Merchant.create_do_express_checkout_payment_response(
-              {
-                order_date: payment_info.payment_date.to_s,
-                payment_status: payment_info.payment_status,
-                pending_reason: payment_info.pending_reason,
-                order_id: payment_info.transaction_id,
-                order_total: to_money(payment_info.gross_amount)
-              })
-          else
-            DataTypes::Merchant.create_do_express_checkout_payment_response(
-              {
-                authorization_date: payment_info.payment_date.to_s,
-                payment_status: payment_info.payment_status,
-                pending_reason: payment_info.pending_reason,
-                authorization_id: payment_info.transaction_id,
-                authorization_total: to_money(payment_info.gross_amount)
-              })
-          end
         }
       ),
 
