@@ -14,7 +14,7 @@ module TransactionService::Process
           gateway_fields: gateway_fields,
           prefer_async: prefer_async)) do
 
-        Transition.transition_to(tx[:id], :preauthorized)
+        Transition.transition_to(tx[:id], :paid)
       end
     end
 

@@ -24,18 +24,6 @@ module PaypalService
     end
 
 
-    PAYMENT_ACTIONS = { sale: "Sale", order: "Order", authorization: "Authorization" }
-
-    def payment_action_str(payment_action_symbol)
-      str = PAYMENT_ACTIONS[payment_action_symbol]
-      if str.nil?
-        raise ArgumentError.new("Unsupported payment action: #{payment_action_symbol}")
-      end
-
-      str
-    end
-
-
     # Use either the default old checkout UI or the new paypal checkout experience
     NEW_CHECKOUT_UI = false
 
@@ -276,11 +264,34 @@ module PaypalService
         wrapper_method_name: :build_pay,
         action_method_name: :pay,
         output_transformer: -> (res, api) {
-          DataTypes::Merchant.create_set_chained_payment_authorization_response({
+          DataTypes::Merchant.create_chained_payment_response({
             token: res.payKey,
             redirect_url: api.payment_url(res),
             receiver_username: api.config.subject || api.config.username
           })
+        }
+      ),
+
+      set_payment_options: PaypalAction.def_action(
+        input_transformer: -> (req, config) {
+          req_details = {
+            :payKey => req[:token],
+            :senderOptions => {
+              :requireShippingAddressSelection => true,
+            },
+            :displayOptions => {
+                :emailHeaderImageUrl => "https://s3.amazonaws.com/tackhunter/www/logo-black.png", 
+                :headerImageUrl => "https://s3.amazonaws.com/tackhunter/www/logo-black.png",
+                :businessName => "Tack Hunter"
+              }
+          }
+
+          req_details
+        },
+        wrapper_method_name: :build_set_payment_options,
+        action_method_name: :set_payment_options,
+        output_transformer: -> (res, api) {
+          DataTypes::Merchant.set_payment_options_response()
         }
       ),
 

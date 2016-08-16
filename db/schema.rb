@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160708084933) do
+ActiveRecord::Schema.define(version: 20160816164434) do
 
   create_table "auth_tokens", force: :cascade do |t|
     t.string   "token",            limit: 255
@@ -327,7 +327,7 @@ ActiveRecord::Schema.define(version: 20160708084933) do
     t.datetime "updated_at",                         null: false
   end
 
-  add_index "custom_field_option_titles", ["custom_field_option_id", "locale"], name: "locale_custom_field_option_index", using: :btree
+  add_index "custom_field_option_titles", ["custom_field_option_id", "locale"], name: "locale_index", using: :btree
   add_index "custom_field_option_titles", ["custom_field_option_id"], name: "index_custom_field_option_titles_on_custom_field_option_id", using: :btree
 
   create_table "custom_field_options", force: :cascade do |t|
@@ -606,6 +606,7 @@ ActiveRecord::Schema.define(version: 20160708084933) do
     t.integer  "community_id",          limit: 4,                       null: false
     t.string   "main_search",           limit: 255, default: "keyword", null: false
     t.string   "distance_unit",         limit: 255, default: "metric",  null: false
+    t.integer  "limit_priority_links",  limit: 4
     t.datetime "created_at",                                            null: false
     t.datetime "updated_at",                                            null: false
     t.boolean  "limit_search_distance",             default: true,      null: false
@@ -877,7 +878,6 @@ ActiveRecord::Schema.define(version: 20160708084933) do
     t.integer  "community_id",         limit: 4,   null: false
     t.string   "token",                limit: 64
     t.integer  "transaction_id",       limit: 4
-    t.string   "payment_action",       limit: 32
     t.string   "merchant_id",          limit: 255, null: false
     t.string   "receiver_id",          limit: 255, null: false
     t.datetime "created_at"

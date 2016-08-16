@@ -77,7 +77,7 @@ module PaypalService
 
 
     def create_failure_response(res)
-      if (res.payment_exec_status == "ERROR")
+      if (res.try(:payment_exec_status) == "ERROR")
         DataTypes.create_failure_response({
           error_code: res.errors[0].error_code.to_s,
           error_msg: res.errors[0].message.to_s

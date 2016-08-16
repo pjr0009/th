@@ -33,10 +33,17 @@ When you click the buy button:
 
 
 
+
+
+
+
 flow of events
 1) create paypal token and transaction
 2) redirect user to complete checkout
 3) upon success of checkout, create payment
+
+user gets payment
+there should be a call to action to refund the order if necessary
 
 
 Changing paypal account in the account settings:

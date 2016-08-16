@@ -118,8 +118,8 @@ module PaypalService
         [:invnum, :mandatory, :string],
         [:merchant_brand_logo_url, :optional, :string])
 
-      SetChainedPaymentAuthorization = EntityUtils.define_builder(
-        [:method, const_value: :set_chained_payment_authorization],
+      CreateChainedPayment = EntityUtils.define_builder(
+        [:method, const_value: :create_chained_payment],
         [:item_name, :mandatory, :string],
         [:item_quantity, :fixnum, default: 1],
 
@@ -137,11 +137,20 @@ module PaypalService
         [:invnum, :mandatory, :string],
         [:merchant_brand_logo_url, :optional, :string])
       
-      SetChainedPaymentAuthorizationResponse = EntityUtils.define_builder(
+      CreateChainedPaymentResponse = EntityUtils.define_builder(
         [:success, const_value: true],
         [:token, :mandatory, :string],
         [:redirect_url, :mandatory, :string],
         [:receiver_username, :mandatory, :string])
+
+      SetPaymentOptions = EntityUtils.define_builder(
+        [:method, const_value: :set_payment_options],
+        [:token, :mandatory, :string]        
+      )
+
+      SetPaymentOptionsResponse = EntityUtils.define_builder(
+        [:success, const_value: true]
+      )
 
       SetExpressCheckoutAuthorizationResponse = EntityUtils.define_builder(
         [:success, const_value: true],
@@ -153,7 +162,6 @@ module PaypalService
       # Should contain the same fields as in set express checkout order / authorization
       DoExpressCheckoutPayment = EntityUtils.define_builder(
         [:method, const_value: :do_express_checkout_payment],
-        [:payment_action, :mandatory, one_of: [:order, :authorization]], # We don't support sale flow
         [:receiver_username, :mandatory, :string],
         [:token, :mandatory, :string],
         [:payer_id, :mandatory, :string],
@@ -278,12 +286,15 @@ module PaypalService
       def create_get_chained_payment_details(opts); GetChainedPaymentDetails.call(opts) end
       def create_get_chained_payment_details_response(opts); GetChainedPaymentDetailsResponse.call(opts) end
 
+      def create_chained_payment(opts); CreateChainedPayment.call(opts) end
+      def create_chained_payment_response(opts); CreateChainedPaymentResponse.call(opts) end
+      def set_payment_options(opts); SetPaymentOptions.call(opts) end
+      def set_payment_options_response(opts); SetPaymentOptionsResponse.call(opts) end
+
       def create_set_express_checkout_order(opts); SetExpressCheckoutOrder.call(opts) end
       def create_set_express_checkout_order_response(opts); SetExpressCheckoutOrderResponse.call(opts) end
 
       def create_set_express_checkout_authorization(opts); SetExpressCheckoutAuthorization.call(opts) end
-      def create_set_chained_payment_authorization(opts); SetChainedPaymentAuthorization.call(opts) end
-      def create_set_chained_payment_authorization_response(opts); SetChainedPaymentAuthorizationResponse.call(opts) end
       def create_set_express_checkout_authorization_response(opts); SetExpressCheckoutAuthorizationResponse.call(opts) end
 
       def create_do_express_checkout_payment(opts); DoExpressCheckoutPayment.call(opts) end

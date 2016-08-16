@@ -6,7 +6,6 @@
 #  community_id         :integer          not null
 #  token                :string(64)
 #  transaction_id       :integer
-#  payment_action       :string(32)
 #  merchant_id          :string(255)      not null
 #  receiver_id          :string(255)      not null
 #  created_at           :datetime
@@ -30,7 +29,6 @@ class PaypalToken < ActiveRecord::Base
     :community_id,
     :token,
     :transaction_id,
-    :payment_action,
     :merchant_id,
     :item_name,
     :item_quantity,

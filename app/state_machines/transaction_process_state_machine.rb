@@ -41,12 +41,7 @@ class TransactionProcessStateMachine
     payer = transaction.starter
     current_community = transaction.community
 
-    if transaction.booking.present?
-      automatic_booking_confirmation_at = transaction.booking.end_on + 2.day
-      ConfirmConversation.new(transaction, payer, current_community).activate_automatic_booking_confirmation_at!(automatic_booking_confirmation_at)
-    else
-      ConfirmConversation.new(transaction, payer, current_community).activate_automatic_confirmation!
-    end
+    ConfirmConversation.new(transaction, payer, current_community).activate_automatic_confirmation!
 
     Delayed::Job.enqueue(SendPaymentReceipts.new(transaction.id))
   end

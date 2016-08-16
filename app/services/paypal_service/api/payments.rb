@@ -55,13 +55,7 @@ module PaypalService::API
         { payer_id: m_acc[:payer_id],
           invnum: Invnum.create(community_id, create_payment[:transaction_id], :payment)})
      
-      request =
-        if (create_payment[:payment_action] == :pay)
-          MerchantData.create_chained_payment(create_payment_data)
-        else
-          MerchantData.create_set_chained_payment_authorization(create_payment_data)
-        end
-
+      request = MerchantData.create_chained_payment(create_payment_data)
       with_success(community_id, create_payment[:transaction_id],
         request,
         error_policy: {
@@ -69,30 +63,15 @@ module PaypalService::API
           try_max: 3
         }
       ) do |response|
-        api = PayPal::SDK::AdaptivePayments::API.new
-        @set_payment_options = api.build_set_payment_options({
-            :payKey => response[:token],
-            :senderOptions => {
-              :requireShippingAddressSelection => true,
-              :invoiceData => {
-                :item => [{
-                 :name => create_payment[:item_name],
-                 :itemPrice => create_payment[:item_price] || create_payment[:order_total]
-                }] 
-              }
-            },
-            :displayOptions => {
-                :emailHeaderImageUrl => "https://s3.amazonaws.com/tackhunter/www/logo-black.png", 
-                :headerImageUrl => "https://s3.amazonaws.com/tackhunter/www/logo-black.png",
-                :businessName => "Tack Hunter"
-              }
-          })
-        puts api.set_payment_options(@set_payment_options).to_json
+        #set payment options for checkout, not super critical so ill unwrap it from all of the cumbersome retry / callback stuff
+        set_payment_options_request = MerchantData.set_payment_options({token: response[:token]})
+        @merchant.do_request(set_payment_options_request)
+        
+        #create paypal token
         TokenStore.create({
           community_id: community_id,
           token: response[:token],
           transaction_id: create_payment[:transaction_id],
-          payment_action: create_payment[:payment_action],
           merchant_id: m_acc[:person_id],
           receiver_id: m_acc[:payer_id],
           item_name: create_payment[:item_name],
@@ -108,6 +87,17 @@ module PaypalService::API
               token: response[:token],
               redirect_url: response[:redirect_url]}))
       end
+    end
+
+    def set_payment_info
+      Worker.enqueue_payments_op(
+            community_id: community_id,
+            transaction_id: create_payment[:transaction_id],
+            op_name: :do_request,
+            op_input: [community_id, create_payment, m_acc])
+    end
+
+    def do_set_payment_info
     end
 
     def get_request_token(community_id, token)
@@ -319,12 +309,6 @@ module PaypalService::API
                           .merge({community_id: token[:community_id], transaction_id: token[:transaction_id]})
           @events.send(:order_details, :success, order_details)
 
-          puts ec_details
-          puts ec_details
-          puts ec_details
-          puts ec_details
-          puts ec_details
-          puts "hihihiih"
           # Save payment
           payment = PaymentStore.create(
             token[:community_id],
