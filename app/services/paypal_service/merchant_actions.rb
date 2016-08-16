@@ -253,7 +253,7 @@ module PaypalService
         }
       ),
       
-      set_chained_payment_authorization: PaypalAction.def_action(
+      create_chained_payment: PaypalAction.def_action(
         input_transformer: -> (req, config) {
           req_details = {
             actionType: "CREATE",
@@ -261,7 +261,13 @@ module PaypalService
             currencyCode: "USD",
             memo: "test",
             returnUrl: req[:success],
-            receiverList: {:receiver => [{accountId: req[:payer_id], amount: 1.0}]}
+            receiverList: {
+              :receiver => [{
+                  accountId: req[:payer_id], 
+                  amount: 1.0,
+                  paymentType: "GOODS"
+                }]
+              }
 
           }
 

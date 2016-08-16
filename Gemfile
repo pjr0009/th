@@ -28,6 +28,7 @@ gem 'jquery-rails', '3.1.3'
 # gem 'heroku' install the Heroku toolbelt (https://toolbelt.heroku.com/) instead (as gem had some problems)
 gem "passenger", "~> 5.0.18"
 
+
 gem "mysql2", "~> 0.3.14"
 gem 'haml', "~> 4.0.5"
 gem 'sass', "  ~> 3.2.9"
@@ -135,6 +136,7 @@ group :staging, :production do
 end
 
 group :development, :test do
+  gem 'rails-dev-boost'
   gem 'rubocop', '~> 0.37.2', require: false
   gem 'factory_girl_rails', "~> 4.4.1"
 end
