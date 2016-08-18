@@ -822,10 +822,6 @@ ActiveRecord::Schema.define(version: 20160816164434) do
     t.datetime "order_date"
     t.string   "currency",                   limit: 8,                           null: false
     t.integer  "order_total_cents",          limit: 4
-    t.string   "authorization_id",           limit: 64
-    t.datetime "authorization_date"
-    t.datetime "authorization_expires_date"
-    t.integer  "authorization_total_cents",  limit: 4
     t.string   "payment_id",                 limit: 64
     t.datetime "payment_date"
     t.integer  "payment_total_cents",        limit: 4
@@ -842,7 +838,6 @@ ActiveRecord::Schema.define(version: 20160816164434) do
     t.integer  "commission_fee_total_cents", limit: 4
   end
 
-  add_index "paypal_payments", ["authorization_id"], name: "index_paypal_payments_on_authorization_id", unique: true, using: :btree
   add_index "paypal_payments", ["community_id"], name: "index_paypal_payments_on_community_id", using: :btree
   add_index "paypal_payments", ["order_id"], name: "index_paypal_payments_on_order_id", unique: true, using: :btree
   add_index "paypal_payments", ["transaction_id"], name: "index_paypal_payments_on_transaction_id", unique: true, using: :btree
@@ -885,7 +880,7 @@ ActiveRecord::Schema.define(version: 20160816164434) do
     t.integer  "item_quantity",        limit: 4
     t.integer  "item_price_cents",     limit: 4
     t.string   "currency",             limit: 8
-    t.string   "express_checkout_url", limit: 255
+    t.string   "paypal_redirect_url",  limit: 255
     t.integer  "shipping_total_cents", limit: 4
   end
 

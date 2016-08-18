@@ -295,55 +295,6 @@ module PaypalService
         }
       ),
 
-      do_authorization: PaypalAction.def_action(
-        input_transformer: -> (req, _) {
-          {
-            MsgSubID: req[:msg_sub_id],
-            TransactionID: req[:order_id],
-            Amount: from_money(req[:authorization_total]),
-          }
-        },
-        wrapper_method_name: :build_do_authorization,
-        action_method_name: :do_authorization,
-        output_transformer: -> (res, api) {
-          DataTypes::Merchant.create_do_authorization_response({
-            authorization_id: res.transaction_id,
-            payment_status: res.authorization_info.payment_status,
-            pending_reason: res.authorization_info.pending_reason,
-            authorization_total: to_money(res.amount),
-            authorization_date: res.timestamp.to_s,
-            msg_sub_id: res.msg_sub_id
-          })
-        }
-      ),
-
-      do_capture: PaypalAction.def_action(
-        input_transformer: -> (req, _) {
-          {
-            AuthorizationID: req[:authorization_id],
-            Amount: from_money(req[:payment_total]),
-            InvoiceID: req[:invnum],
-            CompleteType: "Complete"
-          }
-        },
-        wrapper_method_name: :build_do_capture,
-        action_method_name: :do_capture,
-        output_transformer: -> (res, api) {
-          payment_info = res.do_capture_response_details.payment_info
-          DataTypes::Merchant.create_do_full_capture_response(
-            {
-              authorization_id: res.do_capture_response_details.authorization_id,
-              payment_id: payment_info.transaction_id,
-              payment_status: payment_info.payment_status,
-              pending_reason: payment_info.pending_reason,
-              payment_total: to_money(payment_info.gross_amount),
-              fee_total: to_money(payment_info.fee_amount),
-              payment_date: payment_info.payment_date.to_s
-            }
-          )
-        }
-      ),
-
       do_void: PaypalAction.def_action(
         input_transformer: -> (req, _) {
           {

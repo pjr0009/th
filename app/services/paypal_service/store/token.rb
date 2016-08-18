@@ -12,7 +12,7 @@ module PaypalService::Store::Token
       [:item_quantity, :fixnum],
       [:item_price, :money],
       [:shipping_total, :money],
-      [:express_checkout_url, :string, :mandatory]
+      [:paypal_redirect_url, :string, :mandatory]
     )
 
     module_function
@@ -39,7 +39,7 @@ module PaypalService::Store::Token
       item_name: opts[:item_name],
       item_quantity: opts[:item_quantity],
       item_price: opts[:item_price],
-      express_checkout_url: opts[:express_checkout_url]
+      paypal_redirect_url: opts[:paypal_redirect_url]
     }
 
     pt_opts[:shipping_total] = opts[:shipping_total] if opts[:shipping_total]

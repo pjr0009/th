@@ -13,7 +13,7 @@
 #  item_quantity        :integer
 #  item_price_cents     :integer
 #  currency             :string(8)
-#  express_checkout_url :string(255)
+#  paypal_redirect_url  :string(255)
 #  shipping_total_cents :integer
 #
 # Indexes
@@ -24,7 +24,7 @@
 #
 
 class PaypalToken < ActiveRecord::Base
-  validates_presence_of :community_id, :token, :transaction_id, :merchant_id, :express_checkout_url
+  validates_presence_of :community_id, :token, :transaction_id, :merchant_id, :paypal_redirect_url
   attr_accessible(
     :community_id,
     :token,
@@ -34,7 +34,7 @@ class PaypalToken < ActiveRecord::Base
     :item_quantity,
     :item_price,
     :currency,
-    :express_checkout_url,
+    :paypal_redirect_url,
     :receiver_id,
     :shipping_total
   )

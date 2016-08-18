@@ -10,7 +10,7 @@ module PaypalService
       [:countryCode, :string],
       [:productIntentID, const_value: "addipmt"],
       [:integrationType, const_value: "T"],
-      [:permissionNeeded, const_value: "EXPRESS_CHECKOUT,REFUND,AUTH_CAPTURE,TRANSACTION_DETAILS,REFERENCE_TRANSACTION,ACCESS_BASIC_PERSONAL_DATA"],
+      [:permissionNeeded, const_value: "EXPRESS_CHECKOUT,REFUND,ACCESS_BASIC_PERSONAL_DATA"],
       [:displayMode, const_value: "Regular"],
       [:showPermissions, const_value: "TRUE"])
 

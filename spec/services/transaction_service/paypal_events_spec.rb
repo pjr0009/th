@@ -90,7 +90,7 @@ describe TransactionService::PaypalEvents do
         item_name: @listing.title,
         item_quantity: 1,
         item_price: Money.new(45000, "EUR"),
-        express_checkout_url: "htts://test.com/#{token_code_no_msg}"
+        paypal_redirect_url: "htts://test.com/#{token_code_no_msg}"
       })
 
     token_code_with_msg = SecureRandom.uuid
@@ -103,7 +103,7 @@ describe TransactionService::PaypalEvents do
         item_name: @listing.title,
         item_quantity: 1,
         item_price: Money.new(45000, "EUR"),
-        express_checkout_url: "htts://test.com/#{token_code_with_msg}"
+        paypal_redirect_url: "htts://test.com/#{token_code_with_msg}"
       })
 
     @token_no_msg = TokenStore.get(@cid, token_code_no_msg)

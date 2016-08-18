@@ -48,21 +48,21 @@ module TransactionService::Gateway
     end
 
     def complete_preauthorization(tx:)
-      AsyncCompletion.new(
-        paypal_api.payments.get_payment(tx[:community_id], tx[:id])
-        .and_then { |payment|
-          paypal_api.payments.full_capture(
-            tx[:community_id],
-            tx[:id],
-            DataTypes.create_payment_info({ payment_total: payment[:authorization_total] }))
-        })
+      # AsyncCompletion.new(
+      #   paypal_api.payments.get_payment(tx[:community_id], tx[:id])
+      #   .and_then { |payment|
+      #     paypal_api.payments.full_capture(
+      #       tx[:community_id],
+      #       tx[:id],
+      #       DataTypes.create_payment_info({ payment_total: payment[:authorization_total] }))
+      #   })
     end
 
     def get_payment_details(tx:)
       payment = paypal_api.payments.get_payment(tx[:community_id], tx[:id]).maybe
 
       payment_total = payment[:payment_total].or_else(nil)
-      total_price = Maybe(payment[:payment_total].or_else(payment[:authorization_total].or_else(nil)))
+      total_price = Maybe(payment[:payment_total].or_else(nil))
                     .or_else(tx[:unit_price])
 
       { payment_total: payment_total,

@@ -158,80 +158,6 @@ module PaypalService
         [:redirect_url, :mandatory, :string],
         [:receiver_username, :mandatory, :string])
 
-
-      # Should contain the same fields as in set express checkout order / authorization
-      DoExpressCheckoutPayment = EntityUtils.define_builder(
-        [:method, const_value: :do_express_checkout_payment],
-        [:receiver_username, :mandatory, :string],
-        [:token, :mandatory, :string],
-        [:payer_id, :mandatory, :string],
-        [:order_total, :mandatory, :money],
-        [:item_name, :mandatory, :string],
-        [:item_quantity, :mandatory, :fixnum],
-        [:item_price, :mandatory, :money],
-        [:shipping_total, :money],
-        [:invnum, :mandatory, :string],
-        [:shipping_address_city, :string],
-        [:shipping_address_country, :string],
-        [:shipping_address_country_code, :string],
-        [:shipping_address_name, :string],
-        [:shipping_address_phone, :string],
-        [:shipping_address_postal_code, :string],
-        [:shipping_address_state_or_province, :string],
-        [:shipping_address_street1, :string],
-        [:shipping_address_street2, :string])
-
-      DoExpressCheckoutPaymentResponse = EntityUtils.define_builder(
-        [:success, const_value: true],
-        [:order_date, :utc_str_to_time],
-        [:authorization_date, :utc_str_to_time],
-        [:payment_status, :mandatory, :string],
-        [:pending_reason, :mandatory, :string],
-
-        # Reponse will have either order or authorization details depending upon payment status
-        [:order_id, :string],
-        [:order_total, :money],
-        [:authorization_id, :string],
-        [:authorization_total, :money])
-
-
-      # Deprecated - Order flow will be removed soon
-      #
-      DoAuthorization = EntityUtils.define_builder(
-        [:method, const_value: :do_authorization],
-        [:receiver_username, :mandatory, :string],
-        [:order_id, :mandatory, :string],
-        [:authorization_total, :mandatory, :money],
-        [:msg_sub_id, transform_with: -> (v) { v.nil? ? SecureRandom.uuid : v }])
-
-      DoAuthorizationResponse = EntityUtils.define_builder(
-        [:success, const_value: true],
-        [:authorization_id, :mandatory, :string],
-        [:payment_status, :mandatory, :string],
-        [:pending_reason, :mandatory, :string],
-        [:authorization_total, :mandatory, :money],
-        [:authorization_date, :utc_str_to_time],
-        [:msg_sub_id, :string])
-      #
-      # /Deprecated
-
-      DoFullCapture = EntityUtils.define_builder(
-        [:method, const_value: :do_capture],
-        [:receiver_username, :mandatory, :string],
-        [:authorization_id, :mandatory, :string],
-        [:payment_total, :mandatory, :money],
-        [:invnum, :mandatory, :string])
-
-      DoFullCaptureResponse = EntityUtils.define_builder(
-        [:success, const_value: true],
-        [:authorization_id, :mandatory, :string],
-        [:payment_id, :mandatory, :string],
-        [:payment_status, :mandatory, :string],
-        [:pending_reason, :mandatory, :string],
-        [:payment_total, :money],
-        [:fee_total, :money],
-        [:payment_date, :utc_str_to_time])
-
       DoVoid = EntityUtils.define_builder(
         [:method, const_value: :do_void],
         [:receiver_username, :mandatory, :string],
@@ -296,15 +222,6 @@ module PaypalService
 
       def create_set_express_checkout_authorization(opts); SetExpressCheckoutAuthorization.call(opts) end
       def create_set_express_checkout_authorization_response(opts); SetExpressCheckoutAuthorizationResponse.call(opts) end
-
-      def create_do_express_checkout_payment(opts); DoExpressCheckoutPayment.call(opts) end
-      def create_do_express_checkout_payment_response(opts); DoExpressCheckoutPaymentResponse.call(opts) end
-
-      def create_do_authorization(opts); DoAuthorization.call(opts) end
-      def create_do_authorization_response(opts); DoAuthorizationResponse.call(opts) end
-
-      def create_do_full_capture(opts); DoFullCapture.call(opts) end
-      def create_do_full_capture_response(opts); DoFullCaptureResponse.call(opts) end
 
       def create_do_void(opts); DoVoid.call(opts) end
       def create_do_void_response(opts); DoVoidResponse.call(opts) end

@@ -12,12 +12,9 @@ module PaypalService::Store::PaypalPayment
     [:pending_reason, const_value: :authorization],
     [:order_id, :string],
     [:order_date, :time],
-    [:authorization_id, :string],
-    [:authorization_date, :time],
     [:order_date, :time],
     [:currency, :mandatory, :string],
     [:order_total_cents, :fixnum],
-    [:authorization_total_cents, :fixnum],
     [:commission_status, const_value: :not_charged])
 
   PaypalPayment = EntityUtils.define_builder(
@@ -31,10 +28,6 @@ module PaypalService::Store::PaypalPayment
     [:order_id, :string],
     [:order_date, :time],
     [:order_total, :money],
-    [:authorization_id, :string],
-    [:authorization_date, :time],
-    [:authorization_expires_date, :time],
-    [:authorization_total, :money],
     [:payment_id, :string],
     [:payment_date, :time],
     [:payment_total, :money],
@@ -50,10 +43,6 @@ module PaypalService::Store::PaypalPayment
     :order_id,
     :order_date,
     :order_total_cents,
-    :authorization_id,
-    :authorization_date,
-    :authorization_expires_date,
-    :authorization_total_cents,
     :payment_id,
     :payment_date,
     :payment_total_cents,
@@ -111,7 +100,6 @@ module PaypalService::Store::PaypalPayment
     hash = HashUtils.compact(
       EntityUtils.model_to_hash(paypal_payment).merge({
           order_total: paypal_payment.order_total,
-          authorization_total: paypal_payment.authorization_total,
           fee_total: paypal_payment.fee_total,
           payment_total: paypal_payment.payment_total,
           payment_status: paypal_payment[:payment_status].to_sym,
@@ -125,10 +113,9 @@ module PaypalService::Store::PaypalPayment
 
   def find_payment(opts)
     PaypalPaymentModel.where(
-      "(community_id = ? and transaction_id = ?) or authorization_id = ? or order_id = ?",
+      "(community_id = ? and transaction_id = ?) or order_id = ?",
       opts[:community_id],
       opts[:transaction_id],
-      opts[:authorization_id],
       opts[:order_id]
     ).first
   end
@@ -139,19 +126,12 @@ module PaypalService::Store::PaypalPayment
 
   def initial(order)
     order_total = order[:order_total]
-    authorization_total = order[:authorization_total]
-    total =
-      if authorization_total
-        { authorization_total_cents: authorization_total.cents, currency: authorization_total.currency.iso_code }
-      else
-        { order_total_cents: order_total.cents, currency: order_total.currency.iso_code }
-      end
-
+    total = { order_total_cents: order_total.cents, currency: order_total.currency.iso_code }
     InitialPaymentData.call(order.merge(total))
   end
 
   def create_payment_update(update, current_state)
-    cent_totals = [:order_total, :authorization_total, :fee_total, :payment_total, :commission_total, :commission_fee_total]
+    cent_totals = [:order_total, :fee_total, :payment_total, :commission_total, :commission_fee_total]
       .reduce({}) do |cent_totals, m_key|
       m = update[m_key]
       cent_totals["#{m_key}_cents".to_sym] = m.cents unless m.nil?

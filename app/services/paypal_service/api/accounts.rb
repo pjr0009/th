@@ -16,50 +16,28 @@ module PaypalService::API
     ## POST /accounts/request
 
     def request(body:, flow: :old)
-      if flow == :new
-        # TODO partnerLogoUrl
-        onboarding_link = @onboarding.create_onboarding_link({
-          returnToPartnerUrl: body[:callback_url]})
-
+      with_success_permissions(
+        PaypalService::DataTypes::Permissions
+        .create_req_perm({callback: body[:callback_url] })
+      ) { |perm_req_response|
         account = PaypalAccountStore.create(
           opts: {
             community_id: body[:community_id],
             person_id: body[:person_id],
-            order_permission_onboarding_id: onboarding_link[:merchantId],
-            order_permission_paypal_username_to: onboarding_link[:partnerId],
-            order_permission_scope: onboarding_link[:permissionsNeeded]})
+            order_permission_request_token: perm_req_response[:request_token],
+            order_permission_paypal_username_to: perm_req_response[:username_to]
+          })
+
+        redirect_url = URLUtils.prepend_path_component(perm_req_response[:redirect_url], body[:country])
 
         Result::Success.new(
-          DataTypes.create_account_request({
+          DataTypes.create_account_request(
+          {
             community_id: body[:community_id],
             person_id: body[:person_id],
-            redirect_url: onboarding_link[:redirect_url],
-            onboarding_params: onboarding_link}))
-      else
-        with_success_permissions(
-          PaypalService::DataTypes::Permissions
-          .create_req_perm({callback: body[:callback_url] })
-        ) { |perm_req_response|
-          account = PaypalAccountStore.create(
-            opts: {
-              community_id: body[:community_id],
-              person_id: body[:person_id],
-              order_permission_request_token: perm_req_response[:request_token],
-              order_permission_paypal_username_to: perm_req_response[:username_to]
-            })
-
-          redirect_url = URLUtils.prepend_path_component(perm_req_response[:redirect_url], body[:country])
-
-          Result::Success.new(
-            DataTypes.create_account_request(
-            {
-              community_id: body[:community_id],
-              person_id: body[:person_id],
-              redirect_url: redirect_url
-            }))
-        }
-      end
-
+            redirect_url: redirect_url
+          }))
+      }
     end
 
     ## POST /accounts/create?community_id=1&person_id=asdgaretrwersd&order_permission_request_token=AAAAAAAbDq-HJDXerDtj

@@ -78,7 +78,7 @@ module PaypalService::API
           item_quantity: create_payment[:item_quantity],
           item_price: create_payment[:item_price] || create_payment[:order_total],
           shipping_total: create_payment[:shipping_total],
-          express_checkout_url: response[:redirect_url]
+          paypal_redirect_url: response[:redirect_url]
         })
 
         Result::Success.new(
@@ -160,65 +160,9 @@ module PaypalService::API
     end
 
     def ensure_payment_authorized(community_id, payment_entity)
-      if payment_entity[:pending_reason] == :"payment-review"
-        Result::Error.new("Cannot complete authorization because the payment is pending for manual review by PayPal.",
-                          { error_code: :"payment-review", payment: payment_entity })
-      elsif payment_entity[:pending_reason] != :authorization
-        authorize_payment(community_id, payment_entity)
-      else
-        Result::Success.new(payment_entity)
-      end
+      Result::Success.new(payment_entity)
     end
 
-
-    ## POST /payments/:community_id/:transaction_id/full_capture
-    def full_capture(community_id, transaction_id, info, async: false)
-      @lookup.with_payment(community_id, transaction_id, [[:pending, :authorization]]) do |payment, m_acc|
-        if (async)
-          proc_token = Worker.enqueue_payments_op(
-            community_id: community_id,
-            transaction_id: transaction_id,
-            op_name: :do_full_capture,
-            op_input: [community_id, transaction_id, info, payment, m_acc])
-
-          proc_status_response(proc_token)
-        else
-          do_full_capture(community_id, transaction_id, info, payment, m_acc)
-        end
-      end
-    end
-
-    def do_full_capture(community_id, transaction_id, info, payment, m_acc)
-      with_success(community_id, transaction_id,
-        MerchantData.create_do_full_capture({
-            receiver_username: m_acc[:payer_id],
-            authorization_id: payment[:authorization_id],
-            payment_total: info[:payment_total],
-            invnum: Invnum.create(community_id, transaction_id, :payment)
-          }),
-        error_policy: {
-          codes_to_retry: ["10001", "x-timeout", "x-servererror"],
-          try_max: 5,
-          finally: (method :void_failed_payment).call(payment, m_acc)
-        }
-        ) do |payment_res|
-
-        # Save payment data to payment
-        payment = PaymentStore.update(
-          data: payment_res,
-          community_id: community_id,
-          transaction_id: transaction_id
-         )
-
-        payment_entity = APIDataTypes.create_payment(payment)
-
-        # Trigger payment_updated event
-        @events.send(:payment_updated, :success, payment_entity)
-
-        # Return as payment entity
-        Result::Success.new(payment_entity)
-      end
-    end
 
     ## GET /payments/:community_id/:transaction_id
     def get_payment(community_id, transaction_id)
@@ -344,34 +288,6 @@ module PaypalService::API
         }, data))
     end
 
-    def authorize_payment(community_id, payment)
-      @lookup.with_payment(community_id, payment[:transaction_id], [[:pending, :order]]) do |payment, m_acc|
-        with_success(community_id, payment[:transaction_id],
-          MerchantData.create_do_authorization({
-              receiver_username: m_acc[:payer_id],
-              order_id: payment[:order_id],
-              authorization_total: payment[:order_total]
-          }),
-          error_policy: {
-            codes_to_retry: ["10001", "x-timeout", "x-servererror"],
-            try_max: 5,
-            finally: (method :handle_failed_authorization).call(payment, m_acc)
-          }
-        ) do |auth_res|
-
-          # Save authorization data to payment
-          payment = PaymentStore.update(data: auth_res, community_id: community_id , transaction_id: payment[:transaction_id])
-          payment_entity = APIDataTypes.create_payment(payment)
-
-          # Trigger callback for authorized
-          @events.send(:payment_updated, :success, payment_entity)
-
-          # Return as payment entity
-          Result::Success.new(payment_entity)
-        end
-      end
-    end
-
     def void_payment(community_id, transaction_id, payment, flow, m_acc, note = nil)
       with_success(community_id, transaction_id,
         MerchantData.create_do_void({
@@ -424,7 +340,7 @@ module PaypalService::API
       -> (cid, txid, request, err_response) do
         data =
           if err_response[:error_code] == "10486"
-            {redirect_url: token[:express_checkout_url]}
+            {redirect_url: token[:paypal_redirect_url]}
           elsif ["10485", "13116"].include?(err_response[:error_code])
             # 10485 = Payment not authorized, meaning user logged in
             # at PayPal but didn't press Pay yet.
@@ -451,7 +367,7 @@ module PaypalService::API
         if err_response[:error_code] == "10486"
           # Special handling for 10486 error. Return error response and do NOT void.
           token = PaypalService::Store::Token.get_for_transaction(payment[:community_id], payment[:transaction_id])
-          redirect_url = append_order_id(remove_token(token[:express_checkout_url]), payment[:order_id])
+          redirect_url = append_order_id(remove_token(token[:paypal_redirect_url]), payment[:order_id])
           log_and_return(cid, txid, request, err_response, {redirect_url: "#{redirect_url}"})
         else
           void_failed_payment(payment, m_acc).call(payment[:community_id], payment[:transaction_id], request, err_response)

@@ -12,10 +12,6 @@
 #  order_date                 :datetime
 #  currency                   :string(8)        not null
 #  order_total_cents          :integer
-#  authorization_id           :string(64)
-#  authorization_date         :datetime
-#  authorization_expires_date :datetime
-#  authorization_total_cents  :integer
 #  payment_id                 :string(64)
 #  payment_date               :datetime
 #  payment_total_cents        :integer
@@ -33,10 +29,9 @@
 #
 # Indexes
 #
-#  index_paypal_payments_on_authorization_id  (authorization_id) UNIQUE
-#  index_paypal_payments_on_community_id      (community_id)
-#  index_paypal_payments_on_order_id          (order_id) UNIQUE
-#  index_paypal_payments_on_transaction_id    (transaction_id) UNIQUE
+#  index_paypal_payments_on_community_id    (community_id)
+#  index_paypal_payments_on_order_id        (order_id) UNIQUE
+#  index_paypal_payments_on_transaction_id  (transaction_id) UNIQUE
 #
 
 class PaypalPayment < ActiveRecord::Base
@@ -50,10 +45,6 @@ class PaypalPayment < ActiveRecord::Base
     :order_date,
     :currency,
     :order_total_cents,
-    :authorization_id,
-    :authorization_date,
-    :authorization_expires_date,
-    :authorization_total_cents,
     :payment_id,
     :payment_date,
     :payment_total_cents,
@@ -77,7 +68,6 @@ class PaypalPayment < ActiveRecord::Base
     :commission_status)
 
   monetize :order_total_cents,          with_model_currency: :currency, allow_nil: true
-  monetize :authorization_total_cents,  with_model_currency: :currency, allow_nil: true
   monetize :payment_total_cents,        with_model_currency: :currency, allow_nil: true
   monetize :fee_total_cents,            with_model_currency: :currency, allow_nil: true
   monetize :commission_total_cents,     with_model_currency: :currency, allow_nil: true
