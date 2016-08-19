@@ -12,10 +12,7 @@ module TransactionService::Process
         gateway_adapter.create_payment(
           tx: tx,
           gateway_fields: gateway_fields,
-          prefer_async: prefer_async)) do
-
-        Transition.transition_to(tx[:id], :paid)
-      end
+          prefer_async: prefer_async))
     end
 
     def reject(tx:, message:, sender_id:, gateway_adapter:)

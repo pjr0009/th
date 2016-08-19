@@ -97,8 +97,6 @@ module PaypalService::API
             op_input: [community_id, create_payment, m_acc])
     end
 
-    def do_set_payment_info
-    end
 
     def get_request_token(community_id, token)
       @lookup.with_token(community_id, token) do |token|
