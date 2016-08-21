@@ -29,9 +29,92 @@ When you click the buy button:
       - else ensure payment authorized
     - ANOTHER BIGGIE
       - Paypas service  api::payment#create_payment called by create -> do_create (async)
+      - events emmitted into paypal_events, this is where state transitions for transaction and payment occurs
+        1) augment_transaction_details_with_paypal_info
+          - right now it'll just send shipping info if necessary
 
 
 
+
+TRANSACTION STATES
+
+INITIAL raw_attributes:
+  starter_id: SdDHr8V0RkBrokF1dANh7A #person id of the initiator
+  listing_id: 277756
+  conversation_id: 160569
+  automatic_confirmation_after_days: 14
+  community_id: 26619
+  starter_skipped_feedback: 0
+  author_skipped_feedback: 0
+  current_state: initiated
+  commission_from_seller: 3
+  minimum_commission_cents: 100
+  minimum_commission_currency: USD
+  payment_gateway: paypal
+  listing_quantity: 1
+  listing_author_id: xOQvViY28S72S-tFFB0Tbw
+  listing_title: New Hunter Jumper Coat
+  unit_type:
+  unit_price_cents: 125
+  unit_price_currency: USD
+  unit_tr_key:
+  unit_selector_tr_key:
+  payment_process: preauthorize
+  delivery_method: shipping
+  shipping_price_cents: 500
+  deleted: 0
+
+AFTER CHECKOUT raw_attributes:
+  id: 138201
+  starter_id: SdDHr8V0RkBrokF1dANh7A
+  listing_id: 277756
+  conversation_id: 160570
+  automatic_confirmation_after_days: 14
+  community_id: 26619
+  current_state: initiated
+  commission_from_seller: 3
+  minimum_commission_cents: 100
+  minimum_commission_currency: USD
+  payment_gateway: paypal
+  listing_quantity: 1
+  listing_author_id: xOQvViY28S72S-tFFB0Tbw
+  listing_title: New Hunter Jumper Coat
+  unit_type:
+  unit_price_cents: 125
+  unit_price_currency: USD
+  unit_tr_key:
+  unit_selector_tr_key:
+  payment_process: preauthorize
+  delivery_method: shipping
+  shipping_price_cents: 500
+  deleted: 0
+
+  PAYPALPAYMENT
+  raw_attributes:
+    id: 12960
+    community_id: 26619
+    transaction_id: 138201
+    payer_id: JR597N58JJVR8
+    receiver_id: JR597N58JJVR8
+    merchant_id: xOQvViY28S72S-tFFB0Tbw
+    order_id:
+    order_date:
+    currency: USD
+    order_total_cents: 100
+    payment_id:
+    payment_date:
+    payment_total_cents:
+    fee_total_cents:
+    payment_status: completed
+    pending_reason:
+    created_at: &4 2016-08-20 17:55:20.000000000 Z
+    updated_at: &5 2016-08-20 17:55:20.000000000 Z
+    commission_payment_id:
+    commission_payment_date:
+    commission_status: not_charged
+    commission_pending_reason:
+    commission_total_cents:
+    commission_fee_total_cents:
 
 
 

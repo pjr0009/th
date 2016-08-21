@@ -46,7 +46,6 @@ module PaypalService
 
       GetChainedPaymentDetails = EntityUtils.define_builder(
         [:method, const_value: :get_chained_payment_details],
-        [:receiver_username, :optional, :string],
         [:token, :mandatory, :string])
 
 
@@ -54,8 +53,9 @@ module PaypalService
         [:success, const_value: true],
         [:token, :mandatory, :string],
         [:payment_status, :mandatory, :string],
-        [:payer, :string],
-        [:payer_id, :string],
+        [:payer_id, :mandatory, :string],
+        [:receiver_id, :mandatory, :string],
+        [:order_id, :mandatory, :string],
         [:order_total, :money],
         [:shipping_address_status, :string],
         [:shipping_address_city, :string],
@@ -152,6 +152,15 @@ module PaypalService
         [:success, const_value: true]
       )
 
+      ExecutePayment = EntityUtils.define_builder(
+        [:method, const_value: :execute_payment],
+        [:token, :mandatory, :string]        
+      )
+
+      ExecutePaymentResponse = EntityUtils.define_builder(
+        [:success, const_value: true]
+      )
+
       SetExpressCheckoutAuthorizationResponse = EntityUtils.define_builder(
         [:success, const_value: true],
         [:token, :mandatory, :string],
@@ -214,6 +223,10 @@ module PaypalService
 
       def create_chained_payment(opts); CreateChainedPayment.call(opts) end
       def create_chained_payment_response(opts); CreateChainedPaymentResponse.call(opts) end
+      
+      def execute_payment(opts); ExecutePayment.call(opts) end
+      def execute_payment_response(opts); ExecutePaymentResponse.call(opts) end
+
       def set_payment_options(opts); SetPaymentOptions.call(opts) end
       def set_payment_options_response(opts); SetPaymentOptionsResponse.call(opts) end
 

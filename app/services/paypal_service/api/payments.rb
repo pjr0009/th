@@ -66,7 +66,8 @@ module PaypalService::API
         #set payment options for checkout, not super critical so ill unwrap it from all of the cumbersome retry / callback stuff
         set_payment_options_request = MerchantData.set_payment_options({token: response[:token]})
         @merchant.do_request(set_payment_options_request)
-        
+
+
         #create paypal token
         TokenStore.create({
           community_id: community_id,
@@ -151,6 +152,8 @@ module PaypalService::API
 
       if response.success
         # Delete the token, we have now completed the payment request
+        # execute_payment_request = MerchantData.execute_payment({token: response[:token]})
+        # @merchant.do_request(execute_payment_request)
         TokenStore.delete(community_id, response[:data][:transaction_id])
       end
 
@@ -249,14 +252,18 @@ module PaypalService::API
 
           order_details = create_order_details(ec_details)
                           .merge({community_id: token[:community_id], transaction_id: token[:transaction_id]})
-          @events.send(:order_details, :success, order_details)
 
+          #step 1) add this paypal info back to the transaction                
+          @events.send(:augment_transaction_details_with_paypal_info, :success, order_details)
+          puts ec_details
+          puts ec_details
+          puts ec_details
           # Save payment
           payment = PaymentStore.create(
             token[:community_id],
             token[:transaction_id],
             ec_details
-              .merge({receiver_id: m_acc[:payer_id], merchant_id: m_acc[:person_id]})
+              .merge({merchant_id: m_acc[:person_id]})
           )
 
           payment_entity = APIDataTypes.create_payment(payment)

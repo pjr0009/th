@@ -36,7 +36,7 @@ module TransactionService::PaypalEvents
     end
   end
 
-  def update_transaction_details(flow, details)
+  def augment_transaction_details_with_paypal_info(flow, details)
     community_id = details.delete(:community_id)
     transaction_id = details.delete(:transaction_id)
 
@@ -57,7 +57,7 @@ module TransactionService::PaypalEvents
   ## Mapping from payment transition to transaction transition
 
   TRANSITIONS = [
-    [:initiated_to_paid,   [:initiated, :paid]],
+    [:initiated_to_paid,   [:initiated, :completed]],
     [:initiated_to_voided,          [:initiated, :voided]],
     [:preauthorized_to_paid,        [:preauthorized, :completed]],
     [:preauthorized_to_pending_ext, [:preauthorized, :pending]],

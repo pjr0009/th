@@ -140,10 +140,11 @@ module PaypalService
           DataTypes::Merchant.create_get_chained_payment_details_response(
             {
               token: res.payKey,
-              payment_status: "completed",
-              payer: res.sender.accountId,
+              payment_status: res.status,
               payer_id: res.paymentInfoList.paymentInfo[0].receiver.accountId,
-              order_total: res.paymentInfoList.paymentInfo[0].receiver.amount.to_money(res.currencyCode),
+              receiver_id: res.sender.accountId,
+              order_id: res.paymentInfoList.paymentInfo[0].transactionId,
+              order_total: res.paymentInfoList.paymentInfo[0].receiver.amount.to_money(res.currencyCode)
             }
           )
         }
@@ -292,6 +293,17 @@ module PaypalService
         action_method_name: :set_payment_options,
         output_transformer: -> (res, api) {
           DataTypes::Merchant.set_payment_options_response()
+        }
+      ),
+
+      execute_payment: PaypalAction.def_action(
+        input_transformer: -> (req, config) {
+          {:payKey => req[:token]}
+        },
+        wrapper_method_name: :build_execute_payment,
+        action_method_name: :execute_payment,
+        output_transformer: -> (res, api) {
+          raise res
         }
       ),
 

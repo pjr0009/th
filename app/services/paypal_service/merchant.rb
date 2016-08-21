@@ -49,7 +49,10 @@ module PaypalService
       response = action_method.call(wrapped)
       begin
         response = action_method.call(wrapped)
-
+        if Rails.env.development?
+          puts "raw request response from paypal"
+          puts response.to_json
+        end
         if (response.success?)
           output_transformer.call(response, api)
         else

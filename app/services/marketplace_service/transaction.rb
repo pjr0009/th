@@ -209,8 +209,6 @@ module MarketplaceService
           transaction_entity = Entity.transaction(transaction)
           payment_type = transaction.payment_gateway.to_sym
 
-          Events.handle_transition(transaction_entity, payment_type, old_status, new_status)
-
           Entity.transaction(save_transition(transaction, new_status, metadata))
         end
       end
@@ -318,53 +316,6 @@ module MarketplaceService
         SELECT id, transaction_id, to_state, created_at FROM transaction_transitions WHERE transaction_id in (#{params[:transaction_ids].join(',')})
       "
       }
-    end
-
-    module Events
-      module_function
-
-      def handle_transition(transaction, payment_type, old_status, new_status)
-        if new_status == :preauthorized
-          preauthorized(transaction, payment_type)
-        end
-      end
-
-      # privates
-
-      def preauthorized(transaction, payment_type)
-        expiration_period = Entity.authorization_expiration_period(payment_type)
-        gateway_expires_at = case payment_type
-                              when :braintree
-                                expiration_period.days.from_now
-                              when :paypal
-                                # expiration period in PayPal is an estimate,
-                                # which should be quite accurate. We can get
-                                # the exact time from Paypal through IPN notification. In this case,
-                                # we take the 3 days estimate and add 10 minute buffer
-                                expiration_period.days.from_now - 10.minutes
-                              end
-
-        booking_ends_on = Maybe(transaction)[:booking][:end_on].or_else(nil)
-        expire_at = Entity.preauth_expires_at(gateway_expires_at, booking_ends_on)
-
-        Delayed::Job.enqueue(TransactionPreauthorizedJob.new(transaction[:id]), priority: 5)
-        Delayed::Job.enqueue(AutomaticallyRejectPreauthorizedTransactionJob.new(transaction[:id]), priority: 8, run_at: expire_at)
-
-        setup_preauthorize_reminder(transaction[:id], expire_at)
-      end
-
-      # "private" helpers
-
-      def setup_preauthorize_reminder(transaction_id, expire_at)
-        reminder_days_before = 1
-
-        reminder_at = expire_at - reminder_days_before.day
-        send_reminder = reminder_at > DateTime.now
-
-        if send_reminder
-          Delayed::Job.enqueue(TransactionPreauthorizedReminderJob.new(transaction_id), priority: 9, :run_at => reminder_at)
-        end
-      end
     end
   end
 end

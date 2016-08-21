@@ -24,6 +24,7 @@ module TransactionService::Gateway
          require_shipping_address: tx[:delivery_method] == :shipping,
          shipping_total: tx[:shipping_price],
          order_total: order_total,
+         payment_total: order_total,
          success: gateway_fields[:success_url],
          cancel: gateway_fields[:cancel_url],
          merchant_brand_logo_url: gateway_fields[:merchant_brand_logo_url]})
