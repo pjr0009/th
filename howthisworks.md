@@ -162,3 +162,8 @@ actions to take when deploying
 - import sql
 - reset my password
 - paypal settings are already created
+
+
+
+
+Transaction process state machine

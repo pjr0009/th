@@ -31,6 +31,8 @@ WORKDIR /app
 RUN /bin/bash -l -c "curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -"
 RUN /bin/bash -l -c "sudo apt-get install -y nodejs"
 RUN /bin/bash -l -c "npm install --unsafe-perm"
+RUN /bin/bash -l -c "rm -rf client/node_modules/caniuse-*"
+RUN /bin/bash -l -c "npm install --unsafe-perm"
 
 # Run Bundle install
 ADD Gemfile /app/Gemfile

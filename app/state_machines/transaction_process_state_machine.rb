@@ -45,10 +45,10 @@ class TransactionProcessStateMachine
   #   Delayed::Job.enqueue(TransactionStatusChangedJob.new(transaction.id, rejecter.id, current_community.id))
   # end
 
-  after_transition(to: :confirmed) do |conversation|
-    confirmation = ConfirmConversation.new(conversation, conversation.starter, conversation.community)
-    confirmation.confirm!
-  end
+  # after_transition(to: :confirmed) do |conversation|
+  #   confirmation = ConfirmConversation.new(conversation, conversation.starter, conversation.community)
+  #   confirmation.confirm!
+  # end
 
   # after_transition(from: :accepted, to: :canceled) do |conversation|
   #   confirmation = ConfirmConversation.new(conversation, conversation.starter, conversation.community)

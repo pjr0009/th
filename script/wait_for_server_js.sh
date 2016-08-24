@@ -6,7 +6,7 @@ server_js='app/assets/webpack/server-bundle.js'
 
 echo "Waiting for $server_js..."
 
-wait_for_file "$server_js" 60 || {
+wait_for_file "$server_js" 120 || {
   echo "Server JS bundle missing after waiting for 60 seconds: '$server_js'"
   exit 1
 }

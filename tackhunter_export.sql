@@ -2,7 +2,7 @@
 --
 -- Host: sharetribe-db.czcm6dmw4s98.us-east-1.rds.amazonaws.com    Database: dump_26619_1470073377
 -- ------------------------------------------------------
--- Server version 5.6.21-log
+-- Server version	5.6.21-log
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
