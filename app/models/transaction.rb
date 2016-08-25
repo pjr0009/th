@@ -205,6 +205,14 @@ class Transaction < ActiveRecord::Base
     MarketplaceService::Transaction::Query.can_transition_to?(self.id, :canceled)
   end
 
+  def can_be_requested_to_be_refunded?
+    MarketplaceService::Transaction::Query.can_transition_to?(self.id, :refund_requested)
+  end
+
+  def can_be_refunded?
+    MarketplaceService::Transaction::Query.can_transition_to?(self.id, :refund_requested)
+  end
+
   def with_type(&block)
     block.call(:listing_conversation)
   end

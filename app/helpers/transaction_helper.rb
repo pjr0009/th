@@ -8,9 +8,9 @@ module TransactionHelper
       "ss-check"
     when "rejected"
       "ss-delete"
-    when "canceled"
+    when "dispute"
       "ss-delete"
-    when "paid"
+    when "resolved"
       "ss-check"
     when "preauthorized"
       "ss-check"
@@ -105,11 +105,11 @@ module TransactionHelper
       awaiting_shipment: ->() { {
         author: {
           icon: icon_waiting_other,
-          text: t("conversations.status.waiting_confirmation_from_requester", requester_name: other_party_name)
+          text: "Waiting for you to ship."
         },
         starter: {
           icon: icon_waiting_you,
-          text: t("conversations.status.waiting_confirmation_from_you")
+          text: "Waiting for #{other_party_name} to ship."
         }
       } },
 
@@ -121,6 +121,28 @@ module TransactionHelper
         starter: {
           icon: icon_waiting_you,
           text: t("conversations.status.waiting_confirmation_from_you")
+        }
+      } },
+
+      refund_requested: ->() { {
+        author: {
+          icon: icon_waiting_other,
+          text: "Waiting for you to issue refund."
+        },
+        starter: {
+          icon: icon_waiting_you,
+          text: "Waiting for #{other_party_name} to issue refund."
+        }
+      } },
+
+      refunded: ->() { {
+        author: {
+          icon: icon_waiting_other,
+          text: "Refunded."
+        },
+        starter: {
+          icon: icon_waiting_you,
+          text: "Refunded."
         }
       } },
 
@@ -159,46 +181,10 @@ module TransactionHelper
       .values
       .get
   end
-  # rubocop:enable all
-
-  #
-  # Returns statuses in Hash format
-  # statuses = [
-  #   {
-  #     type: :status_info,
-  #     content: {
-  #       info_text_part: 'msg',
-  #       info_icon_tag: ''               # e.g. icon_tag("testimonial", ["icon-with-text"])
-  #     }
-  #   },
-  #   {
-  #     type: :status_info,
-  #     content: {
-  #       info_text_part: 'msg',
-  #       info_icon_part_classes: 'class1 class2'
-  #     }
-  #   },
-  #   {
-  #     type: :status_links,
-  #     content: [{
-  #         link_href: @current_community.payment_gateway.new_payment_path(@current_user, conversation, params[:locale],
-  #         link_classes: '[if-any]'
-  #         link_data: {},                  # e.g. {:method => "put", :remote => "true"}
-  #         link_icon_tag: '[some-tag]>',   # OR link_icon_with_text_classes: icon_for("accepted")
-  #         link_text_with_icon: 'Something'
-  #       },
-  #       {}
-  #     ]
-  #   }
-  # }
+  
   def get_conversation_statuses(conversation, is_author)
     statuses = if conversation.listing && !conversation.status.eql?("free")
       status_hash = {
-        pending: ->() { {
-          both: [
-            pending_status(conversation)
-          ]
-        } },
         accepted: ->() { {
           both: [
             status_info(t("conversations.status.request_accepted"), icon_classes: icon_for("accepted")),
@@ -208,15 +194,43 @@ module TransactionHelper
         awaiting_shipment: ->() { {
           both: [
             status_info(t("conversations.status.request_paid"), icon_classes: icon_for("paid")),
-            delivery_status(conversation),
-            paid_status(conversation, @current_community.testimonials_in_use)
+            shipping_status(conversation),
+            awaiting_shipment_links(conversation)
           ]
         } },
         awaiting_pickup: ->() { {
           both: [
             status_info(t("conversations.status.request_paid"), icon_classes: icon_for("paid")),
-            delivery_status(conversation),
-            paid_status(conversation, @current_community.testimonials_in_use)
+            shipping_status(conversation),
+            awaiting_shipment_links(conversation)
+          ]
+        } },
+        refund_requested: ->() { {
+          author: [
+            status_info(t("conversations.status.request_paid"), icon_classes: icon_for("paid")),
+            shipping_status(conversation),
+            status_info("#{conversation.starter.name(conversation.community)} requested a refund. If this item was shipped to a customer, please wait until they've shipped it back before issuing any refunds."),
+            refund_requested_seller_links(conversation)
+
+          ],
+          starter: [
+            status_info(t("conversations.status.request_paid"), icon_classes: icon_for("paid")),
+            shipping_status(conversation),
+            status_info("you requested a refund, waiting for seller to respond"),
+            refund_requested_buyer_links(conversation)
+          ]
+        } },
+        refunded: ->() { {
+          author: [
+            status_info(t("conversations.status.request_paid"), icon_classes: icon_for("paid")),
+            shipping_status(conversation),
+            status_info("#{conversation.starter.name(conversation.community)} was refunded")
+
+          ],
+          starter: [
+            status_info(t("conversations.status.request_paid"), icon_classes: icon_for("paid")),
+            shipping_status(conversation),
+            status_info("refund issued")
           ]
         } },
         pending_ext: ->() {
@@ -299,14 +313,6 @@ module TransactionHelper
 
   private
 
-  def pending_status(conversation)
-    if current_user?(conversation.listing.author)
-      waiting_for_current_user_to_accept(conversation)
-    else
-      waiting_for_author_acceptance(conversation)
-    end
-  end
-
   def accepted_status(conversation)
     if conversation.seller == @current_user
       waiting_for_buyer_to_pay(conversation)
@@ -315,27 +321,33 @@ module TransactionHelper
     end
   end
 
-  def paid_status(conversation, show_testimonial_status)
-    return nil unless show_testimonial_status
-
+  def waiting_for_confirmation_links(conversation)
     if conversation.seller == @current_user
       waiting_for_buyer_to_confirm(conversation)
     else
       waiting_for_current_user_to_confirm(conversation)
     end
   end
+  
+  def awaiting_shipment_links(conversation)
+    if conversation.seller == @current_user
+      awaiting_shipment_seller_links(conversation)
+    else
+      awaiting_shipment_buyer_links(conversation)
+    end
+  end
 
-  def delivery_status(conversation)
+  def shipping_status(conversation)
     if current_user?(conversation.author)
       status_info(
-        t("conversations.status.waiting_for_current_user_to_deliver_listing",
+        t("conversations.status.waiting_for_current_user_to_ship_listing",
           :listing_title => link_to(conversation.listing.title, conversation.listing)
         ).html_safe,
         icon_classes: "ss-clockwise"
       )
     else
       status_info(
-        t("conversations.status.waiting_for_listing_author_to_deliver_listing",
+        t("conversations.status.waiting_for_listing_author_to_ship_listing",
           :listing_title => link_to(conversation.listing.title, conversation.listing),
           :listing_author_name => link_to(PersonViewUtils.person_display_name(conversation.author, conversation.community))
         ).html_safe,
@@ -364,22 +376,6 @@ module TransactionHelper
     end
   end
 
-  def waiting_for_current_user_to_accept(conversation)
-    status_links([
-      {
-        link_href: accept_person_message_path(@current_user, :id => conversation.id),
-        link_classes: "accept",
-        link_icon_with_text_classes: icon_for("accepted"),
-        link_text_with_icon: link_text_with_icon(conversation, "accept")
-      },
-      {
-        link_href: reject_person_message_path(@current_user, :id => conversation.id),
-        link_classes: "reject",
-        icon_classes: icon_for("rejected"),
-        link_text_with_icon: link_text_with_icon(conversation, "reject")
-      }
-    ])
-  end
 
   def waiting_for_current_user_to_pay(conversation)
     status_links([
@@ -404,32 +400,87 @@ module TransactionHelper
         link_href: confirm_person_message_path(@current_user, :id => conversation.id),
         link_classes: "confirm",
         link_icon_with_text_classes: icon_for("confirmed"),
-        link_text_with_icon: link_text_with_icon(conversation, "confirm")
+        link_text_with_icon: "Mark as Completed"
       },
       {
-        link_href: cancel_person_message_path(@current_user, :id => conversation.id),
+        link_href: request_refund_person_message_path(@current_user, :id => conversation.id),
         link_classes: "cancel",
         link_icon_with_text_classes: icon_for("canceled"),
-        link_text_with_icon: link_text_with_icon(conversation, "cancel")
+        link_text_with_icon: "Request Refund"
       }
     ])
   end
 
-  def waiting_for_current_user_to_accept_preauthorized(transaction)
+  def awaiting_shipment_seller_links(conversation)
     status_links([
       {
-        link_href: accept_preauthorized_person_message_path(@current_user, :id => transaction.id),
-        link_classes: "accept_preauthorized",
-        link_icon_with_text_classes: icon_for("accept_preauthorized"),
-        link_text_with_icon: link_text_with_icon(transaction, "accept_preauthorized")
+        link_href: confirm_person_message_path(@current_user, :id => conversation.id),
+        link_classes: "confirm",
+        link_icon_with_text_classes: icon_for("confirmed"),
+        link_text_with_icon: "Add Tracking Info"
       },
       {
-        link_href: reject_preauthorized_person_message_path(@current_user, :id => transaction.id),
-        link_classes: "reject_preauthorized",
-        link_icon_with_text_classes: icon_for("reject_preauthorized"),
-        link_text_with_icon: link_text_with_icon(transaction, "reject_preauthorized")
+        link_href: refund_person_message_path(@current_user, :id => conversation.id),
+        link_classes: "cancel",
+        link_icon_with_text_classes: icon_for("canceled"),
+        link_text_with_icon: "Issue Refund"
       }
-    ]);
+    ])
+  end
+
+  def awaiting_shipment_buyer_links(conversation)
+    status_links([{
+        link_href: request_refund_person_message_path(@current_user, :id => conversation.id),
+        link_classes: "cancel",
+        link_icon_with_text_classes: icon_for("canceled"),
+        link_text_with_icon: "Request Refund"
+      }
+    ])
+  end
+
+  def refund_requested_seller_links(conversation)
+    status_links([
+      {
+        link_href: refund_person_message_path(@current_user, :id => conversation.id),
+        link_classes: "confirm",
+        link_icon_with_text_classes: icon_for("confirmed"),
+        link_text_with_icon: "Issue refund"
+      },
+      {
+        link_href: cancel_person_message_path(@current_user, :id => conversation.id),
+        link_classes: "cancel",
+        link_icon_with_text_classes: icon_for("dispute"),
+        link_text_with_icon: "Dispute"
+      }
+    ])
+  end
+
+  def refund_requested_buyer_links(conversation)
+    status_links([
+      {
+        link_href: confirm_person_message_path(@current_user, :id => conversation.id),
+        link_classes: "confirm",
+        link_icon_with_text_classes: icon_for("confirmed"),
+        link_text_with_icon: "Resolved"
+      },
+      {
+        link_href: cancel_person_message_path(@current_user, :id => conversation.id),
+        link_classes: "cancel",
+        link_icon_with_text_classes: icon_for("dispute"),
+        link_text_with_icon: "Dispute"
+      }
+    ])
+  end
+
+
+  def awaiting_shipment_buyer_links(conversation)
+    status_links([{
+        link_href: request_refund_person_message_path(@current_user, :id => conversation.id),
+        link_classes: "cancel",
+        link_icon_with_text_classes: icon_for("canceled"),
+        link_text_with_icon: "Request Refund"
+      }
+    ])
   end
 
   def feedback_pending_status(conversation)
@@ -454,14 +505,6 @@ module TransactionHelper
       type: :status_links,
       content: content
     }
-  end
-
-  def link_text_with_icon(conversation, status_link_name)
-    if ["accept", "reject", "accept_preauthorized", "reject_preauthorized"].include?(status_link_name)
-      t("conversations.status_link.#{status_link_name}_request")
-    else
-      t("conversations.status_link.#{status_link_name}")
-    end
   end
 
   def waiting_for_author_acceptance(conversation)

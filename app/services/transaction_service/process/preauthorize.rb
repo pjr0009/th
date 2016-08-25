@@ -69,6 +69,27 @@ module TransactionService::Process
       Result::Success.new({result: true})
     end
 
+    def request_refund(tx:, message:, sender_id:, gateway_adapter:)
+      Transition.transition_to(tx[:id], :refund_requested)
+      TxStore.mark_as_unseen_by_other(community_id: tx[:community_id],
+                                      transaction_id: tx[:id],
+                                      person_id: tx[:listing_author_id])
+      if message.present?
+        send_message(tx, message, sender_id)
+      end
+
+      Result::Success.new({result: true})
+    end
+
+
+    def refund(tx:, gateway_fields:, gateway_adapter:, prefer_async:)
+      Gateway.unwrap_completion(
+        gateway_adapter.refund_payment(
+          tx: tx,
+          gateway_fields: gateway_fields,
+          prefer_async: prefer_async))
+    end
+
 
     private
 

@@ -405,6 +405,8 @@ Kassi::Application.routes.draw do
             put :acceptance, to: 'accept_conversations#acceptance'
             get :confirm, to: 'confirm_conversations#confirm'
             get :cancel, to: 'confirm_conversations#cancel'
+            get :request_refund, to: 'confirm_conversations#request_refund'
+            get :refund, to: 'confirm_conversations#request_refund'
             put :confirmation, to: 'confirm_conversations#confirmation' #TODO these should be under transaction
             get :accept_preauthorized, to: 'accept_preauthorized_conversations#accept'
             get :reject_preauthorized, to: 'accept_preauthorized_conversations#reject'

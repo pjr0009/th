@@ -51,6 +51,23 @@ class ConfirmConversationsController < ApplicationController
     })
   end
 
+  def request_refund
+    if @listing_transaction.can_be_requested_to_be_refunded?
+      TransactionService::Transaction.request_refund(community_id: @current_community.id, transaction_id: @listing_transaction.id, message: nil, sender_id: @current_user.id)
+    end
+
+    return redirect_to person_transaction_path(person_id: @current_user.id, message_id: @listing_transaction.id)
+  end
+
+
+  def request_refund
+    if @listing_transaction.can_be_refunded?
+      TransactionService::Transaction.refund(community_id: @current_community.id, transaction_id: @listing_transaction.id, message: nil, sender_id: @current_user.id)
+    end
+
+    return redirect_to person_transaction_path(person_id: @current_user.id, message_id: @listing_transaction.id)
+  end
+
   # Handles confirm and cancel forms
   def confirmation
     status = params[:transaction][:status].to_sym

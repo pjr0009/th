@@ -161,6 +161,8 @@ actions to take when deploying
 
 - import sql
 - run migrations
+- update tranaction transition states where to_state => 'paid' to 'confirmed'
+- update transaction current states where 'canceled', or 'paid', to be 'confirmed' / 'refunded'
 - reset my password
 - paypal settings are already created
 
