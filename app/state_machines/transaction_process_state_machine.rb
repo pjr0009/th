@@ -4,19 +4,21 @@ class TransactionProcessStateMachine
   state :not_started, initial: true
   state :free
   state :initiated
-  state :pending_ext
-  state :paid
-  state :accepted
+  state :awaiting_shipment
+  state :awaiting_pickup
   state :shipped
+  state :refund_requested
+  state :disputed
   state :confirmed
-  state :errored
   state :refunded
+  state :errored
 
   transition from: :not_started,               to: [:free, :initiated]
-  transition from: :initiated,                 to: [:paid]
-  transition from: :pending_ext,               to: [:paid]
-  transition from: :paid,                      to: [:shipped, :refunded, :confirmed]
-  transition from: :confirmed,                 to: [:shipped, :refunded]
+  transition from: :initiated,                 to: [:awaiting_pickup, :awaiting_shipment]
+  transition from: :awaiting_shipment,         to: [:refund_requested, :refunded, :shipped]
+  transition from: :awaiting_pickup,           to: [:refund_requested, :refunded, :confirmed]
+  transition from: :shipped,                   to: [:refund_requested, :confirmed]
+  transition from: :refund_requested,          to: [:refunded, :disputed]
 
   # after_transition(to: :paid) do |transaction|
   #   accepter = transaction.listing.author
@@ -29,7 +31,7 @@ class TransactionProcessStateMachine
   #   end
   # end
 
-  after_transition(to: :paid) do |transaction|
+  after_transition(to: [:awaiting_shipment, :awaiting_pickup]) do |transaction|
     payer = transaction.starter
     current_community = transaction.community
 

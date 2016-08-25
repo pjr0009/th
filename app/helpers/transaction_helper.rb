@@ -50,17 +50,6 @@ module TransactionHelper
         }
       } },
 
-      preauthorized: ->() { {
-        author: {
-          icon: icon_waiting_you,
-          text: t("conversations.status.waiting_for_you_to_accept_request")
-        },
-        starter: {
-          icon: icon_waiting_other,
-          text: t("conversations.status.waiting_for_listing_author_to_accept_request", listing_author_name: other_party_name)
-        }
-      } },
-
       pending_ext: ->() {
         case status_meta[:paypal_pending_reason]
         when "multicurrency"
@@ -113,25 +102,18 @@ module TransactionHelper
         end
       },
 
-      accepted: ->() { {
+      awaiting_shipment: ->() { {
         author: {
           icon: icon_waiting_other,
-          text: t("conversations.status.waiting_payment_from_requester", requester_name: other_party_name)
+          text: t("conversations.status.waiting_confirmation_from_requester", requester_name: other_party_name)
         },
         starter: {
           icon: icon_waiting_you,
-          text: t("conversations.status.waiting_payment_from_you")
+          text: t("conversations.status.waiting_confirmation_from_you")
         }
       } },
 
-      rejected: -> () { {
-        both: {
-          icon: icon_tag("cross", ["icon-fix-rel", "rejected"]),
-          text: t("conversations.status.request_rejected")
-        }
-      } },
-
-      paid: ->() { {
+      awaiting_pickup: ->() { {
         author: {
           icon: icon_waiting_other,
           text: t("conversations.status.waiting_confirmation_from_requester", requester_name: other_party_name)
@@ -223,17 +205,18 @@ module TransactionHelper
             accepted_status(conversation)
           ]
         } },
-        paid: ->() { {
+        awaiting_shipment: ->() { {
           both: [
             status_info(t("conversations.status.request_paid"), icon_classes: icon_for("paid")),
             delivery_status(conversation),
             paid_status(conversation, @current_community.testimonials_in_use)
           ]
         } },
-        preauthorized: ->() { {
+        awaiting_pickup: ->() { {
           both: [
-            status_info(t("conversations.status.request_preauthorized"), icon_classes: icon_for("preauthorized")),
-            preauthorized_status(conversation)
+            status_info(t("conversations.status.request_paid"), icon_classes: icon_for("paid")),
+            delivery_status(conversation),
+            paid_status(conversation, @current_community.testimonials_in_use)
           ]
         } },
         pending_ext: ->() {

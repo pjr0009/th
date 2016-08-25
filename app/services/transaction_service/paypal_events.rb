@@ -60,6 +60,7 @@ module TransactionService::PaypalEvents
 
   TRANSITIONS = [
     [:initiated_to_awaiting_shipment,   [:initiated, :completed]],
+    [:initiated_to_awaiting_pickup,   [:initiated, :completed]],
     [:initiated_to_voided,          [:initiated, :voided]],
     [:preauthorized_to_paid,        [:preauthorized, :completed]],
     [:preauthorized_to_pending_ext, [:preauthorized, :pending]],
@@ -97,19 +98,19 @@ module TransactionService::PaypalEvents
   end
 
   def initiated_to_awaiting_shipment(tx)
-    MarketplaceService::Transaction::Command.transition_to(tx[:id], :paid)
+    MarketplaceService::Transaction::Command.transition_to(tx[:id], :awaiting_shipment)
   end
 
   def initiated_to_awaiting_pickup(tx)
-    MarketplaceService::Transaction::Command.transition_to(tx[:id], :paid)
+    MarketplaceService::Transaction::Command.transition_to(tx[:id], :awaiting_pickup)
   end
 
   def preauthorized_to_paid(tx)
     # Commission charge is synchronous and must complete before we
     # transition to paid so that we have the full payment info
     # available at the time we send payment receipts.
-    TransactionService::Transaction.charge_commission(tx[:id])
-    MarketplaceService::Transaction::Command.transition_to(tx[:id], :paid)
+    # TransactionService::Transaction.charge_commission(tx[:id])
+    # MarketplaceService::Transaction::Command.transition_to(tx[:id], :paid)
   end
 
   def preauthorized_to_pending_ext(tx, pending_reason)

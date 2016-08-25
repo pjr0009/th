@@ -611,7 +611,7 @@ en:
       message_content_not_available: "Message content not available"
     message:
       accepted_request: "accepted the request"
-      received_payment: "accepted the request, received payment for %{sum}"
+      received_payment: "received payment for %{sum}"
       accepted_offer: "accepted the offer"
       rejected_request: "rejected the request, canceled the payment"
       rejected_offer: "rejected the offer"

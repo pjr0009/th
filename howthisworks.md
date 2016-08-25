@@ -160,6 +160,7 @@ CREATING PAYPAL ACCOUNT
 actions to take when deploying
 
 - import sql
+- run migrations
 - reset my password
 - paypal settings are already created
 
