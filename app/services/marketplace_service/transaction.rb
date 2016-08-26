@@ -20,6 +20,7 @@ module MarketplaceService
         :payment_total,
         :payment_gateway,
         :commission_from_seller,
+        :delivery_method,
         :conversation,
         :booking,
         :created_at,

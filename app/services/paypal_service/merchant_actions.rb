@@ -143,8 +143,8 @@ module PaypalService
               payment_status: res.status,
               payer_id: res.paymentInfoList.paymentInfo[0].receiver.accountId,
               receiver_id: res.sender.accountId,
-              order_id: res.paymentInfoList.paymentInfo[0].transactionId,
-              order_total: res.paymentInfoList.paymentInfo[0].receiver.amount.to_money(res.currencyCode)
+              ext_transaction_id: res.paymentInfoList.paymentInfo[0].transactionId,
+              payment_total: res.paymentInfoList.paymentInfo[0].receiver.amount.to_money(res.currencyCode)
             }
           )
         }

@@ -145,9 +145,9 @@ module PaypalService::API
       response =
         if existing_payment.nil?
           create_payment(token)
-            .and_then { |payment_entity| ensure_payment_authorized(community_id, payment_entity) }
+            .and_then { |payment_entity| Result::Success.new(payment_entity) }
         else
-          ensure_payment_authorized(community_id, existing_payment)
+          Result::Success.new(existing_payment)
         end
 
       if response.success
@@ -159,11 +159,6 @@ module PaypalService::API
 
       response
     end
-
-    def ensure_payment_authorized(community_id, payment_entity)
-      Result::Success.new(payment_entity)
-    end
-
 
     ## GET /payments/:community_id/:transaction_id
     def get_payment(community_id, transaction_id)
@@ -255,9 +250,6 @@ module PaypalService::API
 
           #step 1) add this paypal info back to the transaction                
           @events.send(:augment_transaction_details_with_paypal_info, :success, order_details)
-          puts ec_details
-          puts ec_details
-          puts ec_details
           # Save payment
           payment = PaymentStore.create(
             token[:community_id],

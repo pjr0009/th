@@ -199,9 +199,14 @@ module TransactionHelper
           ]
         } },
         awaiting_pickup: ->() { {
-          both: [
+          author: [
             status_info(t("conversations.status.request_paid"), icon_classes: icon_for("paid")),
-            shipping_status(conversation),
+            status_info("Waiting for pickup, please mark the item as confirmed once you pick it up.", icon_classes: icon_for("paid")),
+            awaiting_shipment_links(conversation)
+          ],
+         starter: [
+            status_info(t("conversations.status.request_paid"), icon_classes: icon_for("paid")),
+            status_info("Waiting for #{conversation.starter.name(conversation.community)} to pick up their item.", icon_classes: icon_for("paid")),
             awaiting_shipment_links(conversation)
           ]
         } },

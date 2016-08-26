@@ -10,12 +10,11 @@ module PaypalService::Store::PaypalPayment
     [:merchant_id, :mandatory, :string],
     [:payment_status, const_value: :completed],
     [:pending_reason],
-    [:order_id, :string],
-    [:order_date, :time],
-    [:order_date, :time],
+    [:ext_transaction_id, :string],
+    [:payment_date, :time],
     [:currency, :mandatory, :string],
-    [:order_total_cents, :fixnum],
-    [:commission_status, const_value: :not_charged])
+    [:token, :string],
+    )
 
   PaypalPayment = EntityUtils.define_builder(
     [:community_id, :mandatory, :fixnum],
@@ -25,33 +24,17 @@ module PaypalService::Store::PaypalPayment
     [:merchant_id, :mandatory, :string],
     [:payment_status, :mandatory, :symbol],
     [:pending_reason, :to_symbol],
-    [:order_id, :string],
-    [:order_date, :time],
-    [:order_total, :money],
-    [:payment_id, :string],
+    [:ext_transaction_id, :string],
     [:payment_date, :time],
     [:payment_total, :money],
     [:fee_total, :money],
-    [:commission_payment_id, :string],
-    [:commission_payment_date, :time],
-    [:commission_total, :money],
-    [:commission_fee_total, :money],
-    [:commission_status, :mandatory, :symbol],
-    [:commission_pending_reason, :string])
+    [:token, :string])
 
   OPT_UPDATE_FIELDS = [
-    :order_id,
-    :order_date,
-    :order_total_cents,
-    :payment_id,
+    :ext_transaction_id,
     :payment_date,
     :payment_total_cents,
-    :fee_total_cents,
-    :commission_payment_id,
-    :commission_payment_date,
-    :commission_total_cents,
-    :commission_fee_total_cents,
-    :commission_pending_reason
+    :fee_total_cents
   ]
 
   module_function
@@ -99,13 +82,9 @@ module PaypalService::Store::PaypalPayment
   def from_model(paypal_payment)
     hash = HashUtils.compact(
       EntityUtils.model_to_hash(paypal_payment).merge({
-          order_total: paypal_payment.order_total,
-          fee_total: paypal_payment.fee_total,
           payment_total: paypal_payment.payment_total,
-          payment_status: paypal_payment[:payment_status].to_sym,
-          commission_total: paypal_payment.commission_total,
-          commission_fee_total: paypal_payment.commission_fee_total,
-          commission_status: paypal_payment[:commission_status].to_sym
+          fee_total: paypal_payment.fee_total,
+          payment_status: paypal_payment[:payment_status].to_sym
         }))
 
     PaypalPayment.call(hash)
@@ -113,10 +92,10 @@ module PaypalService::Store::PaypalPayment
 
   def find_payment(opts)
     PaypalPaymentModel.where(
-      "(community_id = ? and transaction_id = ?) or order_id = ?",
+      "(community_id = ? and transaction_id = ?) or ext_transaction_id = ?",
       opts[:community_id],
       opts[:transaction_id],
-      opts[:order_id]
+      opts[:ext_transaction_id]
     ).first
   end
 
@@ -124,14 +103,14 @@ module PaypalService::Store::PaypalPayment
     old_data != new_data
   end
 
-  def initial(order)
-    order_total = order[:order_total]
-    total = { order_total_cents: order_total.cents, currency: order_total.currency.iso_code }
-    InitialPaymentData.call(order.merge(total))
+  def initial(payment)
+    payment_total = payment[:payment_total]
+    total = { payment_total_cents: payment_total.cents, currency: payment_total.currency.iso_code }
+    InitialPaymentData.call(payment.merge(total))
   end
 
   def create_payment_update(update, current_state)
-    cent_totals = [:order_total, :fee_total, :payment_total, :commission_total, :commission_fee_total]
+    cent_totals = [:payment_total, :fee_total]
       .reduce({}) do |cent_totals, m_key|
       m = update[m_key]
       cent_totals["#{m_key}_cents".to_sym] = m.cents unless m.nil?
@@ -145,17 +124,9 @@ module PaypalService::Store::PaypalPayment
     new_pending_reason = transform_pending_reason(update[:pending_reason])
     new_state = to_state(new_status, new_pending_reason) if new_status
 
-    commission_new_status = transform_status(update[:commission_status]) if update[:commission_status]
-    commission_new_pending_reason = transform_pending_reason(update[:commission_pending_reason])
-
     if(new_state && valid_transition?(current_state, new_state))
       payment_update[:payment_status] = new_status
       payment_update[:pending_reason] = new_pending_reason
-    end
-
-    if (commission_new_status)
-      payment_update[:commission_status] = commission_new_status
-      payment_update[:commission_pending_reason] = commission_new_pending_reason
     end
 
     payment_update = HashUtils.sub(update, *OPT_UPDATE_FIELDS).merge(cent_totals).merge(payment_update)

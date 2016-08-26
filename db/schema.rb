@@ -813,33 +813,25 @@ ActiveRecord::Schema.define(version: 20160816164434) do
   end
 
   create_table "paypal_payments", force: :cascade do |t|
-    t.integer  "community_id",               limit: 4,                           null: false
-    t.integer  "transaction_id",             limit: 4,                           null: false
-    t.string   "payer_id",                   limit: 64,                          null: false
-    t.string   "receiver_id",                limit: 64,                          null: false
-    t.string   "merchant_id",                limit: 255,                         null: false
-    t.string   "order_id",                   limit: 64
-    t.datetime "order_date"
-    t.string   "currency",                   limit: 8,                           null: false
-    t.integer  "order_total_cents",          limit: 4
-    t.string   "payment_id",                 limit: 64
+    t.integer  "community_id",        limit: 4,   null: false
+    t.integer  "transaction_id",      limit: 4,   null: false
+    t.string   "payer_id",            limit: 64,  null: false
+    t.string   "receiver_id",         limit: 64,  null: false
+    t.string   "merchant_id",         limit: 255, null: false
+    t.string   "ext_transaction_id",  limit: 64
     t.datetime "payment_date"
-    t.integer  "payment_total_cents",        limit: 4
-    t.integer  "fee_total_cents",            limit: 4
-    t.string   "payment_status",             limit: 64,                          null: false
-    t.string   "pending_reason",             limit: 64
-    t.datetime "created_at",                                                     null: false
-    t.datetime "updated_at",                                                     null: false
-    t.string   "commission_payment_id",      limit: 64
-    t.datetime "commission_payment_date"
-    t.string   "commission_status",          limit: 64,  default: "not_charged", null: false
-    t.string   "commission_pending_reason",  limit: 64
-    t.integer  "commission_total_cents",     limit: 4
-    t.integer  "commission_fee_total_cents", limit: 4
+    t.string   "currency",            limit: 8,   null: false
+    t.integer  "payment_total_cents", limit: 4
+    t.integer  "fee_total_cents",     limit: 4
+    t.string   "payment_status",      limit: 64,  null: false
+    t.string   "pending_reason",      limit: 64
+    t.datetime "created_at",                      null: false
+    t.datetime "updated_at",                      null: false
+    t.string   "token",               limit: 255
   end
 
   add_index "paypal_payments", ["community_id"], name: "index_paypal_payments_on_community_id", using: :btree
-  add_index "paypal_payments", ["order_id"], name: "index_paypal_payments_on_order_id", unique: true, using: :btree
+  add_index "paypal_payments", ["ext_transaction_id"], name: "index_paypal_payments_on_ext_transaction_id", unique: true, using: :btree
   add_index "paypal_payments", ["transaction_id"], name: "index_paypal_payments_on_transaction_id", unique: true, using: :btree
 
   create_table "paypal_process_tokens", force: :cascade do |t|

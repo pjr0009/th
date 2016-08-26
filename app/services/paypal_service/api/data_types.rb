@@ -30,19 +30,11 @@ module PaypalService::API::DataTypes
     [:merchant_id, :mandatory, :string],
     [:payment_status, one_of: [:pending, :completed, :refunded, :voided, :denied, :expired]],
     [:pending_reason, transform_with: -> (v) { (v.is_a? String) ? v.downcase.gsub("-", "").to_sym : v }],
-    [:order_id, :string],
-    [:order_date, :time],
-    [:order_total, :money],
-    [:payment_id, :string],
+    [:ext_transaction_id, :string],
     [:payment_date, :time],
     [:payment_total, :money],
     [:fee_total, :money],
-    [:commission_payment_id, :string],
-    [:commission_payment_date, :time],
-    [:commission_total, :money],
-    [:commission_fee_total, :money],
-    [:commission_status, one_of: [:not_charged, :completed, :pending, :seller_is_admin, :below_minimum, :not_applicable, :errored]],
-    [:commission_pending_reason, transform_with: -> (v) { (v.is_a? String) ? v.downcase.gsub("-", "").to_sym : v }]
+    [:token, :string]
   )
 
   PaymentInfo = EntityUtils.define_builder(

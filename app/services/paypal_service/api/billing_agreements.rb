@@ -25,30 +25,30 @@ module PaypalService::API
 
     # POST /billing_agreements/:community_id/:person_id/charge_commission
     def charge_commission(community_id, person_id, info, async: false)
-      @lookup.with_completed_payment(community_id, info[:transaction_id]) do |payment|
-        @lookup.with_accounts(community_id, person_id, payment[:receiver_id]) do |m_acc, admin_acc|
-          if(seller_is_admin?(m_acc, admin_acc))
-            commission_not_applicable(community_id, info[:transaction_id], m_acc[:person_id], payment, :seller_is_admin)
-          else
-            if async
-              proc_token = Worker.enqueue_billing_agreements_op(
-                community_id: community_id,
-                transaction_id: info[:transaction_id],
-                op_name: :do_charge_commission,
-                op_input: [community_id, info, m_acc, admin_acc, payment])
+      # @lookup.with_completed_payment(community_id, info[:transaction_id]) do |payment|
+      #   @lookup.with_accounts(community_id, person_id, payment[:receiver_id]) do |m_acc, admin_acc|
+      #     if(seller_is_admin?(m_acc, admin_acc))
+      #       commission_not_applicable(community_id, info[:transaction_id], m_acc[:person_id], payment, :seller_is_admin)
+      #     else
+      #       if async
+      #         proc_token = Worker.enqueue_billing_agreements_op(
+      #           community_id: community_id,
+      #           transaction_id: info[:transaction_id],
+      #           op_name: :do_charge_commission,
+      #           op_input: [community_id, info, m_acc, admin_acc, payment])
 
-              Result::Success.new(
-                DataTypes.create_process_status({
-                                                  process_token: proc_token[:process_token],
-                                                  completed: proc_token[:op_completed],
-                                                  result: proc_token[:op_output],
-                                                }))
-            else
-              do_charge_commission(community_id, info, m_acc, admin_acc, payment)
-            end
-          end
-        end
-      end
+      #         Result::Success.new(
+      #           DataTypes.create_process_status({
+      #                                             process_token: proc_token[:process_token],
+      #                                             completed: proc_token[:op_completed],
+      #                                             result: proc_token[:op_output],
+      #                                           }))
+      #       else
+      #         do_charge_commission(community_id, info, m_acc, admin_acc, payment)
+      #       end
+      #     end
+      #   end
+      # end
     end
 
 
@@ -70,35 +70,35 @@ module PaypalService::API
     end
 
     def do_charge_commission(community_id, info, m_acc, admin_acc, payment)
-      with_success(community_id, info[:transaction_id],
-        MerchantData.create_do_reference_transaction({
-            receiver_username: admin_acc[:email],
-            billing_agreement_id: m_acc[:billing_agreement_billing_agreement_id],
-            payment_total: info[:commission_to_admin],
-            name: info[:payment_name],
-            desc: info[:payment_desc] || info[:payment_name],
-            invnum: Invnum.create(community_id, info[:transaction_id], :commission)
-          }),
-        error_policy: {
-          codes_to_retry: ["10001", "x-timeout", "x-servererror"],
-          try_max: 5,
-          finally: (method :commission_payment_failed).call(payment)
-        }
-        ) do |ref_tx_res|              # Update payment
-        updated_payment = PaypalService::Store::PaypalPayment.update(
-          data: payment.merge({
-              commission_payment_id: ref_tx_res[:payment_id],
-              commission_payment_date: ref_tx_res[:payment_date],
-              commission_total: ref_tx_res[:payment_total],
-              commission_fee_total: ref_tx_res[:fee],
-              commission_status: ref_tx_res[:payment_status],
-              commission_pending_reason: ref_tx_res[:pending_reason]
-          }),
-          community_id: community_id,
-          transaction_id: info[:transaction_id])
-        # Return as payment entity
-        Result::Success.new(DataTypes.create_payment(updated_payment))
-      end
+      # with_success(community_id, info[:transaction_id],
+      #   MerchantData.create_do_reference_transaction({
+      #       receiver_username: admin_acc[:email],
+      #       billing_agreement_id: m_acc[:billing_agreement_billing_agreement_id],
+      #       payment_total: info[:commission_to_admin],
+      #       name: info[:payment_name],
+      #       desc: info[:payment_desc] || info[:payment_name],
+      #       invnum: Invnum.create(community_id, info[:transaction_id], :commission)
+      #     }),
+      #   error_policy: {
+      #     codes_to_retry: ["10001", "x-timeout", "x-servererror"],
+      #     try_max: 5,
+      #     finally: (method :commission_payment_failed).call(payment)
+      #   }
+      #   ) do |ref_tx_res|              # Update payment
+      #   updated_payment = PaypalService::Store::PaypalPayment.update(
+      #     data: payment.merge({
+      #         commission_payment_id: ref_tx_res[:payment_id],
+      #         commission_payment_date: ref_tx_res[:payment_date],
+      #         commission_total: ref_tx_res[:payment_total],
+      #         commission_fee_total: ref_tx_res[:fee],
+      #         commission_status: ref_tx_res[:payment_status],
+      #         commission_pending_reason: ref_tx_res[:pending_reason]
+      #     }),
+      #     community_id: community_id,
+      #     transaction_id: info[:transaction_id])
+      #   # Return as payment entity
+      #   Result::Success.new(DataTypes.create_payment(updated_payment))
+      # end
     end
 
     def mark_payment_errored(cid, txid, payment)
