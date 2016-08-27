@@ -37,6 +37,7 @@ class PaypalPayment < ActiveRecord::Base
     :ext_transaction_id,
     :payment_date,
     :payment_total_cents,
+    :payment_total,
     :fee_total_cents,
     :payment_status,
     :pending_reason,
@@ -45,6 +46,7 @@ class PaypalPayment < ActiveRecord::Base
   validates_presence_of(
     :community_id,
     :transaction_id,
+    :payment_total_cents,
     :ext_transaction_id,
     :payer_id,
     :token,

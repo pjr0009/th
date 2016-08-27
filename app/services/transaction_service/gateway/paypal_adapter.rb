@@ -77,7 +77,7 @@ module TransactionService::Gateway
       payment = paypal_api.payments.get_payment(tx[:community_id], tx[:id])[:data]
       payment_total = payment[:payment_total]
 
-      create_payment_info = DataTypes.create_refund_request(
+      refund_info = DataTypes.create_refund_request(
         {
          transaction_id: tx[:id],
          payment_id: payment[:id],
@@ -86,21 +86,20 @@ module TransactionService::Gateway
          token: payment[:token],
          })
 
-      puts create_payment_info
-      # result = paypal_api.payments.refund(
-      #   tx[:community_id],
-      #   create_payment_info,
-      #   async: prefer_async)
+      result = paypal_api.payments.refund(
+        tx[:community_id],
+        refund_info,
+        async: prefer_async)
 
-      # unless result[:success]
-      #   return SyncCompletion.new(result)
-      # end
+      unless result[:success]
+        return SyncCompletion.new(result)
+      end
 
-      # if prefer_async
-      #   AsyncCompletion.new(Result::Success.new({ process_token: result[:data][:process_token] }))
-      # else
-      #   AsyncCompletion.new(Result::Success.new({ redirect_url: result[:data][:redirect_url] }))
-      # end
+      if prefer_async
+        AsyncCompletion.new(Result::Success.new({ process_token: result[:data][:process_token] }))
+      else
+        AsyncCompletion.new(Result::Success.new({ redirect_url: result[:data][:redirect_url] }))
+      end
     end
 
 

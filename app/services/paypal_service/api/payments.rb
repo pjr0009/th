@@ -194,9 +194,40 @@ module PaypalService::API
         info[:note])
     end
 
-    ## POST /payments/:community_id/:transaction_id/refund
-    def refund(community_id, transaction_id)
-      raise NoMethodError.new("Not implemented")
+    ## POST /payments/:community_id/create?token=EC-7XU83376C70426719
+    def refund(community_id, refund_info, async: false)
+      if (async)
+        proc_token = Worker.enqueue_payments_op(
+          community_id: community_id,
+          transaction_id: refund_info[:transaction_id],
+          op_name: :do_refund,
+          op_input: [community_id, refund_info]
+        )
+
+        proc_status_response(proc_token)
+      else
+        do_refund(community_id, refund_info)
+      end
+    end
+
+    def do_refund(community_id, refund_info)
+      # Send event payment_crated
+    
+      request = MerchantData.create_refund_paypal_payment(refund_info)
+      with_success(community_id, refund_info[:transaction_id],
+        request,
+        error_policy: {
+          codes_to_retry: ["10001", "x-timeout", "x-servererror"],
+          try_max: 3
+        }
+      ) do |response|
+        @events.send(:payment_refunded, :success, payment_entity)
+        Result::Success.new(
+          APIDataTypes.create_payment_request({
+              transaction_id: create_payment[:transaction_id],
+              token: response[:token],
+              redirect_url: response[:redirect_url]}))
+      end
     end
 
     ## Not part of the public API, used by rake task to retry and clean unfinished orders
@@ -243,7 +274,6 @@ module PaypalService::API
           if (ec_details[:payer_id].nil?)
             return Result::Error.new("Payment has not been accepted by the buyer.")
           end
-
 
           order_details = create_order_details(ec_details)
                           .merge({community_id: token[:community_id], transaction_id: token[:transaction_id]})

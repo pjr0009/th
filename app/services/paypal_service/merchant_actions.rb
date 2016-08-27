@@ -144,7 +144,8 @@ module PaypalService
               payer_id: res.paymentInfoList.paymentInfo[0].receiver.accountId,
               receiver_id: res.sender.accountId,
               ext_transaction_id: res.paymentInfoList.paymentInfo[0].transactionId,
-              payment_total: res.paymentInfoList.paymentInfo[0].receiver.amount.to_money(res.currencyCode)
+              payment_total: res.paymentInfoList.paymentInfo[0].receiver.amount.to_money(res.currencyCode),
+              currency_code: res.currencyCode
             }
           )
         }
@@ -327,27 +328,18 @@ module PaypalService
         }
       ),
 
-      refund_transaction: PaypalAction.def_action(
+      refund_paypal_payment: PaypalAction.def_action(
         input_transformer: -> (req, _) {
           {
-            TransactionID: req[:payment_id],
-            RefundType: "Full",
-            RefundSource: "default",
-            MsgSubID: req[:msg_sub_id]
+            payKey: req[:token],
+            transactionId: req[:ext_transaction_id],
           }
         },
-        wrapper_method_name: :build_refund_transaction,
-        action_method_name: :refund_transaction,
+        wrapper_method_name: :build_refund,
+        action_method_name: :refund,
         output_transformer: -> (res, api) {
-          DataTypes::Merchant.create_refund_transaction_response(
-            {
-              refunded_id: res.RefundTransactionID,
-              refunded_fee_total: to_money(res.FeeRefundAmount),
-              refunded_net_total: to_money(res.NetRefundAmount),
-              refunded_gross_total: to_money(res.GrossRefundAmount),
-              refunded_total: to_money(res.TotalRefundedAmount),
-              msg_sub_id: res.MsgSubID
-            }
+          DataTypes::Merchant.create_refund_paypal_payment_response(
+            {}
           )
         }
       ),

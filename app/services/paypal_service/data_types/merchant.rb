@@ -56,7 +56,8 @@ module PaypalService
         [:payer_id, :mandatory, :string],
         [:receiver_id, :mandatory, :string],
         [:ext_transaction_id, :mandatory, :string],
-        [:payment_total, :money],
+        [:currency_code, :mandatory, :string],
+        [:payment_total, :mandatory, :money],
         [:shipping_address_status, :string],
         [:shipping_address_city, :string],
         [:shipping_address_country, :string],
@@ -67,6 +68,10 @@ module PaypalService
         [:shipping_address_state_or_province, :string],
         [:shipping_address_street1, :string],
         [:shipping_address_street2, :string])
+
+      CreateRefund = EntityUtils.define_builder(
+        [:method, const_value: :get_chained_payment_details],
+        [:token, :mandatory, :string])
 
       # Deprecated - Order flow will be removed soon
       #
@@ -179,13 +184,12 @@ module PaypalService
         [:voided_id, :mandatory, :string],
         [:msg_sub_id, :string])
 
-      RefundTransaction = EntityUtils.define_builder(
-        [:method, const_value: :refund_transaction],
-        [:receiver_username, :mandatory, :string],
-        [:payment_id, :string, :mandatory],
-        [:msg_sub_id, transform_with: -> (v ) { v.nil? ? SecureRandom.uuid : v }])
+      RefundPaypalPayment = EntityUtils.define_builder(
+        [:method, const_value: :refund_paypal_payment],
+        [:ext_transaction_id, :mandatory, :string],
+        [:token, :string, :mandatory])
 
-      RefundTransactionResponse = EntityUtils.define_builder(
+      RefundPaypalPaymentResponse = EntityUtils.define_builder(
         [:success, const_value: true],
         [:refunded_id, :mandatory, :string],
         [:refunded_fee_total, :mandatory, :money],
@@ -239,8 +243,8 @@ module PaypalService
       def create_do_void(opts); DoVoid.call(opts) end
       def create_do_void_response(opts); DoVoidResponse.call(opts) end
 
-      def create_refund_transaction(opts); RefundTransaction.call(opts) end
-      def create_refund_transaction_response(opts); RefundTransactionResponse.call(opts) end
+      def create_refund_paypal_payment(opts); RefundPaypalPayment.call(opts) end
+      def create_refund_paypal_payment_response(opts); RefundPaypalPaymentResponse.call(opts) end
 
       def create_get_transaction_details(opts); GetTransactionDetails.call(opts) end
       def create_get_transaction_details_response(opts); GetTransactionDetailsResponse.call(opts) end

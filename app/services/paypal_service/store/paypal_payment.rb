@@ -11,7 +11,8 @@ module PaypalService::Store::PaypalPayment
     [:payment_status, const_value: :completed],
     [:pending_reason],
     [:ext_transaction_id, :string],
-    [:payment_date, :time],
+    [:payment_total, :mandatory, :money],
+    [:payment_date, :mandatory, :time],
     [:currency, :mandatory, :string],
     [:token, :string],
     )
@@ -57,13 +58,12 @@ module PaypalService::Store::PaypalPayment
     new_data if data_changed?(old_data, new_data)
   end
 
-  def create(community_id, transaction_id, order)
+  def create(community_id, transaction_id, payment)
     begin
+      payment.merge!({payment_date: Time.now, community_id: community_id, transaction_id: transaction_id, currency: payment[:payment_total].currency.iso_code})
       model = PaypalPaymentModel.create!(
-        initial(
-          order
-            .merge({community_id: community_id, transaction_id: transaction_id})
-          ))
+        InitialPaymentData.call(payment)
+      )
       from_model(model)
     rescue ActiveRecord::RecordNotUnique => rnu
       get(community_id, transaction_id)
