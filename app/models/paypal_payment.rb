@@ -52,6 +52,6 @@ class PaypalPayment < ActiveRecord::Base
     :currency,
     :payment_status)
 
-  monetize :payment_total_cents,        with_model_currency: :currency, allow_nil: true
+  monetize :payment_total_cents,        with_model_currency: :currency, allow_nil: false
   monetize :fee_total_cents,            with_model_currency: :currency, allow_nil: true
 end

@@ -82,11 +82,10 @@ module TransactionService::Process
     end
 
 
-    def refund(tx:, gateway_fields:, gateway_adapter:, prefer_async:)
+    def refund(tx:, message:, gateway_adapter:, prefer_async: false)
       Gateway.unwrap_completion(
-        gateway_adapter.refund_payment(
+        gateway_adapter.refund(
           tx: tx,
-          gateway_fields: gateway_fields,
           prefer_async: prefer_async))
     end
 

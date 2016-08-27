@@ -29,10 +29,9 @@ module TransactionService::Store::Transaction
     [:community_id, :fixnum, :mandatory],
     [:listing_id, :fixnum, :mandatory],
     [:starter_id, :string, :mandatory],
-    [:listing_quantity, :fixnum, :mandatory],
     [:listing_title, :string, :mandatory],
     [:listing_author_id, :string, :mandatory],
-    [:unit_type, :to_symbol, one_of: [:hour, :day, :night, :week, :month, :custom, nil]],
+    [:listing_quantity, :fixnum, :mandatory],
     [:unit_price, :money, default: Money.new(0)],
     [:unit_tr_key, :string],
     [:unit_selector_tr_key, :string],
@@ -45,8 +44,7 @@ module TransactionService::Store::Transaction
     [:minimum_commission, :money],
     [:last_transition_at, :time],
     [:current_state, :to_symbol],
-    [:shipping_address, :hash],
-    [:booking, :hash])
+    [:shipping_address, :hash])
 
   ShippingAddress = EntityUtils.define_builder(
     [:status, :string],

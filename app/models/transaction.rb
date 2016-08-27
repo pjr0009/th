@@ -210,7 +210,7 @@ class Transaction < ActiveRecord::Base
   end
 
   def can_be_refunded?
-    MarketplaceService::Transaction::Query.can_transition_to?(self.id, :refund_requested)
+    MarketplaceService::Transaction::Query.can_transition_to?(self.id, :refunded)
   end
 
   def with_type(&block)

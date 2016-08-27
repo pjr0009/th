@@ -406,7 +406,6 @@ Kassi::Application.routes.draw do
             get :confirm, to: 'confirm_conversations#confirm'
             get :cancel, to: 'confirm_conversations#cancel'
             get :request_refund, to: 'confirm_conversations#request_refund'
-            get :refund, to: 'confirm_conversations#request_refund'
             put :confirmation, to: 'confirm_conversations#confirmation' #TODO these should be under transaction
             get :accept_preauthorized, to: 'accept_preauthorized_conversations#accept'
             get :reject_preauthorized, to: 'accept_preauthorized_conversations#reject'
@@ -434,7 +433,11 @@ Kassi::Application.routes.draw do
             get :billing_agreement_cancel
           end
         end
-        resources :transactions, only: [:show, :new, :create]
+        resources :transactions, only: [:show, :new, :create] do
+          member do
+            get :refund
+          end
+        end
         resource :checkout_account, only: [:new, :show, :create]
         resource :settings do
           member do

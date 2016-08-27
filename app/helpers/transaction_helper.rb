@@ -116,11 +116,11 @@ module TransactionHelper
       awaiting_pickup: ->() { {
         author: {
           icon: icon_waiting_other,
-          text: t("conversations.status.waiting_confirmation_from_requester", requester_name: other_party_name)
+          text: "Waiting for #{other_party_name} to pickup"
         },
         starter: {
           icon: icon_waiting_you,
-          text: t("conversations.status.waiting_confirmation_from_you")
+          text: "Waiting for you to pickup"
         }
       } },
 
@@ -201,13 +201,13 @@ module TransactionHelper
         awaiting_pickup: ->() { {
           author: [
             status_info(t("conversations.status.request_paid"), icon_classes: icon_for("paid")),
-            status_info("Waiting for pickup, please mark the item as confirmed once you pick it up.", icon_classes: icon_for("paid")),
-            awaiting_shipment_links(conversation)
+            status_info("Waiting for #{conversation.starter.name(conversation.community)} to pick up their item.", icon_classes: icon_for("paid")),
+            awaiting_pickup_links(conversation)
           ],
          starter: [
             status_info(t("conversations.status.request_paid"), icon_classes: icon_for("paid")),
-            status_info("Waiting for #{conversation.starter.name(conversation.community)} to pick up their item.", icon_classes: icon_for("paid")),
-            awaiting_shipment_links(conversation)
+            status_info("Waiting for pickup, please mark the item as confirmed once you pick it up.", icon_classes: icon_for("paid")),
+            awaiting_pickup_links(conversation)
           ]
         } },
         refund_requested: ->() { {
@@ -342,6 +342,14 @@ module TransactionHelper
     end
   end
 
+  def awaiting_pickup_links(conversation)
+    if conversation.seller == @current_user
+      awaiting_pickup_seller_links(conversation)
+    else
+      awaiting_pickup_buyer_links(conversation)
+    end
+  end
+
   def shipping_status(conversation)
     if current_user?(conversation.author)
       status_info(
@@ -425,7 +433,7 @@ module TransactionHelper
         link_text_with_icon: "Add Tracking Info"
       },
       {
-        link_href: refund_person_message_path(@current_user, :id => conversation.id),
+        link_href: refund_person_transaction_path(@current_user, :id => conversation.id),
         link_classes: "cancel",
         link_icon_with_text_classes: icon_for("canceled"),
         link_text_with_icon: "Issue Refund"
@@ -443,10 +451,39 @@ module TransactionHelper
     ])
   end
 
+
+  def awaiting_pickup_seller_links(conversation)
+    status_links([
+      {
+        link_href: refund_person_transaction_path(@current_user, :id => conversation.id),
+        link_classes: "cancel",
+        link_icon_with_text_classes: icon_for("canceled"),
+        link_text_with_icon: "Issue Refund"
+      }
+    ])
+  end
+  
+  def awaiting_pickup_buyer_links(conversation)
+    status_links([
+      {
+        link_href: confirm_person_message_path(@current_user, :id => conversation.id),
+        link_classes: "confirm",
+        link_icon_with_text_classes: icon_for("confirmed"),
+        link_text_with_icon: "Confirm"
+      },
+      {
+        link_href: refund_person_transaction_path(@current_user, :id => conversation.id),
+        link_classes: "cancel",
+        link_icon_with_text_classes: icon_for("canceled"),
+        link_text_with_icon: "Request Refund"
+      }
+    ])
+  end
+
   def refund_requested_seller_links(conversation)
     status_links([
       {
-        link_href: refund_person_message_path(@current_user, :id => conversation.id),
+        link_href: refund_person_transaction_path(@current_user, :id => conversation.id),
         link_classes: "confirm",
         link_icon_with_text_classes: icon_for("confirmed"),
         link_text_with_icon: "Issue refund"

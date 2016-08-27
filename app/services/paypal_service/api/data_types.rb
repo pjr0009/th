@@ -23,6 +23,7 @@ module PaypalService::API::DataTypes
   )
 
   Payment = EntityUtils.define_builder(
+    [:id, :fixnum],
     [:community_id, :mandatory, :fixnum],
     [:transaction_id, :mandatory, :fixnum],
     [:payer_id, :mandatory, :string],
@@ -30,7 +31,7 @@ module PaypalService::API::DataTypes
     [:merchant_id, :mandatory, :string],
     [:payment_status, one_of: [:pending, :completed, :refunded, :voided, :denied, :expired]],
     [:pending_reason, transform_with: -> (v) { (v.is_a? String) ? v.downcase.gsub("-", "").to_sym : v }],
-    [:ext_transaction_id, :string],
+    [:ext_transaction_id, :mandatory, :string],
     [:payment_date, :time],
     [:payment_total, :money],
     [:fee_total, :money],
@@ -40,6 +41,15 @@ module PaypalService::API::DataTypes
   PaymentInfo = EntityUtils.define_builder(
     [:payment_total, :mandatory, :money]
   )
+
+  CreateRefundRequest = EntityUtils.define_builder(
+    [:payment_id, :mandatory, :fixnum],
+    [:ext_transaction_id, :mandatory, :string],
+    [:transaction_id, :mandatory, :fixnum],
+    [:amount, :mandatory, :money],
+    [:token, :mandatory, :string]
+  )
+
 
   VoidingInfo = EntityUtils.define_builder([:note, :string])
 
@@ -94,6 +104,7 @@ module PaypalService::API::DataTypes
 
   def create_create_payment_request(opts); CreatePaymentRequest.call(opts) end
   def create_payment_request(opts); PaymentRequest.call(opts) end
+  def create_refund_request(opts); CreateRefundRequest.call(opts) end
   def create_token_verification_info(opts); TokenVerificationInfo.call(opts) end
   def create_payment(opts); Payment.call(opts) end
   def create_payment_info(opts); PaymentInfo.call(opts) end

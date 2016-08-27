@@ -7,6 +7,8 @@ class TransactionsController < ApplicationController
   before_filter do |controller|
     controller.ensure_logged_in t("layouts.notifications.you_must_log_in_to_do_a_transaction")
   end
+  
+  before_filter :fetch_transaction, only: [:refund]
 
   MessageForm = Form::Message
 
@@ -158,6 +160,13 @@ class TransactionsController < ApplicationController
       message_form_action: person_message_messages_path(@current_user, :message_id => conversation[:id]),
       price_break_down_locals: price_break_down_locals(tx)
     }
+  end
+
+  def refund
+    if @transaction.can_be_refunded?
+      TransactionService::Transaction.refund(community_id: @current_community.id, transaction_id: @transaction.id, message: nil, sender_id: @current_user.id)
+    end
+    return redirect_to person_transaction_path(person_id: @current_user.id, message_id: @transaction.id)
   end
 
   def op_status
@@ -365,5 +374,9 @@ class TransactionsController < ApplicationController
              quantity: quantity,
              form_action: person_transactions_path(person_id: @current_user, listing_id: listing_model.id)
            }
+  end
+
+  def fetch_transaction
+    @transaction = @current_community.transactions.find(params[:id])
   end
 end

@@ -174,7 +174,7 @@ module TransactionService::Transaction
     tx_process = tx_process(tx[:payment_process])
     gw = gateway_adapter(tx[:payment_gateway])
 
-    res = tx_process.request_refund(tx: tx, message: message, sender_id: sender_id, gateway_adapter: gw)
+    res = tx_process.refund(tx: tx, message: message, gateway_adapter: gw)
     res.maybe()
       .map { |gw_fields| Result::Success.new(DataTypes.create_transaction_response(query(tx[:id]), gw_fields)) }
       .or_else(res)

@@ -17,6 +17,7 @@ module PaypalService::Store::PaypalPayment
     )
 
   PaypalPayment = EntityUtils.define_builder(
+    [:id, :fixnum],
     [:community_id, :mandatory, :fixnum],
     [:transaction_id, :mandatory, :fixnum],
     [:payer_id, :mandatory, :string],
