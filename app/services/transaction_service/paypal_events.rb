@@ -48,6 +48,10 @@ module TransactionService::PaypalEvents
     end
   end
 
+  def payment_refunded(flow, tx_id)
+    MarketplaceService::Transaction::Command.transition_to(tx_id, :refunded)
+  end
+
   # Privates
 
   def shipping_fields_present?(details)
@@ -57,7 +61,7 @@ module TransactionService::PaypalEvents
   ## Mapping from payment transition to transaction transition
 
   TRANSITIONS = [
-    [:initiated_to_awaiting_x,   [:initiated, :completed]],
+    [:initiated_to_awaiting_x,                   [:initiated, :completed]],
     [:initiated_to_voided,          [:initiated, :voided]],
     [:preauthorized_to_paid,        [:preauthorized, :completed]],
     [:preauthorized_to_pending_ext, [:preauthorized, :pending]],
@@ -95,10 +99,6 @@ module TransactionService::PaypalEvents
   end
 
   def initiated_to_awaiting_x(tx)
-    puts tx
-    puts tx
-    puts tx
-    puts tx
     puts tx[:delivery_method]
     if(tx[:delivery_method] == "pickup")
       MarketplaceService::Transaction::Command.transition_to(tx[:id], :awaiting_pickup)

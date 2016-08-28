@@ -6,6 +6,7 @@ module PaypalService::API
 
     TokenStore = PaypalService::Store::Token
     PaymentStore = PaypalService::Store::PaypalPayment
+    RefundStore = PaypalService::Store::PaypalRefund
     AccountStore = PaypalService::Store::PaypalAccount
 
     def initialize(logger)
@@ -101,6 +102,9 @@ module PaypalService::API
       PaymentStore.get(token[:community_id], token[:transaction_id])
     end
 
+    def get_refund_by_payment_id(paypal_payment_id)
+      RefundStore.get(paypal_payment_id)
+    end
 
     # Privates
 

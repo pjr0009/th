@@ -293,18 +293,7 @@ module PaypalService
         wrapper_method_name: :build_set_payment_options,
         action_method_name: :set_payment_options,
         output_transformer: -> (res, api) {
-          DataTypes::Merchant.set_payment_options_response()
-        }
-      ),
-
-      execute_payment: PaypalAction.def_action(
-        input_transformer: -> (req, config) {
-          {:payKey => req[:token]}
-        },
-        wrapper_method_name: :build_execute_payment,
-        action_method_name: :execute_payment,
-        output_transformer: -> (res, api) {
-          raise res
+          DataTypes::Merchant.set_payment_options_response({success: true})
         }
       ),
 
@@ -338,9 +327,16 @@ module PaypalService
         wrapper_method_name: :build_refund,
         action_method_name: :refund,
         output_transformer: -> (res, api) {
-          DataTypes::Merchant.create_refund_paypal_payment_response(
-            {}
-          )
+          output = {
+            status: res.refundInfoList.refundInfo[0].refundStatus
+          }
+          if res.refundInfoList.refundInfo[0].encryptedRefundTransactionId
+            output.merge!(ext_refund_transaction_id: res.refundInfoList.refundInfo[0].encryptedRefundTransactionId)
+          end
+          if res.refundInfoList.refundInfo[0].totalOfAllRefunds
+            output.merge!(refund_total: res.refundInfoList.refundInfo[0].totalOfAllRefunds.to_money(res.currencyCode))
+          end
+          DataTypes::Merchant.create_refund_paypal_payment_response(output)
         }
       ),
 

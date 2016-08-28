@@ -2,23 +2,21 @@
 #
 # Table name: paypal_refunds
 #
-#  id                  :integer          not null, primary key
-#  paypal_payment_id   :integer
-#  currency            :string(8)
-#  payment_total_cents :integer
-#  fee_total_cents     :integer
-#  refunding_id        :string(64)
-#  created_at          :datetime         not null
-#  updated_at          :datetime         not null
-#
-# Indexes
-#
-#  index_paypal_refunds_on_refunding_id  (refunding_id) UNIQUE
+#  id                        :integer          not null, primary key
+#  paypal_payment_id         :integer
+#  currency                  :string(8)
+#  refund_total_cents        :integer
+#  fee_total_cents           :integer
+#  created_at                :datetime         not null
+#  updated_at                :datetime         not null
+#  status                    :string(64)       not null
+#  status_reason             :string(64)
+#  ext_refund_transaction_id :string(255)
 #
 
 class PaypalRefund < ActiveRecord::Base
-  attr_accessible :paypal_payment_id, :currency, :payment_total_cents, :fee_total_cents, :refunding_id
+  attr_accessible :paypal_payment_id, :currency, :refund_total_cents, :refund_total, :receiver_id, :refunder_id, :status, :status_reason, :ext_refund_transaction_id
 
-  validates_presence_of :paypal_payment_id
-  validates_uniqueness_of :refunding_id
+  monetize :refund_total_cents, with_model_currency: :currency, allow_nil: true
+
 end

@@ -166,7 +166,19 @@ actions to take when deploying
 - reset my password
 - paypal settings are already created
 
+Community 
+  has_many :listings
+  has_many :transactions
+  
 
+Transaction
+  belongs_to :community
+  belongs_to :listing
+  has_many :transaction_transitions, dependent: :destroy, foreign_key: :transaction_id
+  has_one :payment, foreign_key: :transaction_id
+  has_one :booking, :dependent => :destroy
+  has_one :shipping_address, dependent: :destroy
+  belongs_to :starter, :class_name => "Person", :foreign_key => "starter_id"
+  belongs_to :conversation
+  has_many :testimonials
 
-
-Transaction process state machine

@@ -10,6 +10,7 @@ module PaypalService::API
     MerchantData = PaypalService::DataTypes::Merchant
     TokenStore = PaypalService::Store::Token
     PaymentStore = PaypalService::Store::PaypalPayment
+    RefundStore = PaypalService::Store::PaypalRefund
     Lookup = PaypalService::API::Lookup
     Worker = PaypalService::API::Worker
     Invnum = PaypalService::API::Invnum
@@ -212,22 +213,29 @@ module PaypalService::API
 
     def do_refund(community_id, refund_info)
       # Send event payment_crated
-    
-      request = MerchantData.create_refund_paypal_payment(refund_info)
-      with_success(community_id, refund_info[:transaction_id],
-        request,
-        error_policy: {
-          codes_to_retry: ["10001", "x-timeout", "x-servererror"],
-          try_max: 3
-        }
-      ) do |response|
-        @events.send(:payment_refunded, :success, payment_entity)
-        Result::Success.new(
-          APIDataTypes.create_payment_request({
-              transaction_id: create_payment[:transaction_id],
-              token: response[:token],
-              redirect_url: response[:redirect_url]}))
-      end
+      existing_refund = @lookup.get_refund_by_payment_id(refund_info[:paypal_payment_id])
+      if existing_refund.nil?
+        request = MerchantData.create_refund_paypal_payment(refund_info)
+   
+        with_success(community_id, refund_info[:transaction_id],
+          request,
+          error_policy: {
+            codes_to_retry: ["10001", "x-timeout", "x-servererror"],
+            try_max: 3
+          }
+        ) do |response|
+          response.merge!({paypal_payment_id: refund_info[:paypal_payment_id]})
+          refund = RefundStore.create(response)
+
+          @events.send(:payment_refunded, :success, refund_info[:transaction_id])
+
+          
+          Result::Success.new(response)
+        end
+      else
+        @events.send(:payment_refunded, :success, refund_info[:transaction_id])
+        Result::Success.new(existing_refund)
+      end 
     end
 
     ## Not part of the public API, used by rake task to retry and clean unfinished orders
@@ -281,7 +289,7 @@ module PaypalService::API
           #step 1) add this paypal info back to the transaction                
           @events.send(:augment_transaction_details_with_paypal_info, :success, order_details)
           # Save payment
-          payment = PaymentStore.create(
+          payment = PaymentStore.create(          
             token[:community_id],
             token[:transaction_id],
             ec_details

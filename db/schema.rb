@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160816164434) do
+ActiveRecord::Schema.define(version: 20160828205544) do
 
   create_table "auth_tokens", force: :cascade do |t|
     t.string   "token",            limit: 255
@@ -850,16 +850,16 @@ ActiveRecord::Schema.define(version: 20160816164434) do
   add_index "paypal_process_tokens", ["transaction_id", "community_id", "op_name"], name: "index_paypal_process_tokens_on_transaction", unique: true, using: :btree
 
   create_table "paypal_refunds", force: :cascade do |t|
-    t.integer  "paypal_payment_id",   limit: 4
-    t.string   "currency",            limit: 8
-    t.integer  "payment_total_cents", limit: 4
-    t.integer  "fee_total_cents",     limit: 4
-    t.string   "refunding_id",        limit: 64
-    t.datetime "created_at",                     null: false
-    t.datetime "updated_at",                     null: false
+    t.integer  "paypal_payment_id",         limit: 4
+    t.string   "currency",                  limit: 8
+    t.integer  "refund_total_cents",        limit: 4
+    t.integer  "fee_total_cents",           limit: 4
+    t.datetime "created_at",                            null: false
+    t.datetime "updated_at",                            null: false
+    t.string   "status",                    limit: 64,  null: false
+    t.string   "status_reason",             limit: 64
+    t.string   "ext_refund_transaction_id", limit: 255
   end
-
-  add_index "paypal_refunds", ["refunding_id"], name: "index_paypal_refunds_on_refunding_id", unique: true, using: :btree
 
   create_table "paypal_tokens", force: :cascade do |t|
     t.integer  "community_id",         limit: 4,   null: false

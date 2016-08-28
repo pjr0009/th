@@ -45,6 +45,9 @@ module PaypalService
           },
           payment_updated: -> (flow, payment) {
             TransactionService::PaypalEvents.payment_updated(flow, payment)
+          },
+          payment_refunded: -> (flow, tx_id) {
+            TransactionService::PaypalEvents.payment_refunded(flow, tx_id)
           }
       })
 

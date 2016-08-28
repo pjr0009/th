@@ -17,11 +17,10 @@ module PaypalService
     end
 
     def do_request(request)
+      
       action_def = @action_handlers[request[:method]]
       return exec_action(action_def, @api_builder.call(request), @config, request) if action_def
 
-
-      raise ArgumentError.new("Unknown request method #{request[:method]}")
     end
 
 
@@ -46,13 +45,15 @@ module PaypalService
       input = input_transformer.call(request, config)
       request_id = @logger.log_request_input(request, input)
       wrapped = wrapper_method.call(input)
-      response = action_method.call(wrapped)
+      
       begin
         response = action_method.call(wrapped)
+        
         if Rails.env.development?
           puts "raw request response from paypal"
           puts response.to_json
         end
+        
         if (response.success?)
           output_transformer.call(response, api)
         else

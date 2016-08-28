@@ -43,7 +43,7 @@ module PaypalService::API::DataTypes
   )
 
   CreateRefundRequest = EntityUtils.define_builder(
-    [:payment_id, :mandatory, :fixnum],
+    [:paypal_payment_id, :mandatory, :fixnum],
     [:ext_transaction_id, :mandatory, :string],
     [:transaction_id, :mandatory, :fixnum],
     [:amount, :mandatory, :money],

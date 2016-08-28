@@ -191,12 +191,11 @@ module PaypalService
 
       RefundPaypalPaymentResponse = EntityUtils.define_builder(
         [:success, const_value: true],
-        [:refunded_id, :mandatory, :string],
-        [:refunded_fee_total, :mandatory, :money],
-        [:refunded_net_total, :mandatory, :money],
-        [:refunded_gross_total, :mandatory, :money],
-        [:refunded_total, :mandatory, :money],
-        [:msg_sub_id, :string])
+        [:status, :mandatory, :string],
+        [:status_reason, :string],
+        [:ext_refund_transaction_id, :string],
+        [:refund_total, :money]
+      )
 
       GetTransactionDetails = EntityUtils.define_builder(
         [:method, const_value: :get_transaction_details],

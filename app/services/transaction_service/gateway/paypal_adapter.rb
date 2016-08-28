@@ -80,7 +80,7 @@ module TransactionService::Gateway
       refund_info = DataTypes.create_refund_request(
         {
          transaction_id: tx[:id],
-         payment_id: payment[:id],
+         paypal_payment_id: payment[:id],
          ext_transaction_id: payment[:ext_transaction_id],
          amount: payment_total,
          token: payment[:token],

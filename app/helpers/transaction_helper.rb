@@ -472,7 +472,7 @@ module TransactionHelper
         link_text_with_icon: "Confirm"
       },
       {
-        link_href: refund_person_transaction_path(@current_user, :id => conversation.id),
+        link_href: request_refund_person_message_path(@current_user, :id => conversation.id),
         link_classes: "cancel",
         link_icon_with_text_classes: icon_for("canceled"),
         link_text_with_icon: "Request Refund"
