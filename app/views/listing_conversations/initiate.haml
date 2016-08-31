@@ -11,59 +11,67 @@
     = action_button_label
     = link_to(listing[:title], listing_path(listing[:id]))
 
-#new_message_form.centered-section
+#new_message_form
 
   - author_link = link_to(author[:display_name], person_path(username: author[:username]))
 
-  .preauthorize-section
-    %h2.preauthorize-details-title
-      = t("listing_conversations.preauthorize.details")
+  .row
+    .col-6
+      = form_for preauthorize_form,
+        :url => form_action,
+          :method => "post",
+          :html => { :id => "transaction-form" } do |form|
+        .preauthorize-section
+          - if delivery_method == :shipping
+            .row
+              %h2
+                Where's it headed?  
+            .row
+              .col-12   
+                = form.label :name   
+                = form.text_field :name
+                = form.label :street1, "Street Address"
+                = form.text_field :street1
+                = form.label :street1, "Street Address 2"
+                = form.text_field :street2
+                = form.label :city
+                = form.text_field :city    
+      
+          .row
+            .col-12
+              = form.label :content, "Add a note for the seller (optional)" 
+              = form.text_area :content, :class => "text_area"
+              = form.hidden_field :sender_id, :value => @current_user.id
 
-    %ul.no-bullets
-      %li
-        %div
-          = t("listing_conversations.preauthorize.by", listing: link_to("#{listing[:title]}", listing_path(listing[:id])), author: author_link).html_safe
+          - if @current_community.transaction_agreement_in_use
+            = render :partial => "listing_conversations/transaction_agreement_checkbox", locals: { form: form }
 
-      %li
-        = render partial: "transactions/price_break_down", locals: price_break_down_locals
+          - if local_assigns.has_key?(:quantity)
+            = form.hidden_field :quantity, value: quantity
 
-  = form_for preauthorize_form,
-    :url => form_action,
-      :method => "post",
-      :html => { :id => "transaction-form" } do |form|
+          - if delivery_method
+            = form.hidden_field :delivery_method, value: delivery_method
 
-    .preauthorize-section
-      %h2
-        = t("conversations.new.optional_message_to", author_name: author_link).html_safe
+          .row
+            .col-12.paypal-button-wrapper
+              = form.button t("paypal.pay_with_paypal"), class: "checkout-with-paypal-button"
 
-      - if delivery_method == :shipping
-        .row
-          .col-12      
-            = form.text_field :name
-            = form.text_field :street1
-            = form.text_field :street2
-            = form.text_field :city            
-      .row
-        .col-12
-          = form.text_area :content, :class => "text_area"
-          = form.hidden_field :sender_id, :value => @current_user.id
+          .row
+            .col-12
+              = render :partial => "listing_conversations/paypal_payment_methods", locals: { country_code: country_code }
 
-      - if @current_community.transaction_agreement_in_use
-        = render :partial => "listing_conversations/transaction_agreement_checkbox", locals: { form: form }
+    .col-6
+      .preauthorize-section
+        %h2.preauthorize-details-title
+          = t("listing_conversations.preauthorize.details")
 
-      - if local_assigns.has_key?(:quantity)
-        = form.hidden_field :quantity, value: quantity
+        %ul.no-bullets
+          %li
+            %div
+              = t("listing_conversations.preauthorize.by", listing: link_to("#{listing[:title]}", listing_path(listing[:id])), author: author_link).html_safe
 
-      - if delivery_method
-        = form.hidden_field :delivery_method, value: delivery_method
-
-      .row
-        .col-12.paypal-button-wrapper
-          = form.button t("paypal.pay_with_paypal"), class: "checkout-with-paypal-button"
-
-      .row
-        .col-12
-          = render :partial => "listing_conversations/paypal_payment_methods", locals: { country_code: country_code }
+          %li
+            = render partial: "transactions/price_break_down", locals: price_break_down_locals
 
   %noscript
     = "For security reasons JavaScript has to be enabled"
