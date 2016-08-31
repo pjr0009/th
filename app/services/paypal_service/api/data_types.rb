@@ -46,7 +46,7 @@ module PaypalService::API::DataTypes
     [:paypal_payment_id, :mandatory, :fixnum],
     [:ext_transaction_id, :mandatory, :string],
     [:transaction_id, :mandatory, :fixnum],
-    [:amount, :mandatory, :money],
+    [:refund_total, :mandatory, :money],
     [:token, :mandatory, :string]
   )
 

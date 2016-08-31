@@ -859,6 +859,7 @@ ActiveRecord::Schema.define(version: 20160828205544) do
     t.string   "status",                    limit: 64,  null: false
     t.string   "status_reason",             limit: 64
     t.string   "ext_refund_transaction_id", limit: 255
+    t.integer  "actual_refund_total_cents", limit: 4
   end
 
   create_table "paypal_tokens", force: :cascade do |t|

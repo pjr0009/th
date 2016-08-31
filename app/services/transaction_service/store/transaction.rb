@@ -47,7 +47,6 @@ module TransactionService::Store::Transaction
     [:shipping_address, :hash])
 
   ShippingAddress = EntityUtils.define_builder(
-    [:status, :string],
     [:name, :string],
     [:phone, :string],
     [:street1, :string],
@@ -122,8 +121,8 @@ module TransactionService::Store::Transaction
       .count
   end
 
-  def upsert_shipping_address(community_id:, transaction_id:, addr:)
-    Maybe(TransactionModel.where(id: transaction_id, community_id: community_id).first)
+  def upsert_shipping_address(transaction_id:, addr:)
+    Maybe(TransactionModel.where(id: transaction_id).first)
       .map { |m| ShippingAddressModel.where(transaction_id: m.id).first_or_create!(transaction_id: m.id) }
       .map { |a| a.update_attributes!(addr_fields(addr)) }
       .or_else { nil }

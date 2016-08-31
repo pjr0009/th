@@ -8,7 +8,7 @@ module PaypalService::Store::PaypalPayment
     [:payer_id, :mandatory, :string],
     [:receiver_id, :mandatory, :string],
     [:merchant_id, :mandatory, :string],
-    [:payment_status, const_value: :completed],
+    [:payment_status, :mandatory, :string],
     [:pending_reason],
     [:ext_transaction_id, :string],
     [:payment_total, :mandatory, :money],
@@ -60,6 +60,7 @@ module PaypalService::Store::PaypalPayment
 
   def create(community_id, transaction_id, payment)
     begin
+      payment[:payment_status] = payment[:payment_status].downcase if payment[:payment_status]
       payment.merge!({payment_date: Time.now, community_id: community_id, transaction_id: transaction_id, currency: payment[:payment_total].currency.iso_code})
       model = PaypalPaymentModel.create!(
         InitialPaymentData.call(payment)

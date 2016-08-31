@@ -328,13 +328,13 @@ module PaypalService
         action_method_name: :refund,
         output_transformer: -> (res, api) {
           output = {
-            status: res.refundInfoList.refundInfo[0].refundStatus
+            status: res.refundInfoList.refundInfo[0].refundStatus.try(:downcase)
           }
           if res.refundInfoList.refundInfo[0].encryptedRefundTransactionId
             output.merge!(ext_refund_transaction_id: res.refundInfoList.refundInfo[0].encryptedRefundTransactionId)
           end
           if res.refundInfoList.refundInfo[0].totalOfAllRefunds
-            output.merge!(refund_total: res.refundInfoList.refundInfo[0].totalOfAllRefunds.to_money(res.currencyCode))
+            output.merge!(actual_refund_total: res.refundInfoList.refundInfo[0].totalOfAllRefunds.to_money(res.currencyCode))
           end
           DataTypes::Merchant.create_refund_paypal_payment_response(output)
         }

@@ -194,7 +194,7 @@ module PaypalService
         [:status, :mandatory, :string],
         [:status_reason, :string],
         [:ext_refund_transaction_id, :string],
-        [:refund_total, :money]
+        [:actual_refund_total, :money]
       )
 
       GetTransactionDetails = EntityUtils.define_builder(

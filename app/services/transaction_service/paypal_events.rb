@@ -1,6 +1,7 @@
 module TransactionService::PaypalEvents
 
   TransactionStore = TransactionService::Store::Transaction
+  RefundStore = PaypalService::Store::PaypalRefund
 
   module_function
 
@@ -39,17 +40,11 @@ module TransactionService::PaypalEvents
   def augment_transaction_details_with_paypal_info(flow, details)
     community_id = details.delete(:community_id)
     transaction_id = details.delete(:transaction_id)
-
-    if shipping_fields_present?(details)
-      TransactionStore.upsert_shipping_address(
-        community_id: community_id,
-        transaction_id: transaction_id,
-        addr: details)
-    end
   end
 
-  def payment_refunded(flow, tx_id)
-    MarketplaceService::Transaction::Command.transition_to(tx_id, :refunded)
+  def payment_refunded(refund_info)
+    MarketplaceService::Transaction::Command.transition_to(refund_info[:transaction_id], :refunded)
+    RefundStore.update_refund(refund_info)
   end
 
   # Privates

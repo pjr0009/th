@@ -36,8 +36,6 @@ class TransactionsController < ApplicationController
       case [process[:process], gateway, booking]
       when matches([:none])
         render_free(listing_model: listing_model, author_model: author_model, community: @current_community, params: transaction_params)
-      when matches([:preauthorize, __, true])
-        redirect_to book_path(transaction_params)
       when matches([:preauthorize, :paypal])
         redirect_to initiate_order_path(transaction_params)
       when matches([:preauthorize, :braintree])
@@ -45,7 +43,7 @@ class TransactionsController < ApplicationController
       when matches([:postpay])
         redirect_to post_pay_listing_path(transaction_params)
       else
-        opts = "listing_id: #{listing_id}, payment_gateway: #{gateway}, payment_process: #{process}, booking: #{booking}"
+        opts = "listing_id: #{listing_id}, payment_gateway: #{gateway}, payment_process: #{process},"
         raise ArgumentError.new("Cannot find new transaction path to #{opts}")
       end
     }.on_error { |error_msg, data|

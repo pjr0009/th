@@ -215,6 +215,8 @@ module PaypalService::API
       # Send event payment_crated
       existing_refund = @lookup.get_refund_by_payment_id(refund_info[:paypal_payment_id])
       if existing_refund.nil?
+        refund = RefundStore.create(refund_info)
+
         request = MerchantData.create_refund_paypal_payment(refund_info)
    
         with_success(community_id, refund_info[:transaction_id],
@@ -224,16 +226,14 @@ module PaypalService::API
             try_max: 3
           }
         ) do |response|
-          response.merge!({paypal_payment_id: refund_info[:paypal_payment_id]})
-          refund = RefundStore.create(response)
+          response.merge!({paypal_payment_id: refund_info[:paypal_payment_id], transaction_id: refund_info[:transaction_id]})
 
-          @events.send(:payment_refunded, :success, refund_info[:transaction_id])
+          @events.send(:payment_refunded, :success, response)
 
           
           Result::Success.new(response)
         end
       else
-        @events.send(:payment_refunded, :success, refund_info[:transaction_id])
         Result::Success.new(existing_refund)
       end 
     end

@@ -75,14 +75,13 @@ module TransactionService::Gateway
 
     def refund(tx:, prefer_async:)
       payment = paypal_api.payments.get_payment(tx[:community_id], tx[:id])[:data]
-      payment_total = payment[:payment_total]
 
       refund_info = DataTypes.create_refund_request(
         {
          transaction_id: tx[:id],
          paypal_payment_id: payment[:id],
          ext_transaction_id: payment[:ext_transaction_id],
-         amount: payment_total,
+         refund_total: payment[:payment_total],
          token: payment[:token],
          })
 
