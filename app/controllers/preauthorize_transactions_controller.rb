@@ -91,11 +91,13 @@ class PreauthorizeTransactionsController < ApplicationController
     if(delivery_method == :errored)
       return render_error_response(request.xhr?, "Delivery method is invalid.", action: :initiate)
     end
+    
+
 
     quantity = TransactionViewUtils.parse_quantity(preauthorize_form.quantity)
     shipping_price = shipping_price_total(@listing.shipping_price, @listing.shipping_price_additional, quantity)
 
-    transaction_response = create_preauth_transaction(
+    transaction_params = {
       payment_type: :paypal,
       community: @current_community,
       listing: @listing,
@@ -105,7 +107,21 @@ class PreauthorizeTransactionsController < ApplicationController
       use_async: request.xhr?,
       delivery_method: delivery_method,
       shipping_price: shipping_price
-    )
+    }
+    if delivery_method == :shipping
+      transaction_params.merge!(
+        {
+          :shipping_address_attributes => {
+            :name    => preauthorize_form.name,
+            :street1 => preauthorize_form.street1,
+            :street2 => preauthorize_form.street2,
+            :city    => preauthorize_form.city
+          }
+        }
+      )
+    end
+
+    transaction_response = create_preauth_transaction(transaction_params)
 
     unless transaction_response[:success]
       return render_error_response(request.xhr?, t("error_messages.paypal.generic_error"), action: :initiate) unless transaction_response[:success]
@@ -344,7 +360,8 @@ class PreauthorizeTransactionsController < ApplicationController
           content: opts[:content],
           payment_gateway: opts[:payment_type],
           payment_process: :preauthorize,
-          delivery_method: opts[:delivery_method]
+          delivery_method: opts[:delivery_method],
+          shipping_address_attributes: opts[:shipping_address_attributes]
     }
 
     if(opts[:delivery_method] == :shipping)

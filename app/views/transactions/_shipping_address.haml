@@ -2,7 +2,8 @@
 
 - if shipping_address && shipping_address.slice(*fields).values.any?
   .shipping-address-container
-    %h2= t("shipping_address.shipping_address")
+    %h2
+      Shipping address
     - fields.map do |field|
       - if shipping_address[field].present?
         - if shipping_address[field] == :name

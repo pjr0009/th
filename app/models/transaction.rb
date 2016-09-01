@@ -62,7 +62,8 @@ class Transaction < ActiveRecord::Base
     :unit_tr_key,
     :unit_selector_tr_key,
     :shipping_price,
-    :delivery_method
+    :delivery_method,
+    :shipping_address_attributes
   )
 
   attr_accessor :contract_agreed
@@ -80,7 +81,7 @@ class Transaction < ActiveRecord::Base
   delegate :author, to: :listing
   delegate :title, to: :listing, prefix: true
 
-  accepts_nested_attributes_for :booking
+  accepts_nested_attributes_for :shipping_address
 
   validates_presence_of :payment_gateway
 

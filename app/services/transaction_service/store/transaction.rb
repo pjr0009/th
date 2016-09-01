@@ -22,7 +22,8 @@ module TransactionService::Store::Transaction
     [:automatic_confirmation_after_days, :fixnum, :mandatory],
     [:minimum_commission, :money, :mandatory],
     [:content, :string],
-    [:booking_fields, :hash])
+    [:booking_fields, :hash],
+    [:shipping_address_attributes, :hash])
 
   Transaction = EntityUtils.define_builder(
     [:id, :fixnum, :mandatory],
@@ -47,12 +48,12 @@ module TransactionService::Store::Transaction
     [:shipping_address, :hash])
 
   ShippingAddress = EntityUtils.define_builder(
-    [:name, :string],
+    [:name, :mandatory, :string],
     [:phone, :string],
-    [:street1, :string],
+    [:street1, :mandatory, :string],
     [:street2, :string],
     [:postal_code, :string],
-    [:city, :string],
+    [:city, :mandatory, :string],
     [:state_or_province, :string],
     [:country, :string],
     [:country_code, :string])
@@ -121,7 +122,7 @@ module TransactionService::Store::Transaction
       .count
   end
 
-  def upsert_shipping_address(transaction_id:, addr:)
+  def upsert_shipping_address(transaction_id, addr)
     Maybe(TransactionModel.where(id: transaction_id).first)
       .map { |m| ShippingAddressModel.where(transaction_id: m.id).first_or_create!(transaction_id: m.id) }
       .map { |a| a.update_attributes!(addr_fields(addr)) }

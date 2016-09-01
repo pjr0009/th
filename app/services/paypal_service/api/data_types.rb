@@ -6,7 +6,6 @@ module PaypalService::API::DataTypes
     [:item_quantity, :fixnum, default: 1],
     [:item_price, :money],
     [:merchant_id, :mandatory, :string],
-    [:require_shipping_address, :to_bool, default: false],
     [:shipping_total, :optional, :money],
     [:order_total, :mandatory, :money],
     [:merchant_brand_logo_url, :string, :optional],
