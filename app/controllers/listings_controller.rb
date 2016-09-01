@@ -816,7 +816,7 @@ class ListingsController < ApplicationController
 
     case [require_shipping_address, pickup_enabled]
     when matches([true, true])
-      [shipping, pickup]
+      [pickup, shipping]
     when matches([true, false])
       [shipping]
     when matches([false, true])

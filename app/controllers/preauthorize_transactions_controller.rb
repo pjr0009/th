@@ -24,7 +24,9 @@ class PreauthorizeTransactionsController < ApplicationController
     :name,
     :street1,
     :street2,
-    :city
+    :city,
+    :postal_code,
+    :state_or_province
    ).with_validations {
     validates_presence_of :listing_id
     validates_presence_of :name, :street1, :city , if: -> {self.delivery_method == "shipping"}
@@ -115,7 +117,9 @@ class PreauthorizeTransactionsController < ApplicationController
             :name    => preauthorize_form.name,
             :street1 => preauthorize_form.street1,
             :street2 => preauthorize_form.street2,
-            :city    => preauthorize_form.city
+            :city    => preauthorize_form.city,
+            :state_or_province   => preauthorize_form.state_or_province,
+            :postal_code => preauthorize_form.postal_code
           }
         }
       )

@@ -30,7 +30,6 @@ services:
       AWS_ACCESS_KEY_ID: AKIAJIZ5VYU4FPBOTWLQ
       AWS_SECRET_ACCESS_KEY: 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
       S3_BUCKET_NAME: assets.tackhunter-dev.com
-
     ports:
       - "3000:3000"
       - "9001:9001"

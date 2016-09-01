@@ -107,3 +107,4 @@ actions to take when deploying
 - update transaction current states where 'canceled', or 'paid', to be 'confirmed' / 'refunded'
 - reset my password
 - paypal settings are already created
+- remove custom head script from community object
