@@ -1,6 +1,13 @@
 = render :partial => "conversations/conversation_header", locals: {other_party: conversation_other_party}
+.row.transaction-listing
+  %h2
+    = link_to_unless listing[:deleted], listing[:title], listing_path(id: listing[:id])
 
-.centered-section-wide
+.row.transaction-details-row
   = render :partial => "transactions/details", locals: {role: role, tx: transaction, transaction_model: transaction_model, listing: listing, is_author: is_author, price_break_down_locals: price_break_down_locals}
 
+.row.transaction-status
+  = render :partial => "transactions/status/status", :locals => { :__transaction_model => transaction_model, role: role, is_author: is_author }
+
+.row
   = render :partial => "conversations/messages_and_form", locals: {role: role, message_form: message_form, message_form_action: message_form_action, messages: messages}

@@ -2,12 +2,13 @@ module PaypalService::API::DataTypes
 
   CreatePaymentRequest = EntityUtils.define_builder(
     [:transaction_id, :mandatory, :fixnum],
-    [:item_name, :string],
+    [:item_name, :mandatory, :string],
     [:item_quantity, :fixnum, default: 1],
-    [:item_price, :money],
+    [:item_price, :mandatory, :money],
     [:merchant_id, :mandatory, :string],
-    [:shipping_total, :optional, :money],
-    [:order_total, :mandatory, :money],
+    [:payment_total, :mandatory, :money],
+    [:shipping_total, :mandatory, :money],
+    [:memo, :mandatory, :string],
     [:merchant_brand_logo_url, :string, :optional],
     [:success, :mandatory, :string],
     [:cancel, :mandatory, :string]

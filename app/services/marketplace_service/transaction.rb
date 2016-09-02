@@ -247,7 +247,7 @@ module MarketplaceService
         rel = TransactionModel.joins(:listing)
           .where(id: transaction_id, deleted: false)
           .where(community_id: community_id)
-          .includes(:booking)
+          .includes(:listing => :listing_images)
 
         with_person = Maybe(person_id)
           .map { |p_id|

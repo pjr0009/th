@@ -249,12 +249,12 @@ module PaypalService
             actionType: "CREATE",
             cancelUrl: req[:cancel],
             currencyCode: "USD",
-            memo: "test",
+            memo: req[:memo],
             returnUrl: req[:success],
             receiverList: {
               :receiver => [{
                   accountId: req[:payer_id], 
-                  amount: 1.0,
+                  amount: req[:payment_total],
                   paymentType: "GOODS"
                 }]
               }
@@ -279,12 +279,30 @@ module PaypalService
           req_details = {
             :payKey => req[:token],
             :senderOptions => {
-              :requireShippingAddressSelection => true,
+              :shippingAddress => {
+                :addresseeName => "joh robertson",
+                :city => "Auburn",
+                :country => "US",
+                :street1 => "432 East University Drive",
+                :zip => "36832"
+              }
             },
+            :receiverOptions => [{
+              :receiver => {
+                :accountId => req[:payer_id]
+              },
+              :invoiceData => {
+                :totalShipping => req[:shipping_total],
+                :item => [{
+                  :name => req[:item_name],
+                  :price => req[:item_price]
+                }] 
+              } 
+            }],
             :displayOptions => {
                 :emailHeaderImageUrl => "https://s3.amazonaws.com/tackhunter/www/logo-black.png", 
                 :headerImageUrl => "https://s3.amazonaws.com/tackhunter/www/logo-black.png",
-                :businessName => "Tack Hunter"
+                :businessName => "Tack Hunter LLC"
               }
           }
 

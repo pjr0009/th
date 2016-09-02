@@ -1564,8 +1564,10 @@ input[type=text].delivery-price-field {
   ------------------------
 */
 
-.initiate-transaction-totals {
-    background-color: $highlight;
+.transaction-details-row, .transaction-status {
+    background-color: white;
+    border: 1px $border solid;
+    border-radius: 4px;
     padding: lines(0.5);
     margin-bottom: lines(0.5);
 }

@@ -12,21 +12,24 @@ module TransactionService::Gateway
       # we don't use separated unit price and quantity, only the total
       # price for now.
       shipping_total = Maybe(tx[:shipping_price]).or_else(0)
-      order_total = tx[:unit_price] * tx[:listing_quantity] + shipping_total
-
-      create_payment_info = DataTypes.create_create_payment_request(
-        {
+      payment_total = tx[:unit_price] * tx[:listing_quantity] + shipping_total
+      payment_params = {
          transaction_id: tx[:id],
          item_name: tx[:listing_title],
          item_quantity: tx[:listing_quantity],
          item_price: tx[:unit_price],
          merchant_id: tx[:listing_author_id],
          shipping_total: tx[:shipping_price],
-         order_total: order_total,
-         payment_total: order_total,
+         payment_total: payment_total,
+         memo: tx[:listing_title],
          success: gateway_fields[:success_url],
          cancel: gateway_fields[:cancel_url],
-         merchant_brand_logo_url: gateway_fields[:merchant_brand_logo_url]})
+         merchant_brand_logo_url: gateway_fields[:merchant_brand_logo_url]
+      }
+      if tx[:delivery_method] == :shipping
+        payment_params[:memo] = tx[:listing_title] + " + #{tx[:shipping_price]} shipping"
+      end
+      create_payment_info = DataTypes.create_create_payment_request(payment_params)
       result = paypal_api.payments.request(
         tx[:community_id],
         create_payment_info,

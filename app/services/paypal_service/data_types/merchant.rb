@@ -131,11 +131,9 @@ module PaypalService
         [:require_shipping_address, :to_bool],
         [:item_price, :mandatory, :money],
 
-        # If specified, require_shipping_address must be true
-        [:shipping_total, :optional],
-
         # Must match item_price * item_quantity + shipping_total
-        [:order_total, :mandatory, :money],
+        [:payment_total, :mandatory, :money],
+        [:memo, :mandatory, :string],
         [:success, :mandatory, :string],
         [:cancel, :mandatory, :string],
         [:payer_id, :mandatory, :string],
@@ -150,6 +148,10 @@ module PaypalService
 
       SetPaymentOptions = EntityUtils.define_builder(
         [:method, const_value: :set_payment_options],
+        [:item_price, :mandatory, :money],
+        [:item_name, :mandatory, :string],
+        [:shipping_total, :mandatory, :money],
+        [:payer_id, :mandatory, :string],
         [:token, :mandatory, :string]        
       )
 

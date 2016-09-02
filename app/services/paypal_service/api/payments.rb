@@ -52,6 +52,7 @@ module PaypalService::API
     end
 
     def do_request(community_id, create_payment, m_acc)
+      #IMPORTANT PAYER_ID IS A PAYPAL SPECIFIC TERM, REFERRING TO THEIR PAYPAL UUID
       create_payment_data = create_payment.merge(
         { payer_id: m_acc[:payer_id],
           invnum: Invnum.create(community_id, create_payment[:transaction_id], :payment)})
@@ -65,7 +66,13 @@ module PaypalService::API
         }
       ) do |response|
         #set payment options for checkout, not super critical so ill unwrap it from all of the cumbersome retry / callback stuff
-        set_payment_options_request = MerchantData.set_payment_options({token: response[:token]})
+        set_payment_options_request = MerchantData.set_payment_options({
+          token: response[:token], 
+          payer_id: m_acc[:payer_id], 
+          shipping_total: create_payment[:shipping_total], 
+          item_price: create_payment[:item_price],
+          item_name: create_payment[:item_name]
+        })
         @merchant.do_request(set_payment_options_request)
 
 
