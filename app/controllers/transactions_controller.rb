@@ -100,6 +100,8 @@ class TransactionsController < ApplicationController
   end
 
   def show
+
+    #find transaction first with user and transaction id
     m_participant =
       Maybe(
         MarketplaceService::Transaction::Query.transaction_with_conversation(
@@ -108,6 +110,7 @@ class TransactionsController < ApplicationController
         community_id: @current_community.id))
       .map { |tx_with_conv| [tx_with_conv, :participant] }
 
+    #if one isn't found, find it anyways if the user is admin
     m_admin =
       Maybe(@current_user.has_admin_rights?)
       .select { |can_show| can_show }
@@ -131,8 +134,8 @@ class TransactionsController < ApplicationController
 
     tx_model = Transaction.where(id: tx[:id]).first
     conversation = transaction_conversation[:conversation]
-    listing = Listing.where(id: tx[:listing_id]).first
-
+    listing = Listing.where(id: tx[:listing_id]).includes(:listing_images, :author).first
+    
     messages_and_actions = TransactionViewUtils.merge_messages_and_transitions(
       TransactionViewUtils.conversation_messages(conversation[:messages], @current_community.name_display_type),
       TransactionViewUtils.transition_messages(transaction_conversation, conversation, @current_community.name_display_type))
@@ -146,18 +149,30 @@ class TransactionsController < ApplicationController
         listing.author_id == @current_user.id
       end
 
-    render "transactions/show", locals: {
+    render_params = {
       messages: messages_and_actions.reverse,
       transaction: tx,
       listing: listing,
+      seller: listing.author,
       transaction_model: tx_model,
+      listing_image: "",
       conversation_other_party: person_entity_with_url(other_party(conversation)),
       is_author: is_author,
       role: role,
       message_form: MessageForm.new({sender_id: @current_user.id, conversation_id: conversation[:id]}),
       message_form_action: person_message_messages_path(@current_user, :message_id => conversation[:id]),
-      price_break_down_locals: price_break_down_locals(tx)
     }
+    unless listing.listing_images.blank?
+      render_params.merge!({listing_image: listing.listing_images.first.image.url(:thumb)})
+    end
+
+    #render the special version of the transaction in the event that the buyer initiated it by contacting the seller
+    if tx[:current_state] == :free
+      render "transactions/show_free", locals: render_params
+    else 
+      render_params.merge!({price_break_down_locals: price_break_down_locals(tx)})
+      render "transactions/show", locals: render_params
+    end
   end
 
   def refund

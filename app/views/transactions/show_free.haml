@@ -1,0 +1,7 @@
+= render :partial => "conversations/conversation_header", locals: {other_party: conversation_other_party}
+.row.transaction-listing
+  %h2
+    = link_to_unless listing[:deleted], listing[:title], listing_path(id: listing[:id])
+
+.row
+  = render :partial => "conversations/messages_and_form", locals: {role: role, message_form: message_form, message_form_action: message_form_action, messages: messages}

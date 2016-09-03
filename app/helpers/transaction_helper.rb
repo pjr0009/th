@@ -2,12 +2,12 @@ module TransactionHelper
 
   def icon_for(status)
     case status
-    when "accepted"
-      "ss-check"
-    when "confirmed"
-      "ss-check"
+    when "awaiting_shipment"
+      "icon-time"
+    when "awaiting_pickup"
+      "icon-time"
     when "rejected"
-      "ss-delete"
+      "icon-remove"
     when "dispute"
       "ss-delete"
     when "resolved"
@@ -193,35 +193,28 @@ module TransactionHelper
         } },
         awaiting_shipment: ->() { {
           both: [
-            status_info(t("conversations.status.request_paid"), icon_classes: icon_for("paid")),
             shipping_status(conversation),
             awaiting_shipment_links(conversation)
           ]
         } },
         awaiting_pickup: ->() { {
           author: [
-            status_info(t("conversations.status.request_paid"), icon_classes: icon_for("paid")),
-            status_info("Waiting for #{conversation.starter.name(conversation.community)} to pick up their item.", icon_classes: icon_for("paid")),
+            status_info("Waiting for #{conversation.starter.name(conversation.community)} to pick up their item.", icon_classes: icon_for("awaiting_pickup")),
             awaiting_pickup_links(conversation)
           ],
          starter: [
-            status_info(t("conversations.status.request_paid"), icon_classes: icon_for("paid")),
-            status_info("Waiting for pickup, please mark the item as confirmed once you pick it up.", icon_classes: icon_for("paid")),
+            status_info("Waiting for pickup, please mark the item as confirmed once you pick it up.", icon_classes: icon_for("awaiting_pickup")),
             awaiting_pickup_links(conversation)
           ]
         } },
         refund_requested: ->() { {
           author: [
-            status_info(t("conversations.status.request_paid"), icon_classes: icon_for("paid")),
-            shipping_status(conversation),
-            status_info("#{conversation.starter.name(conversation.community)} requested a refund. If this item was shipped to a customer, please wait until they've shipped it back before issuing any refunds."),
+            status_info("#{conversation.starter.name(conversation.community)} requested a refund. If this item was shipped to a customer, please wait until they've shipped it back before issuing any refunds.", icon_classes: icon_for("awaiting_pickup")),
             refund_requested_seller_links(conversation)
 
           ],
           starter: [
-            status_info(t("conversations.status.request_paid"), icon_classes: icon_for("paid")),
-            shipping_status(conversation),
-            status_info("you requested a refund, waiting for seller to respond"),
+            status_info("you requested a refund, waiting for seller to respond", icon_classes: icon_for("refund_requested")),
             refund_requested_buyer_links(conversation)
           ]
         } },
@@ -356,7 +349,7 @@ module TransactionHelper
         t("conversations.status.waiting_for_current_user_to_ship_listing",
           :listing_title => link_to(conversation.listing.title, conversation.listing)
         ).html_safe,
-        icon_classes: "ss-clockwise"
+        icon_classes: icon_for("awaiting_shipment")
       )
     else
       status_info(
@@ -364,7 +357,7 @@ module TransactionHelper
           :listing_title => link_to(conversation.listing.title, conversation.listing),
           :listing_author_name => link_to(PersonViewUtils.person_display_name(conversation.author, conversation.community))
         ).html_safe,
-        icon_classes: "ss-clockwise"
+        icon_classes: icon_for("awaiting_shipment")
       )
     end
   end

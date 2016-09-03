@@ -295,20 +295,6 @@ ul {
 .list-icon-margin { margin-top: em(3); }
 .text-with-icon { display: inline-block;}
 
-.icon-with-text-container {
-  position: relative;
-  display: inline-block;
-  margin-right: em(10);
-  text-align: left;
-  .icon-part {
-    position: absolute;
-    top: em(2);
-  }
-  .text-part {
-    padding-left: em(23);
-    min-height: em(30);
-  }
-}
 
 form {
 
@@ -1560,16 +1546,25 @@ input[type=text].delivery-price-field {
 
 /*
   ------------------------
-  Initiate Transaction
+  Transactions
   ------------------------
 */
 
-.transaction-details-row, .transaction-status {
+.transaction-details-row, .transaction-status-row {
     background-color: white;
     border: 1px $border solid;
     border-radius: 4px;
     padding: lines(0.5);
     margin-bottom: lines(0.5);
+}
+.transaction-state-tracker {
+  padding-top: 0.75em;
+  border-top: 1px solid $border;
+  .state-container {
+    .text-part {
+      display: inline-block;
+    }
+  }
 }
 
 .initiate-transaction-per-unit-wrapper,

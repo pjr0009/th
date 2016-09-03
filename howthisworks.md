@@ -98,6 +98,12 @@ Transaction
 
 
 
+Transactions / conversations
+
+- when you message someone from the contact seller button on a product it creates a free transaction, when you click buy it graduates that transaction to a paid transaction
+- when you message someone from the seller page, it creates a person message
+
+
 
 actions to take when deploying
 
