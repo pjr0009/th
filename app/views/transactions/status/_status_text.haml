@@ -2,6 +2,6 @@
   - if status_info[:info_icon_tag].present?
     = status_info[:info_icon_tag]
   - else
-    .icon-part{:class => status_info[:info_icon_part_classes]}
-    .text-part
+    %i.icon-part{:class => status_info[:info_icon_part_classes]}
+    %span.text-part
       = status_info[:info_text_part]

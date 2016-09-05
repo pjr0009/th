@@ -6,8 +6,10 @@ module TransactionHelper
       "icon-time"
     when "awaiting_pickup"
       "icon-time"
-    when "rejected"
-      "icon-remove"
+    when "shipped"
+      "icon-truck"
+    when "refund_requested"
+      "icon-warning-sign"
     when "dispute"
       "ss-delete"
     when "resolved"
@@ -124,6 +126,18 @@ module TransactionHelper
         }
       } },
 
+
+      shipped: ->() { {
+        author: {
+          icon: icon_waiting_other,
+          text: "Waiting for #{other_party_name} to confirm"
+        },
+        starter: {
+          icon: icon_waiting_you,
+          text: "Item shipped"
+        }
+      } },
+
       refund_requested: ->() { {
         author: {
           icon: icon_waiting_other,
@@ -182,7 +196,7 @@ module TransactionHelper
       .get
   end
   
-  def get_conversation_statuses(conversation, is_author)
+  def contextual_transaction_status(conversation, is_author)
     statuses = if conversation.listing && !conversation.status.eql?("free")
       status_hash = {
         accepted: ->() { {
@@ -192,9 +206,19 @@ module TransactionHelper
           ]
         } },
         awaiting_shipment: ->() { {
-          both: [
-            shipping_status(conversation),
-            awaiting_shipment_links(conversation)
+          author: [
+            status_info("Ready to ship.", icon_classes: "icon-check"),
+            awaiting_shipment_seller_links(conversation)
+          ],
+          starter: [
+            awaiting_shipment_buyer_links(conversation),
+            status_info(
+              t("conversations.status.waiting_for_listing_author_to_ship_listing",
+                :listing_title => link_to(conversation.listing.title, conversation.listing),
+                :listing_author_name => link_to(PersonViewUtils.person_display_name(conversation.author, conversation.community))
+              ).html_safe,
+              icon_classes: icon_for("awaiting_shipment")
+            )
           ]
         } },
         awaiting_pickup: ->() { {
@@ -204,6 +228,15 @@ module TransactionHelper
           ],
          starter: [
             status_info("Waiting for pickup, please mark the item as confirmed once you pick it up.", icon_classes: icon_for("awaiting_pickup")),
+            awaiting_pickup_links(conversation)
+          ]
+        } },
+        shipped: ->() { {
+          author: [
+            status_info("Shipped. Waiting for #{conversation.starter.name(conversation.community)} to mark the order as completed.", icon_classes: icon_for("shipped")),
+          ],
+         starter: [
+            status_info("Shipped. Please mark this order as completed once it arrives.", icon_classes: icon_for("shipped")),
             awaiting_pickup_links(conversation)
           ]
         } },
@@ -220,14 +253,10 @@ module TransactionHelper
         } },
         refunded: ->() { {
           author: [
-            status_info(t("conversations.status.request_paid"), icon_classes: icon_for("paid")),
-            shipping_status(conversation),
             status_info("#{conversation.starter.name(conversation.community)} was refunded")
 
           ],
           starter: [
-            status_info(t("conversations.status.request_paid"), icon_classes: icon_for("paid")),
-            shipping_status(conversation),
             status_info("refund issued")
           ]
         } },
@@ -343,24 +372,6 @@ module TransactionHelper
     end
   end
 
-  def shipping_status(conversation)
-    if current_user?(conversation.author)
-      status_info(
-        t("conversations.status.waiting_for_current_user_to_ship_listing",
-          :listing_title => link_to(conversation.listing.title, conversation.listing)
-        ).html_safe,
-        icon_classes: icon_for("awaiting_shipment")
-      )
-    else
-      status_info(
-        t("conversations.status.waiting_for_listing_author_to_ship_listing",
-          :listing_title => link_to(conversation.listing.title, conversation.listing),
-          :listing_author_name => link_to(PersonViewUtils.person_display_name(conversation.author, conversation.community))
-        ).html_safe,
-        icon_classes: icon_for("awaiting_shipment")
-      )
-    end
-  end
 
   def preauthorized_status(transaction)
     if current_user?(transaction.listing.author)
@@ -604,6 +615,10 @@ module TransactionHelper
     else
       hash
     end
+  end
+
+  def shipping_providers
+    Transaction::VALID_SHIPPING_PROVIDERS
   end
 
   def us_states

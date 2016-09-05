@@ -1551,20 +1551,34 @@ input[type=text].delivery-price-field {
 */
 
 .transaction-details-row, .transaction-status-row {
+    color: $light-body;
     background-color: white;
     border: 1px $border solid;
     border-radius: 4px;
-    padding: lines(0.5);
-    margin-bottom: lines(0.5);
+    .row-header {
+      padding: 0 lines(0.5);
+      padding-top: lines(0.5);
+    }
+    .row {
+      padding: lines(0.5);
+      margin-bottom: 0;
+
+    }
 }
-.transaction-state-tracker {
-  padding-top: 0.75em;
+.transaction-state-tracker,
+.transaction-seller-shipping-tracker,
+.transaction-buyer-shipping-tracker {
   border-top: 1px solid $border;
   .state-container {
     .text-part {
       display: inline-block;
     }
   }
+}
+
+small.title-subheader {
+  font-size: 0.65em;
+  font-weight: none;
 }
 
 .initiate-transaction-per-unit-wrapper,

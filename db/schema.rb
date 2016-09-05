@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160828205544) do
+ActiveRecord::Schema.define(version: 20160904191245) do
 
   create_table "auth_tokens", force: :cascade do |t|
     t.string   "token",            limit: 255
@@ -1031,6 +1031,8 @@ ActiveRecord::Schema.define(version: 20160828205544) do
     t.string   "delivery_method",                   limit: 31,  default: "none"
     t.integer  "shipping_price_cents",              limit: 4
     t.boolean  "deleted",                                       default: false
+    t.string   "shipping_tracking_number",          limit: 255
+    t.string   "shipping_provider",                 limit: 255
   end
 
   add_index "transactions", ["community_id", "deleted"], name: "transactions_on_cid_and_deleted", using: :btree

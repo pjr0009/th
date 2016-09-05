@@ -182,6 +182,16 @@ class TransactionsController < ApplicationController
     return redirect_to person_transaction_path(person_id: @current_user.id, message_id: @transaction.id)
   end
 
+  def update
+    #right now we only allow updating to the shipping tracking number, and shipping tracking provider columns
+    update_params = params[:transaction]
+    if update_params[:shipping_tracking_number] && update_params[:shipping_provider] && Transaction::VALID_SHIPPING_PROVIDERS.include?(update_params[:shipping_provider])
+      TransactionService::Transaction.add_tracking_info(transaction_id: params[:id], shipping_tracking_number: update_params[:shipping_tracking_number], shipping_provider: update_params[:shipping_provider], sender_id: @current_user.id)
+    end
+    redirect_to person_transaction_path(person_id: @current_user.id)
+  end
+
+
   def op_status
     process_token = params[:process_token]
 
@@ -390,6 +400,7 @@ class TransactionsController < ApplicationController
   end
 
   def fetch_transaction
-    @transaction = @current_community.transactions.find(params[:id])
+    @transaction = Transaction.find(params[:id])
   end
+
 end

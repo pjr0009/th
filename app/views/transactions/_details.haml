@@ -1,19 +1,20 @@
-.col-3
-  - fields = [:name, :phone, :street1, :street2, :city, :state_or_province, :postal_code, :country]
-  - if tx[:shipping_address] && tx[:shipping_address].slice(*fields).values.any?
-    %h4 Shipping address
-    - fields.map do |field|
-      - if tx[:shipping_address][field].present?
-        - if tx[:shipping_address][field] == :name
-          .shipping-address-name= tx[:shipping_address][field]
-        - else
-          .shipping-address-row= tx[:shipping_address][field]
-.col-3
-  - if price_break_down_locals.present?
-    %h4 Order total
-    = render partial: "transactions/price_break_down", locals: price_break_down_locals
-  - if @current_community.vat.present?
-    .message-price-vat
-      = t("conversations.show.price_excludes_vat")
+.row
+  .col-6
+    - fields = [:name, :phone, :street1, :street2, :city, :state_or_province, :postal_code, :country]
+    - if tx[:shipping_address] && tx[:shipping_address].slice(*fields).values.any?
+      %h4 Shipping address
+      - fields.map do |field|
+        - if tx[:shipping_address][field].present?
+          - if tx[:shipping_address][field] == :name
+            .shipping-address-name= tx[:shipping_address][field]
+          - else
+            .shipping-address-row= tx[:shipping_address][field]
+  .col-6
+    - if price_break_down_locals.present?
+      %h4 Order total
+      = render partial: "transactions/price_break_down", locals: price_break_down_locals
+    - if @current_community.vat.present?
+      .message-price-vat
+        = t("conversations.show.price_excludes_vat")
 
 

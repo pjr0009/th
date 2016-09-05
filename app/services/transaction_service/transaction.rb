@@ -180,6 +180,12 @@ module TransactionService::Transaction
       .or_else(res)
   end
 
+  def add_tracking_info(transaction_id:, shipping_tracking_number:, shipping_provider:, sender_id:)
+    tx = TxStore.get(transaction_id)
+    tx_process = tx_process(tx[:payment_process])
+    res = tx_process.add_tracking_info(tx: tx, shipping_tracking_number: shipping_tracking_number, shipping_provider: shipping_provider, sender_id: sender_id)
+  end
+
   # private
 
   def charge_commission(transaction_id)

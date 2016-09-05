@@ -1,3 +1,6 @@
+#messages
+  = render :partial => "conversations/message", :collection => messages, as: :message_or_action
+
 - if role == :participant
   - content_for :javascript do
     initialize_reply_form('#{I18n.locale}');
@@ -8,6 +11,3 @@
       = f.text_area :content, :class => "reply_form_text_area"
       = f.hidden_field :conversation_id
       = f.button t("conversations.show.send_reply")
-
-#messages
-  = render :partial => "conversations/message", :collection => messages, as: :message_or_action

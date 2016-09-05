@@ -30,6 +30,8 @@
 #  delivery_method                   :string(31)       default("none")
 #  shipping_price_cents              :integer
 #  deleted                           :boolean          default(FALSE)
+#  shipping_tracking_number          :string(255)
+#  shipping_provider                 :string(255)
 #
 # Indexes
 #
@@ -63,7 +65,9 @@ class Transaction < ActiveRecord::Base
     :unit_selector_tr_key,
     :shipping_price,
     :delivery_method,
-    :shipping_address_attributes
+    :shipping_address_attributes,
+    :shipping_tracking_number,
+    :shipping_provider
   )
 
   attr_accessor :contract_agreed
@@ -93,6 +97,8 @@ class Transaction < ActiveRecord::Base
     joins(:listing)
     .where("listings.author_id = ? OR starter_id = ?", person.id, person.id)
   }
+
+  VALID_SHIPPING_PROVIDERS = ["UPS", "USPS", "FEDEX", "DHL"]
 
   def status
     current_state

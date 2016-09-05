@@ -62,7 +62,10 @@ module TransactionService::Store::Transaction
     [:start_on, :date, :mandatory],
     [:end_on, :date, :mandatory],
     [:duration, :fixnum, :mandatory])
-
+  
+  TrackingInfo = EntityUtils.define_builder(
+    [:shipping_tracking_number, :mandatory, :string],
+    [:shipping_provider, :mandatory, :string])
 
   # While initiated is technically not a finished state it also
   # doesn't have any payment data to track against, so removing person
@@ -126,6 +129,12 @@ module TransactionService::Store::Transaction
     Maybe(TransactionModel.where(id: transaction_id).first)
       .map { |m| ShippingAddressModel.where(transaction_id: m.id).first_or_create!(transaction_id: m.id) }
       .map { |a| a.update_attributes!(addr_fields(addr)) }
+      .or_else { nil }
+  end
+
+  def add_tracking_info(transaction_id, fields)
+    Maybe(TransactionModel.where(id: transaction_id).first)
+      .map { |a| a.update_attributes!(TrackingInfo.call(fields)) }
       .or_else { nil }
   end
 

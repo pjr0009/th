@@ -97,6 +97,11 @@ module TransactionViewUtils
         sender: author,
         mood: :positive
       }
+    when "shipped"
+      {
+        sender: author,
+        mood: :positive
+      }
     when "refund_requested"
       {
         sender: starter,
@@ -132,6 +137,8 @@ module TransactionViewUtils
       t("conversations.message.rejected_request")
     when "awaiting_shipment", "awaiting_pickup"
       t("conversations.message.received_payment", sum: humanized_money_with_symbol(payment_sum))
+    when "shipped"
+      "Shipped"
     when "refund_requested"
       "Requested Refund"
     when "refunded"
