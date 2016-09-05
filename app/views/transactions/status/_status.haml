@@ -20,36 +20,27 @@
           %span
             Seller: 
             = link_to seller.username, person_path(seller.username)
-  -if false
-    .row  
-      .col-6
-        - convo_statuses.each do |status|
-          - if false && status[:type] != :status_info
-            .status-links{style: "float: right;"}
-              - status[:content].each do |status_link|
-                = render :partial => "transactions/status/status_link", :locals => { :conversation => transaction_model, :status_link => status_link }
+    
 
   .transaction-state-tracker
     .row
       .col-12
         - convo_statuses.each do |status|
-          - if status[:type] == :status_info
-            = render :partial => "transactions/status/status_text", :locals => { :status_info => status[:content]}
-  - if transaction_model.current_state == 'awaiting_shipment'
-    - if is_author 
-      .transaction-seller-shipping-tracker
-        .row-header
-          %h6
-            Add Tracking Info
-          %small 
-            Enter the shipping provider and tracking number and we'll pass it along to the buyer.
-        = form_for transaction_model, :url => person_transaction_path do |f|
-          .row
-            .col-8
-              = f.label "Tracking #"
-              = f.text_field :shipping_tracking_number    
-            .col-4
-              = f.label :shipping_provider
-              = f.select :shipping_provider, options_for_select(shipping_providers),{}, class: 'form-control'    
-          .row
-            = f.submit "Add Tracking Info", class: "button"
+          = render :partial => "transactions/status/status_text", :locals => { :status_info => status[:content]}
+  - if transaction_model.current_state == 'awaiting_shipment' && is_author
+    .transaction-seller-shipping-tracker
+      .row-header
+        %h6
+          Add Tracking Info
+        %small 
+          Enter the shipping provider and tracking number and we'll pass it along to the buyer.
+      = form_for transaction_model, :url => person_transaction_path do |f|
+        .row
+          .col-8
+            = f.label "Tracking #"
+            = f.text_field :shipping_tracking_number    
+          .col-4
+            = f.label :shipping_provider
+            = f.select :shipping_provider, options_for_select(shipping_providers),{}, class: 'form-control'    
+        .row
+          = f.submit "Add Tracking Info", class: "button"

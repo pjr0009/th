@@ -43,16 +43,11 @@ module TransactionService::Process
       res
     end
 
-    def complete(tx:, message:, sender_id:, gateway_adapter:)
+    def complete(tx:, gateway_adapter:)
       Transition.transition_to(tx[:id], :confirmed)
       TxStore.mark_as_unseen_by_other(community_id: tx[:community_id],
                                       transaction_id: tx[:id],
                                       person_id: tx[:listing_author_id])
-
-      if message.present?
-        send_message(tx, message, sender_id)
-      end
-
       Result::Success.new({result: true})
     end
 
@@ -89,15 +84,13 @@ module TransactionService::Process
           prefer_async: prefer_async))
     end
 
-    def add_tracking_info(tx: tx, shipping_tracking_number:, shipping_provider:, sender_id:)
+    def add_tracking_info(tx: tx, shipping_tracking_number:, shipping_provider:)
       if TxStore.add_tracking_info(tx[:id], {shipping_tracking_number: shipping_tracking_number, shipping_provider: shipping_provider})
         Transition.transition_to(tx[:id], :shipped)
         TxStore.mark_as_unseen_by_other(community_id: tx[:community_id],
                                         transaction_id: tx[:id],
                                         person_id: tx[:listing_author_id])
-        send_message(tx, "Tracking added: #{shipping_provider} #{shipping_tracking_number}", sender_id)
       end
-
     end
 
     private

@@ -132,13 +132,13 @@ module TransactionService::Transaction
     raise NoMethodError.new("Not implemented")
   end
 
-  def complete(community_id:, transaction_id:, message: nil, sender_id: nil)
+  def confirm(community_id:, transaction_id:)
     tx = TxStore.get_in_community(community_id: community_id, transaction_id: transaction_id)
 
     tx_process = tx_process(tx[:payment_process])
     gw = gateway_adapter(tx[:payment_gateway])
 
-    res = tx_process.complete(tx: tx, message: message, sender_id: sender_id, gateway_adapter: gw)
+    res = tx_process.complete(tx: tx, gateway_adapter: gw)
     res.maybe()
       .map { |gw_fields| Result::Success.new(DataTypes.create_transaction_response(query(tx[:id]), gw_fields)) }
       .or_else(res)
@@ -180,10 +180,10 @@ module TransactionService::Transaction
       .or_else(res)
   end
 
-  def add_tracking_info(transaction_id:, shipping_tracking_number:, shipping_provider:, sender_id:)
+  def add_tracking_info(transaction_id:, shipping_tracking_number:, shipping_provider:)
     tx = TxStore.get(transaction_id)
     tx_process = tx_process(tx[:payment_process])
-    res = tx_process.add_tracking_info(tx: tx, shipping_tracking_number: shipping_tracking_number, shipping_provider: shipping_provider, sender_id: sender_id)
+    res = tx_process.add_tracking_info(tx: tx, shipping_tracking_number: shipping_tracking_number, shipping_provider: shipping_provider)
   end
 
   # private

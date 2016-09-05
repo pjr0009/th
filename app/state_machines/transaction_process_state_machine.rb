@@ -18,7 +18,7 @@ class TransactionProcessStateMachine
   transition from: :awaiting_shipment,         to: [:refund_requested, :refunded, :shipped]
   transition from: :awaiting_pickup,           to: [:refund_requested, :refunded, :confirmed]
   transition from: :shipped,                   to: [:refund_requested, :confirmed]
-  transition from: :refund_requested,          to: [:refunded, :disputed]
+  transition from: :refund_requested,          to: [:refunded, :confirmed, :disputed]
 
   # after_transition(to: :paid) do |transaction|
   #   accepter = transaction.listing.author

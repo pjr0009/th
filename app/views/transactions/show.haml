@@ -1,3 +1,4 @@
+- convo_actions = contextual_transaction_actions(transaction_model, is_author)
 - content_for :title_header do
   %h1 
     = link_to_unless listing[:deleted], listing[:title], listing_path(id: listing[:id])
@@ -10,6 +11,11 @@
 
     .row.transaction-status-row
       = render :partial => "transactions/status/status", :locals => { :transaction_model => transaction_model, role: role, is_author: is_author, :listing => listing, :listing_image => listing_image, price_break_down_locals: price_break_down_locals, seller: seller}
+    .row.transaction-actions-row
+      - convo_actions.each do |status|
+        .status-links
+          - status[:content].each do |status_link|
+            = render :partial => "transactions/status/status_link", :locals => { :conversation => transaction_model, :status_link => status_link } 
   .col-6
     .row
       = render :partial => "conversations/messages_and_form", locals: {role: role, message_form: message_form, message_form_action: message_form_action, messages: messages}

@@ -186,7 +186,7 @@ class TransactionsController < ApplicationController
     #right now we only allow updating to the shipping tracking number, and shipping tracking provider columns
     update_params = params[:transaction]
     if update_params[:shipping_tracking_number] && update_params[:shipping_provider] && Transaction::VALID_SHIPPING_PROVIDERS.include?(update_params[:shipping_provider])
-      TransactionService::Transaction.add_tracking_info(transaction_id: params[:id], shipping_tracking_number: update_params[:shipping_tracking_number], shipping_provider: update_params[:shipping_provider], sender_id: @current_user.id)
+      TransactionService::Transaction.add_tracking_info(transaction_id: params[:id], shipping_tracking_number: update_params[:shipping_tracking_number], shipping_provider: update_params[:shipping_provider])
     end
     redirect_to person_transaction_path(person_id: @current_user.id)
   end

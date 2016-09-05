@@ -12,7 +12,8 @@ class ConfirmConversationsController < ApplicationController
   MessageForm = Form::Message
 
   def confirm
-    unless in_valid_pre_state(@listing_transaction)
+    unless @listing_transaction.can_be_confirmed?
+      flash[:error] = "You're transaction is not currently in a state that allows confirmation. Please contact support and we'll be happy to help out."
       return redirect_to person_transaction_path(person_id: @current_user.id, message_id: @listing_transaction.id)
     end
 
@@ -27,11 +28,12 @@ class ConfirmConversationsController < ApplicationController
       can_be_confirmed: can_be_confirmed,
       other_person: other_person,
       status: @listing_transaction.status,
-      form: @listing_transaction # TODO fix me, don't pass objects
+      form: @listing_transaction
     })
   end
 
-  def cancel
+
+  def dispute
     unless in_valid_pre_state(@listing_transaction)
       return redirect_to person_transaction_path(person_id: @current_user.id, message_id: @listing_transaction.id)
     end
@@ -55,51 +57,33 @@ class ConfirmConversationsController < ApplicationController
     if @listing_transaction.can_be_requested_to_be_refunded?
       TransactionService::Transaction.request_refund(community_id: @current_community.id, transaction_id: @listing_transaction.id, message: nil, sender_id: @current_user.id)
     end
-
     return redirect_to person_transaction_path(person_id: @current_user.id, message_id: @listing_transaction.id)
   end
 
 
   # Handles confirm and cancel forms
   def confirmation
-    status = params[:transaction][:status].to_sym
-
-    if !MarketplaceService::Transaction::Query.can_transition_to?(@listing_transaction.id, status)
-      flash[:error] = t("layouts.notifications.something_went_wrong")
+    if @listing_transaction.current_state == "confirmed"
+      flash[:error] = "You've already confirmed this order."
       return redirect_to person_transaction_path(person_id: @current_user.id, message_id: @listing_transaction.id)
     end
 
-
-    msg = parse_message_param()
-    transaction = complete_or_cancel_tx(@current_community.id, @listing_transaction.id, status, msg, @current_user.id)
-
-    give_feedback = Maybe(params)[:give_feedback].select { |v| v == "true" }.or_else { false }
+    if !MarketplaceService::Transaction::Query.can_transition_to?(@listing_transaction.id, :confirmed)
+      flash[:error] = t("layouts.notifications.something_went_wrong")
+      return redirect_to person_transaction_path(person_id: @current_user.id, message_id: @listing_transaction.id)
+    end
+    transaction = TransactionService::Transaction.confirm(community_id: @current_community.id, transaction_id: @listing_transaction.id)
 
     confirmation = ConfirmConversation.new(@listing_transaction, @current_user, @current_community)
-    confirmation.update_participation(give_feedback)
+    confirmation.update_participation(true)
 
-    flash[:notice] = t("layouts.notifications.offer_#{status}")
+    flash[:notice] = "Confirmed! We'll let the seller know."
 
-    redirect_path =
-      if give_feedback
-        new_person_message_feedback_path(:person_id => @current_user.id, :message_id => @listing_transaction.id)
-      else
-        person_transaction_path(:person_id => @current_user.id, :id => @listing_transaction.id)
-      end
-
-    redirect_to redirect_path
+    redirect_to new_person_message_feedback_path(:person_id => @current_user.id, :message_id => @listing_transaction.id)
   end
 
   private
 
-
-  def complete_or_cancel_tx(community_id, tx_id, status, msg, sender_id)
-    if status == :confirmed
-      TransactionService::Transaction.complete(community_id: community_id, transaction_id: tx_id, message: msg, sender_id: sender_id)
-    else
-      TransactionService::Transaction.cancel(community_id: community_id, transaction_id: tx_id, message: msg, sender_id: sender_id)
-    end
-  end
 
   def parse_message_param
     if(params[:message])
@@ -126,7 +110,7 @@ class ConfirmConversationsController < ApplicationController
   end
 
   def in_valid_pre_state(transaction)
-    transaction.can_be_confirmed? || transaction.can_be_canceled?
+    transaction.can_be_confirmed? || transaction.can_be_disputed?
   end
 
   def query_person_entity(id)

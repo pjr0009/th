@@ -377,7 +377,7 @@ label.radiobutton {
 }
 
 button, .button {
-  @include button($link);
+  @include button($button);
   padding-top: lines(0.375);
   padding-bottom: lines(0.375);
   height: auto;
@@ -1447,9 +1447,7 @@ input[type=text].delivery-price-field {
 
 .conversation-status {
 
-  .status-links {
-    display: inline-block;
-  }
+
 
   .inbox-horizontally-aligned-status {
     display: inline-block;
@@ -1462,7 +1460,9 @@ input[type=text].delivery-price-field {
   }
 
   .status-link {
-    @include button($link);
+    display: inline-block;
+    @include button($button);
+    padding-top: lines(0.5);
     margin-right: lines(0.5);
   }
 
@@ -1478,8 +1478,8 @@ input[type=text].delivery-price-field {
   }
 
   .reject, .cancel, .reject_preauthorized {
-    color: $red;
-    background: lighten($red, 40%);
+    color: white;
+    background: lighten($red, 10%);
     border-color: $red;
     &:hover {
       color: lighten($red, 10%);
@@ -1572,6 +1572,30 @@ input[type=text].delivery-price-field {
   .state-container {
     .text-part {
       display: inline-block;
+    }
+  }
+}
+#send_testimonial_button {
+  width: 100%;
+}
+
+.transaction-actions-row {
+  .status-link {
+    display: inline-block;
+    @include button($button);
+    margin-right: 1em;
+    padding-top: lines(0.3);
+
+  }
+
+  .reject, .cancel, .reject_preauthorized {
+    color: white;
+    background: lighten($red, 10%);
+    border-color: $red;
+    &:hover {
+      color: white;
+      background: lighten($red, 20%);
+      border-color: lighten($red, 10%);
     }
   }
 }
