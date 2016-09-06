@@ -34,11 +34,9 @@ module TransactionHelper
     icon_waiting_other = icon_tag("clock", ["icon-fix-rel", "waiting-other"])
 
     # Split "confirmed" status into "waiting_feedback" and "completed"
-    status = if waiting_feedback
-      "waiting_feedback"
-    else
-      "completed"
-    end if status == "confirmed"
+    if waiting_feedback && status == "confirmed"
+      status = "waiting_feedback"
+    end
 
     status_hash = {
       pending: ->() { {
@@ -356,8 +354,6 @@ module TransactionHelper
         confirmed: ->() { {
           both: [
             status_info(t("conversations.status.request_confirmed"), icon_classes: icon_for("confirmed")),
-            feedback_status(conversation)
-            
           ]
         } },
         canceled: ->() { {
