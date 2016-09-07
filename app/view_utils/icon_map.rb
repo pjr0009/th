@@ -156,6 +156,10 @@ ICON_MAP = {
       "raclette_grill" => "ss-cookingutensils",
     },
     "font-awesome" => {
+      "account_settings" => "icon-user",
+      "notification_settings" => "icon-bell",
+      "payments" => "icon-money",
+      "profile" => "icon-user",
       "map" => "icon-map-marker",
       "thumbnails" => "icon-th",
       "new_listing" => "icon-plus-sign-alt",
