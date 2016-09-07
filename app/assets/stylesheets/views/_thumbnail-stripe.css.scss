@@ -4,8 +4,11 @@
   width: 100%;
   overflow: hidden;
   height: 64px;
-  margin-top: 2px;
   position: relative;
+  background: white;
+  border: 1px solid $border;
+  border-top: 0;
+  border-radius: 0 0 4px 4px;
 }
 
 .listing-image-thumbnail-container {

@@ -504,13 +504,14 @@ module TransactionHelper
         link_classes: "confirm",
         link_icon_with_text_classes: icon_for("confirmed"),
         link_text_with_icon: "Issue refund"
-      },
-      {
-        link_href: cancel_person_message_path(@current_user, :id => conversation.id),
-        link_classes: "cancel",
-        link_icon_with_text_classes: icon_for("dispute"),
-        link_text_with_icon: "Dispute"
       }
+      # ,
+      # {
+      #   link_href: cancel_person_message_path(@current_user, :id => conversation.id),
+      #   link_classes: "cancel",
+      #   link_icon_with_text_classes: icon_for("dispute"),
+      #   link_text_with_icon: "Dispute"
+      # }
     ])
   end
 
@@ -521,13 +522,14 @@ module TransactionHelper
         link_classes: "confirm",
         link_icon_with_text_classes: icon_for("confirmed"),
         link_text_with_icon: "Resolved"
-      },
-      {
-        link_href: cancel_person_message_path(@current_user, :id => conversation.id),
-        link_classes: "cancel",
-        link_icon_with_text_classes: icon_for("dispute"),
-        link_text_with_icon: "Dispute"
       }
+      # ,
+      # {
+      #   link_href: cancel_person_message_path(@current_user, :id => conversation.id),
+      #   link_classes: "cancel",
+      #   link_icon_with_text_classes: icon_for("dispute"),
+      #   link_text_with_icon: "Dispute"
+      # }
     ])
   end
 

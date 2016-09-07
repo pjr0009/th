@@ -11,14 +11,6 @@
 
       = render :partial => "layouts/header_right_visible_tablet", locals: {unread_count: unread_count, inbox_path: inbox_path, icons: icons}
 
-    - if available_locales.size > 1
-      .header-right.visible-desktop
-        #header-locales-menu.toggle.header-hover{data: {toggle: '#header-locales-toggle-menu', 'toggle-position' => 'absolute'}}
-          %span.header-text-link
-            = current_locale_name
-        #header-locales-toggle-menu.toggle-menu.header-toggle-menu-language.hidden
-          = render :partial => "layouts/locale_select", :collection => available_locales, :as => :loc_array, locals: {return_after_locale_change: return_after_locale_change}
-
     - unless logged_in
       .header-right
         = link_to login_path, class: "header-text-link header-hover", id: "header-login-link" do
@@ -37,7 +29,7 @@
     .header-left.hidden-tablet
       .header-menu-container.toggle.hidden{data: {toggle: '#header-menu-toggle-menu', 'toggle-position' => 'absolute'}}
         #header-menu-mobile-anchor.header-menu-toggle-container.toggle-header-container
-          = icon_map_tag(icons, "rows", ["header-menu-icon"])
+          %i.icon-reorder
           %span.visible-tablet-inline
             = t("header.menu")
 

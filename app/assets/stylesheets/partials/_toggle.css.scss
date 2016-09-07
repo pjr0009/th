@@ -1,7 +1,7 @@
 @import "mixins/all";
 
 .toggle-menu {
-  background: $light-body;
+  background: $menu-background;
   border-color: $light-body !important;
   position: relative;
   z-index: 99999;
@@ -36,8 +36,8 @@
 
   a, .toggle-menu-link {
     &:hover {
-      background: $link;
-      color: $background;
+      background: darken($menu-background, 4%);;
+      color: white;
 
       &:after {
         color: $background;
@@ -96,9 +96,9 @@
   }
 
   &.toggled {
-    background: $light-body;
-    color: $background !important;
-    border-color: $light-body;
+    background: $menu-background;
+    color: white;
+    border-color: $menu-background;
 
     @include media(tablet) {
       width: auto;
