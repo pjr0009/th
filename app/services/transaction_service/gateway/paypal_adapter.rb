@@ -30,6 +30,7 @@ module TransactionService::Gateway
       }
       if tx[:delivery_method] == :shipping
         payment_params[:memo] = tx[:listing_title] + " + #{tx[:shipping_price]} shipping"
+        
         #augment with shipping address and new memo if shipped item
         payment_params.merge!({
           shipping_address_street1: tx[:shipping_address][:street1],
