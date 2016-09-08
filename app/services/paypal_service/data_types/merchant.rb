@@ -146,11 +146,26 @@ module PaypalService
         [:redirect_url, :mandatory, :string],
         [:receiver_username, :mandatory, :string])
 
-      SetPaymentOptions = EntityUtils.define_builder(
-        [:method, const_value: :set_payment_options],
+      SetPickupPaymentOptions = EntityUtils.define_builder(
+        [:method, const_value: :set_pickup_payment_options],
+        [:item_price, :mandatory, :money],
+        [:item_name, :mandatory, :string],
+        [:payer_id, :mandatory, :string],
+        [:token, :mandatory, :string]        
+      )
+
+      SetShippingPaymentOptions = EntityUtils.define_builder(
+        [:method, const_value: :set_shipping_payment_options],
         [:item_price, :mandatory, :money],
         [:item_name, :mandatory, :string],
         [:shipping_total, :mandatory, :money],
+        [:shipping_address_street1, :mandatory, :string],
+        [:shipping_address_street2, :string],
+        [:shipping_address_city, :mandatory, :string],
+        [:shipping_address_postal_code, :mandatory, :string],
+        [:shipping_address_phone, :mandatory, :string],
+        [:shipping_address_name, :mandatory, :string],
+        [:shipping_address_state_or_province, :mandatory, :string],
         [:payer_id, :mandatory, :string],
         [:token, :mandatory, :string]        
       )
@@ -232,7 +247,8 @@ module PaypalService
       def execute_payment(opts); ExecutePayment.call(opts) end
       def execute_payment_response(opts); ExecutePaymentResponse.call(opts) end
 
-      def set_payment_options(opts); SetPaymentOptions.call(opts) end
+      def set_pickup_payment_options(opts); SetPickupPaymentOptions.call(opts) end
+      def set_shipping_payment_options(opts); SetShippingPaymentOptions.call(opts) end
       def set_payment_options_response(opts); SetPaymentOptionsResponse.call(opts) end
 
       def create_set_express_checkout_order(opts); SetExpressCheckoutOrder.call(opts) end

@@ -26,10 +26,11 @@ class PreauthorizeTransactionsController < ApplicationController
     :street2,
     :city,
     :postal_code,
-    :state_or_province
+    :state_or_province,
+    :phone
    ).with_validations {
     validates_presence_of :listing_id
-    validates_presence_of :name, :street1, :city , if: -> {self.delivery_method == "shipping"}
+    validates_presence_of :name, :street1, :city, :phone, :postal_code, :state_or_province , if: -> {self.delivery_method == "shipping"}
     validates :delivery_method, inclusion: { in: %w(shipping pickup), message: "%{value} is not shipping or pickup." }, allow_nil: true
   }
 
@@ -119,7 +120,8 @@ class PreauthorizeTransactionsController < ApplicationController
             :street2 => preauthorize_form.street2,
             :city    => preauthorize_form.city,
             :state_or_province   => preauthorize_form.state_or_province,
-            :postal_code => preauthorize_form.postal_code
+            :postal_code => preauthorize_form.postal_code,
+            :phone => preauthorize_form.phone
           }
         }
       )

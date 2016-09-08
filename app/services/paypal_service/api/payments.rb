@@ -66,15 +66,31 @@ module PaypalService::API
         }
       ) do |response|
         #set payment options for checkout, not super critical so ill unwrap it from all of the cumbersome retry / callback stuff
-        set_payment_options_request = MerchantData.set_payment_options({
-          token: response[:token], 
-          payer_id: m_acc[:payer_id], 
-          shipping_total: create_payment[:shipping_total], 
-          item_price: create_payment[:item_price],
-          item_name: create_payment[:item_name]
-        })
+        if create_payment[:delivery_method] == :shipping
+          set_payment_options_request = MerchantData.set_shipping_payment_options({
+            token: response[:token], 
+            payer_id: m_acc[:payer_id], 
+            shipping_total: create_payment[:shipping_total], 
+            item_price: create_payment[:item_price],
+            item_name: create_payment[:item_name],
+            shipping_address_street1: create_payment[:shipping_address_street1],
+            shipping_address_street2: create_payment[:shipping_address_street2],
+            shipping_address_city: create_payment[:shipping_address_city],
+            shipping_address_postal_code: create_payment[:shipping_address_postal_code],
+            shipping_address_state_or_province: create_payment[:shipping_address_state_or_province],
+            shipping_address_phone: create_payment[:shipping_address_phone],
+            shipping_address_name: create_payment[:shipping_address_name]
+          })
+        else
+          set_payment_options_request = MerchantData.set_pickup_payment_options({
+            token: response[:token], 
+            payer_id: m_acc[:payer_id], 
+            shipping_total: create_payment[:shipping_total], 
+            item_price: create_payment[:item_price],
+            item_name: create_payment[:item_name]
+          })
+        end
         @merchant.do_request(set_payment_options_request)
-
 
         #create paypal token
         TokenStore.create({

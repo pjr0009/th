@@ -32,7 +32,7 @@ class ShippingAddress < ActiveRecord::Base
     :street1,
     :street2
   )
-  validates_presence_of :name, :city, :street1, :postal_code, :state_or_province
+  validates_presence_of :name, :city, :street1, :postal_code, :state_or_province, :phone
 
   belongs_to :tx, class_name: "Transaction", foreign_key: "transaction_id"
 end

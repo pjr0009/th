@@ -1,18 +1,41 @@
 module PaypalService::API::DataTypes
 
-  CreatePaymentRequest = EntityUtils.define_builder(
+  CreateShippingPaymentRequest = EntityUtils.define_builder(
     [:transaction_id, :mandatory, :fixnum],
+    [:delivery_method, :to_symbol, :mandatory, one_of: [:none, :shipping, :pickup], default: :none],
     [:item_name, :mandatory, :string],
     [:item_quantity, :fixnum, default: 1],
     [:item_price, :mandatory, :money],
     [:merchant_id, :mandatory, :string],
     [:payment_total, :mandatory, :money],
-    [:shipping_total, :mandatory, :money],
+    [:shipping_total, :money],
+    [:shipping_address_street1, :mandatory, :string],
+    [:shipping_address_street2, :string],
+    [:shipping_address_city, :mandatory, :string],
+    [:shipping_address_postal_code, :mandatory, :string],
+    [:shipping_address_phone, :mandatory, :string],
+    [:shipping_address_state_or_province, :mandatory, :string],
+    [:shipping_address_name, :mandatory, :string],
     [:memo, :mandatory, :string],
     [:merchant_brand_logo_url, :string, :optional],
     [:success, :mandatory, :string],
     [:cancel, :mandatory, :string]
   )
+
+  CreatePickupPaymentRequest = EntityUtils.define_builder(
+    [:transaction_id, :mandatory, :fixnum],
+    [:delivery_method, :to_symbol, :mandatory, one_of: [:none, :shipping, :pickup], default: :none],
+    [:item_name, :mandatory, :string],
+    [:item_quantity, :fixnum, default: 1],
+    [:item_price, :mandatory, :money],
+    [:merchant_id, :mandatory, :string],
+    [:payment_total, :mandatory, :money],
+    [:memo, :mandatory, :string],
+    [:merchant_brand_logo_url, :string, :optional],
+    [:success, :mandatory, :string],
+    [:cancel, :mandatory, :string]
+  )
+
 
   # Reponse for get_request_token is a PaypalService::Store::Token::Entity.Token
 
@@ -102,7 +125,8 @@ module PaypalService::API::DataTypes
 
   module_function
 
-  def create_create_payment_request(opts); CreatePaymentRequest.call(opts) end
+  def create_create_shipping_payment_request(opts); CreateShippingPaymentRequest.call(opts) end
+  def create_create_pickup_payment_request(opts); CreatePickupPaymentRequest.call(opts) end
   def create_payment_request(opts); PaymentRequest.call(opts) end
   def create_refund_request(opts); CreateRefundRequest.call(opts) end
   def create_token_verification_info(opts); TokenVerificationInfo.call(opts) end

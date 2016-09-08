@@ -13,6 +13,7 @@ module TransactionService::Gateway
       # price for now.
       shipping_total = Maybe(tx[:shipping_price]).or_else(0)
       payment_total = tx[:unit_price] * tx[:listing_quantity] + shipping_total
+      #define base payment creation params
       payment_params = {
          transaction_id: tx[:id],
          item_name: tx[:listing_title],
@@ -24,12 +25,27 @@ module TransactionService::Gateway
          memo: tx[:listing_title],
          success: gateway_fields[:success_url],
          cancel: gateway_fields[:cancel_url],
+         delivery_method: tx[:delivery_method],
          merchant_brand_logo_url: gateway_fields[:merchant_brand_logo_url]
       }
       if tx[:delivery_method] == :shipping
         payment_params[:memo] = tx[:listing_title] + " + #{tx[:shipping_price]} shipping"
+        #augment with shipping address and new memo if shipped item
+        payment_params.merge!({
+          shipping_address_street1: tx[:shipping_address][:street1],
+          shipping_address_street2: tx[:shipping_address][:street2],
+          shipping_address_city: tx[:shipping_address][:city],
+          shipping_address_state_or_province: tx[:shipping_address][:state_or_province],
+          shipping_address_name: tx[:shipping_address][:name],
+          shipping_address_phone: tx[:shipping_address][:phone],
+          shipping_address_postal_code: tx[:shipping_address][:postal_code]
+        })
+        create_payment_info = DataTypes.create_create_shipping_payment_request(payment_params)
+
+      else
+        create_payment_info = DataTypes.create_create_pickup_payment_request(payment_params)
       end
-      create_payment_info = DataTypes.create_create_payment_request(payment_params)
+
       result = paypal_api.payments.request(
         tx[:community_id],
         create_payment_info,

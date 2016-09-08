@@ -274,17 +274,18 @@ module PaypalService
         }
       ),
 
-      set_payment_options: PaypalAction.def_action(
+      set_shipping_payment_options: PaypalAction.def_action(
         input_transformer: -> (req, config) {
           req_details = {
             :payKey => req[:token],
             :senderOptions => {
               :shippingAddress => {
-                :addresseeName => "joh robertson",
-                :city => "Auburn",
+                :addresseeName => req[:shipping_address_name],
+                :city => req[:shipping_address_city],
                 :country => "US",
-                :street1 => "432 East University Drive",
-                :zip => "36832"
+                :street1 => req[:shipping_address_street1],
+                :street2 => req[:shipping_address_street2],
+                :zip => req[:shipping_address_postal_code]
               }
             },
             :receiverOptions => [{
@@ -293,6 +294,37 @@ module PaypalService
               },
               :invoiceData => {
                 :totalShipping => req[:shipping_total],
+                :item => [{
+                  :name => req[:item_name],
+                  :price => req[:item_price]
+                }] 
+              } 
+            }],
+            :displayOptions => {
+                :emailHeaderImageUrl => "https://s3.amazonaws.com/tackhunter/www/logo-black.png", 
+                :headerImageUrl => "https://s3.amazonaws.com/tackhunter/www/logo-black.png",
+                :businessName => "Tack Hunter LLC"
+              }
+          }
+
+          req_details
+        },
+        wrapper_method_name: :build_set_payment_options,
+        action_method_name: :set_payment_options,
+        output_transformer: -> (res, api) {
+          DataTypes::Merchant.set_payment_options_response({success: true})
+        }
+      ),
+
+      set_pickup_payment_options: PaypalAction.def_action(
+        input_transformer: -> (req, config) {
+          req_details = {
+            :payKey => req[:token],
+            :receiverOptions => [{
+              :receiver => {
+                :accountId => req[:payer_id]
+              },
+              :invoiceData => {
                 :item => [{
                   :name => req[:item_name],
                   :price => req[:item_price]
