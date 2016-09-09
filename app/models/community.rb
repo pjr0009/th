@@ -385,33 +385,16 @@ class Community < ActiveRecord::Base
   def new_members_during_last(time)
     community_memberships.where(:created_at => time.ago..Time.now).collect(&:person)
   end
-
+  
+  #depricated
   # Returns the full domain with default protocol in front
   def full_url
-    full_domain(:with_protocol => true)
+    full_domain
   end
 
   #returns full domain without protocol
   def full_domain(options= {})
-    # assume that if port is used in domain config, it should
-    # be added to the end of the full domain for links to work
-    # This concerns usually mostly testing and development
-    default_host, default_port = APP_CONFIG.domain.split(':')
-    port_string = options[:port] || default_port
-
-    if domain.present? && use_domain? # custom domain
-      dom = domain
-    else # just a subdomain specified
-      dom = "#{self.ident}.#{default_host}"
-      dom += ":#{port_string}" unless port_string.blank?
-    end
-
-    if options[:with_protocol]
-      dom = "#{(APP_CONFIG.always_use_ssl ? "https://" : "http://")}#{dom}"
-    end
-
-    return dom
-
+    "https://www.tackhunter.com/"
   end
 
   # returns the community specific service name if such is in use

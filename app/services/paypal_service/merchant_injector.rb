@@ -9,10 +9,8 @@ module PaypalService
     def build_paypal_merchant
       config = DataTypes.create_config(
         {
-          endpoint: build_endpoint(APP_CONFIG),
           api_credentials: build_api_credentials(APP_CONFIG),
-          ipn_hook: build_ipn_hook(APP_CONFIG),
-          button_source: APP_CONFIG.paypal_button_source
+          ipn_hook: build_ipn_hook(APP_CONFIG)
         }
       )
 
@@ -33,17 +31,13 @@ module PaypalService
       end
     end
 
-    def build_endpoint(config)
-      PaypalService::DataTypes.create_endpoint({ endpoint_name: config.paypal_endpoint })
-    end
-
     def build_api_credentials(config)
       PaypalService::DataTypes.create_api_credentials({
         username: config.paypal_username,
         password: config.paypal_password,
         signature: config.paypal_signature,
         app_id: config.paypal_app_id,
-        partner_id: config.paypal_partner_id})
+        mode: config.paypal_mode})
     end
   end
 end

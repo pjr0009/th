@@ -14,6 +14,18 @@ development:
   aws_access_key_id: <%= ENV['AWS_ACCESS_KEY_ID'] %>
   aws_secret_access_key: <%= ENV['AWS_SECRET_ACCESS_KEY'] %>
   s3_upload_bucket_name: <%= ENV['S3_BUCKET_NAME'] %>
+  # Paypal credentials for the platform owner.
+  paypal_username: admin-facilitator_api1.tackhunter.com
+  paypal_password: 9WZPG8PJKG73ZZ46
+  paypal_signature: AC5YHZoILywPAMWQ4-6lMckFrgzjAZ-rp67.l5GyiQwp6ByVUzPJTaIO
+  paypal_app_id: APP-80W284485P519543T # Global test id
+  # Paypal environment to use. Either :sandbox or :live
+  paypal_mode: sandbox
+  # The domain that we want Paypal to send IPN notifications to
+  # Note! You must also add the hook url for your production deployment
+  # manually to your production paypal account profile.
+  paypal_ipn_domain:
+  paypal_ipn_protocol: https
 
 
 test:
@@ -29,5 +41,21 @@ production:
   aws_secret_access_key: <%= ENV['AWS_SECRET_ACCESS_KEY'] %>
   s3_upload_bucket_name: <%= ENV['S3_BUCKET_NAME'] %>
   mail_delivery_method: smtp
+  # Paypal credentials for the platform owner.
+  paypal_username: admin-facilitator_api1.tackhunter.com
+  paypal_password: 9WZPG8PJKG73ZZ46
+  paypal_signature: AC5YHZoILywPAMWQ4-6lMckFrgzjAZ-rp67.l5GyiQwp6ByVUzPJTaIO
+  paypal_app_id: APP-80W284485P519543T # Global test id
+  # Paypal environment to use. Either :sandbox or :live
+  paypal_mode: sandbox
+  # The domain that we want Paypal to send IPN notifications to
+  # Note! You must also add the hook url for your production deployment
+  # manually to your production paypal account profile.
+  paypal_ipn_domain:
+  paypal_ipn_protocol: https
+
+
+
+
 
   

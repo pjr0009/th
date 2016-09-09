@@ -57,8 +57,7 @@ module PaypalService
     def build_paypal_accounts
       PaypalService::API::Accounts.new(
         PaypalService::PermissionsInjector.build_paypal_permissions,
-        PaypalService::MerchantInjector.build_paypal_merchant,
-        PaypalService::OnboardingInjector.build_paypal_onboarding)
+        PaypalService::MerchantInjector.build_paypal_merchant)
     end
   end
 end

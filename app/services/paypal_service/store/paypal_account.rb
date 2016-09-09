@@ -19,7 +19,6 @@ module PaypalService::Store::PaypalAccount
 
     [:order_permission_verification_code, :string],
     [:order_permission_scope, :string],
-    [:order_permission_onboarding_id, :string],
 
     [:billing_agreement_billing_agreement_id, :string],
     [:billing_agreement_paypal_username_to, :string],
@@ -65,7 +64,6 @@ module PaypalService::Store::PaypalAccount
       order_permission_paypal_username_to: :paypal_username_to,
       order_permission_verification_code: :verification_code,
       order_permission_scope: :scope,
-      order_permission_onboarding_id: :onboarding_id,
       order_permission_permissions_granted: :permissions_granted
     }
 
@@ -114,8 +112,8 @@ module PaypalService::Store::PaypalAccount
       query_one(person_id: person_id, community_id: community_id, payer_id: payer_id)
     end
 
-    def find_pending(person_id: nil, community_id:, order_permission_request_token:, order_permission_onboarding_id:)
-      query_one(person_id: person_id, community_id: community_id, order_permission_request_token: order_permission_request_token, order_permission_onboarding_id: order_permission_onboarding_id)
+    def find_pending(person_id: nil, community_id:, order_permission_request_token:)
+      query_one(person_id: person_id, community_id: community_id, order_permission_request_token: order_permission_request_token)
     end
 
     def find_active(person_id: nil, community_id:)
@@ -181,12 +179,11 @@ module PaypalService::Store::PaypalAccount
     update_model(model, opts, find_params)
   end
 
-  def update_pending(community_id:, person_id: nil, order_permission_request_token:, order_permission_onboarding_id:, opts:)
+  def update_pending(community_id:, person_id: nil, order_permission_request_token:, opts:)
     find_params = {
       community_id: community_id,
       person_id: person_id,
-      order_permission_request_token: order_permission_request_token,
-      order_permission_onboarding_id: order_permission_onboarding_id
+      order_permission_request_token: order_permission_request_token
     }
 
     model = finder.find_pending(find_params)
@@ -213,12 +210,11 @@ module PaypalService::Store::PaypalAccount
     maybe_billing_agreement.each { |billing_agreement| billing_agreement.destroy }
   end
 
-  def delete_pending(person_id: nil, community_id:, order_permission_request_token:, order_permission_onboarding_id:)
+  def delete_pending(person_id: nil, community_id:, order_permission_request_token:)
     model = finder.find_pending(
       community_id: community_id,
       person_id: person_id,
-      order_permission_request_token: order_permission_request_token,
-      order_permission_onboarding_id: order_permission_onboarding_id
+      order_permission_request_token: order_permission_request_token
     )
     model.each { |account| account.destroy }
   end
@@ -329,7 +325,7 @@ module PaypalService::Store::PaypalAccount
           Maybe(m).order_permission.map { |perm|
           if perm.verification_code || perm.permissions_granted
             :verified
-          elsif perm.request_token || perm.onboarding_id
+          elsif perm.request_token
             :pending
           else
             :not_verified

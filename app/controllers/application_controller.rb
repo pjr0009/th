@@ -18,7 +18,6 @@ class ApplicationController < ActionController::Base
     :set_locale,
     :redirect_locale_param,
     :generate_event_id,
-    :set_default_url_for_mailer,
     :fetch_community_admin_status,
     :warn_about_missing_payment_info,
     :set_homepage_path,
@@ -297,13 +296,6 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def set_default_url_for_mailer
-    url = @current_community ? "#{@current_community.full_domain}" : "www.#{APP_CONFIG.domain}"
-    ActionMailer::Base.default_url_options = {:host => url}
-    if APP_CONFIG.always_use_ssl
-      ActionMailer::Base.default_url_options[:protocol] = "https"
-    end
-  end
 
   def fetch_community_admin_status
     @is_current_community_admin = @current_user && @current_user.has_admin_rights?

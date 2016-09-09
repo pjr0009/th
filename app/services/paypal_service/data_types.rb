@@ -1,13 +1,10 @@
 module PaypalService
   module DataTypes
-
-    Endpoint = EntityUtils.define_builder([:endpoint_name, one_of: ["live", "sandbox"]])
-
     APICredentials = EntityUtils.define_builder(
       [:username, :mandatory, :string],
       [:password, :mandatory, :string],
       [:signature, :mandatory, :string],
-      [:partner_id, :mandatory, :string],
+      [:mode, :mandatory, :string],
       [:app_id, :mandatory, :string])
 
     IpnHook = EntityUtils.define_builder([:url, :mandatory, :string])
@@ -18,15 +15,12 @@ module PaypalService
       [:error_msg, :string])
 
     Config = EntityUtils.define_builder(
-      [:endpoint, :mandatory],
       [:api_credentials, :mandatory],
-      [:ipn_hook],
-      [:button_source, :string])
+      [:ipn_hook])
 
 
     module_function
 
-    def create_endpoint(opts); Endpoint.call(opts) end
     def create_api_credentials(opts); APICredentials.call(opts) end
     def create_ipn_hook(opts); IpnHook.call(opts) end
     def create_config(opts); Config.call(opts) end

@@ -3,10 +3,9 @@ module PaypalService::API
 
   class Accounts
 
-    def initialize(permissions, merchant, onboarding, logger = PaypalService::Logger.new)
+    def initialize(permissions, merchant,  logger = PaypalService::Logger.new)
       @permissions = permissions
       @merchant = merchant
-      @onboarding = onboarding
       @logger = logger
     end
 
@@ -48,68 +47,41 @@ module PaypalService::API
     # }
     #
     def create(community_id:, person_id: nil, order_permission_request_token:, body:, flow: :old)
-      
-      if flow == :new
-        validation = @onboarding.validate_result_params(body[:onboarding_params])
-        unless validation[:success]
-          @logger.warn("Failed to connect paypal account for cid: #{community_id}, pid: #{person_id}, onboarding_params: #{body[:onboarding_params]}")
-          return Result::Error.new("Invalid onboarding parameters", body[:onboarding_params])
-        end
-
-        account = create_verified_account!(
-          community_id: community_id,
-          person_id: person_id,
-          order_permission_onboarding_id: validation[:onboarding_id],
-          order_permission_request_token: nil,
-          payer_id: validation[:paypal_merchant_id],
-
-          opts: {
-            payer_id: validation[:paypal_merchant_id],
-            order_permission_onboarding_id: validation[:onboarding_id],
-            order_permission_permissions_granted: validation[:permissions_granted],
-            active: true
-          }
-        )
-
-        Result::Success.new(account)
-      else
+      with_success_permissions(
+        PaypalService::DataTypes::Permissions
+        .create_get_access_token(
+          {
+            request_token: order_permission_request_token,
+            verification_code: body[:order_permission_verification_code]
+          })
+      ) { |access_token|
         with_success_permissions(
           PaypalService::DataTypes::Permissions
-          .create_get_access_token(
+          .create_get_basic_personal_data(
             {
-              request_token: order_permission_request_token,
-              verification_code: body[:order_permission_verification_code]
+              token: access_token[:token],
+              token_secret: access_token[:token_secret]
             })
-        ) { |access_token|
-          with_success_permissions(
-            PaypalService::DataTypes::Permissions
-            .create_get_basic_personal_data(
-              {
-                token: access_token[:token],
-                token_secret: access_token[:token_secret]
-              })
-          ) { |personal_data|
-            account = create_verified_account!(
-              community_id: community_id,
-              person_id: person_id,
-              order_permission_onboarding_id: nil,
-              order_permission_request_token: order_permission_request_token,
+        ) { |personal_data|
+          account = create_verified_account!(
+            community_id: community_id,
+            person_id: person_id,
+            order_permission_request_token: order_permission_request_token,
+            payer_id: personal_data[:payer_id],
+
+            opts: {
+              email: personal_data[:email],
               payer_id: personal_data[:payer_id],
+              order_permission_request_token: order_permission_request_token,
+              order_permission_verification_code: body[:order_permission_verification_code],
+              order_permission_scope: access_token[:scope].join(','),
+              active: true
+            }
+          )
 
-              opts: {
-                email: personal_data[:email],
-                payer_id: personal_data[:payer_id],
-                order_permission_request_token: order_permission_request_token,
-                order_permission_verification_code: body[:order_permission_verification_code],
-                order_permission_scope: access_token[:scope].join(','),
-                active: true
-              }
-            )
-
-            Result::Success.new(account)
-          }
+          Result::Success.new(account)
         }
-      end
+      }
     end
 
     ## POST /accounts/billing_agreement/request?community_id=1&person_id=asdfasdgasdfd
@@ -223,7 +195,7 @@ module PaypalService::API
 
     private
 
-    def create_verified_account!(community_id:, person_id: nil, order_permission_request_token:, order_permission_onboarding_id:, payer_id:, opts:)
+    def create_verified_account!(community_id:, person_id: nil, order_permission_request_token:, payer_id:, opts:)
       existing = PaypalAccountStore.get(
         community_id: community_id,
         person_id: person_id,
@@ -236,7 +208,6 @@ module PaypalService::API
           community_id: community_id,
           person_id: person_id,
           order_permission_request_token: order_permission_request_token,
-          order_permission_onboarding_id: order_permission_onboarding_id,
           opts: opts
         )
       else
@@ -244,8 +215,7 @@ module PaypalService::API
         PaypalAccountStore.delete_pending(
           community_id: community_id,
           person_id: person_id,
-          order_permission_request_token: order_permission_request_token,
-          order_permission_onboarding_id: order_permission_onboarding_id
+          order_permission_request_token: order_permission_request_token
         )
 
         # Update the 'existing' account
