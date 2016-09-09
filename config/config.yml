@@ -10,7 +10,6 @@
 
 development:
   # Add local `development` environment configuration overrides here
-  domain: "192.168.99.100:3000"
   s3_bucket_name: <%= ENV['S3_BUCKET_NAME'] %>
   aws_access_key_id: <%= ENV['AWS_ACCESS_KEY_ID'] %>
   aws_secret_access_key: <%= ENV['AWS_SECRET_ACCESS_KEY'] %>
@@ -25,7 +24,6 @@ staging:
   # Add local `staging` environment configuration overrides here
 
 production:
-  domain: "tackhunter.herokuapp.com"
   s3_bucket_name: <%= ENV['S3_BUCKET_NAME'] %>
   aws_access_key_id: <%= ENV['AWS_ACCESS_KEY_ID'] %>
   aws_secret_access_key: <%= ENV['AWS_SECRET_ACCESS_KEY'] %>
