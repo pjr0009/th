@@ -637,26 +637,11 @@ module ApplicationHelper
   end
 
   def search_path(opts = {})
-    PathHelpers.search_path(
-      community_id: @current_community.id,
-      logged_in: @current_user.present?,
-      locale_param: params[:locale],
-      default_locale: @current_community.default_locale,
-      opts: opts)
+    PathHelpers.paths.search_path
   end
 
   def search_url(opts = {})
-    PathHelpers.search_url(
-      community_id: @current_community.id,
-      opts: opts)
-  end
-
-  def landing_page_path
-    PathHelpers.landing_page_path(
-      community_id: @current_community.id,
-      logged_in: @current_user.present?,
-      default_locale: @current_community.default_locale,
-      locale_param: params[:locale])
+    PathHelpers.search_url
   end
 
   # Give an array of translation keys you need in JavaScript. The keys will be loaded and ready to be used in JS

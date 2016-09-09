@@ -571,7 +571,7 @@ function addListingMarkers(listings, viewport) {
             infowindow.setMinHeight(150);
             infowindow.open(map,marker);
             $.ajax({
-              url: '/' + locale + '/listing_bubble/' + entry.id,
+              url: '/listing_bubble/' + entry.id,
               dataType: "html",
               success: function(data) {
                 $('#map_bubble').html(data);

@@ -1040,7 +1040,7 @@ ClusterIcon.prototype.triggerClusterClick = function() {
       for (var i = 0, marker; marker = markers[i]; i++) {
         ids.push(this.cluster_.markerClusterer_.markerContents_[this.cluster_.markerIndex_[i]]);
       }
-      $.get('/' + locale + '/listing_bubble_multiple/'+ids.join(','), function(data) {
+      $.get('/listing_bubble_multiple/'+ids.join(','), function(data) {
         $('#map_bubble').html(data);
 
         var index = 0;

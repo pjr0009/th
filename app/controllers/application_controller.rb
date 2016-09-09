@@ -2,17 +2,9 @@ require 'will_paginate/array'
 
 class ApplicationController < ActionController::Base
 
-  module DefaultURLOptions
-    # Adds locale to all links
-    def default_url_options
-      { :locale => I18n.locale }
-    end
-  end
-
   include ApplicationHelper
   include IconHelper
   include FeatureFlagHelper
-  include DefaultURLOptions
   protect_from_forgery
   layout 'application'
 
@@ -107,30 +99,7 @@ class ApplicationController < ActionController::Base
   end
 
   def set_homepage_path
-    present = ->(x) { x.present? }
-
-    @homepage_path =
-      case [@current_community, @current_user, params[:locale]]
-      when matches([nil, __, __])
-        # FIXME We still have controllers that inherit application controller even though
-        # they do not have @current_community
-        #
-        # Return nil, do nothing, but don't break
-        nil
-
-      when matches([present, nil, present])
-        # We don't have @current_user.
-        # Take the locale from URL param, and keep it in the URL if the locale
-        # differs from community default
-        if params[:locale] != @current_community.default_locale.to_s
-          homepage_with_locale_path
-        else
-          homepage_without_locale_path(locale: nil)
-        end
-
-      else
-        homepage_without_locale_path(locale: nil)
-      end
+    @homepage_path = search_path
   end
 
 

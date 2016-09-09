@@ -219,9 +219,7 @@ class ListingsController < ApplicationController
   def new
     category_tree = CategoryViewUtils.category_tree(
       categories: ListingService::API::Api.categories.get_all(community_id: @current_community.id)[:data],
-      shapes: get_shapes,
-      locale: I18n.locale,
-      all_locales: @current_community.locales
+      shapes: get_shapes
     )
 
     render :new, locals: {
@@ -349,9 +347,7 @@ class ListingsController < ApplicationController
 
     category_tree = CategoryViewUtils.category_tree(
       categories: ListingService::API::Api.categories.get_all(community_id: @current_community.id)[:data],
-      shapes: get_shapes,
-      locale: I18n.locale,
-      all_locales: @current_community.locales
+      shapes: get_shapes
     )
 
     category_id, subcategory_id =

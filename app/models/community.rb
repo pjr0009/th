@@ -299,10 +299,9 @@ class Community < ActiveRecord::Base
     name(locale)
   end
 
-  # If community name has several words, add an extra space
-  # to the end to make Finnish translation look better.
+  #depricated
   def name_with_separator(locale)
-    (name(locale).include?(" ") && locale.to_s.eql?("fi")) ? "#{name(locale)} " : name(locale)
+    name(locale)
   end
 
   # If community full name has several words, add an extra space

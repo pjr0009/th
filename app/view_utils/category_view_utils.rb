@@ -28,17 +28,15 @@ module CategoryViewUtils
   #     "id" => "id"
   #   }
   # ]
-  def category_tree(categories:, shapes:, locale:, all_locales:)
+  def category_tree(categories:, shapes:)
     categories.map { |c|
       {
         id: c[:id],
-        label: pick_category_translation(c[:translations], locale, all_locales),
+        label: c[:name],
         listing_shapes: embed_shape(c[:listing_shape_ids], shapes),
         subcategories: category_tree(
           categories: c[:children],
-          shapes: shapes,
-          locale: locale,
-          all_locales: all_locales
+          shapes: shapes
         )
       }
     }
@@ -57,23 +55,7 @@ module CategoryViewUtils
       }
     }
   end
-
-  def pick_category_translation(category_translations, locale, all_locales)
-    prio = translation_preferences(locale, all_locales)
-    category_translations.sort { |a, b|
-      a_prio = prio[a[:locale]]
-      b_prio = prio[b[:locale]]
-      sort_num_or_nil(a_prio, b_prio)
-    }.first[:name]
-  end
-
-  def translation_preferences(preferred, all)
-    [preferred].concat(all).map(&:to_s)
-      .uniq
-      .each_with_index
-      .map { |l, index| [l, index] }
-      .to_h
-  end
+ 
 
   def sort_num_or_nil(a, b)
     if a.nil?
