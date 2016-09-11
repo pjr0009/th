@@ -444,12 +444,6 @@ module TransactionHelper
   def awaiting_shipment_seller_links(conversation)
     status_links([
       {
-        link_href: confirm_person_message_path(@current_user, :id => conversation.id),
-        link_classes: "confirm",
-        link_icon_with_text_classes: icon_for("confirmed"),
-        link_text_with_icon: "Add Tracking Info"
-      },
-      {
         link_href: refund_person_transaction_path(@current_user, :id => conversation.id),
         link_classes: "cancel",
         link_icon_with_text_classes: icon_for("canceled"),
