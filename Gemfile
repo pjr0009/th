@@ -136,6 +136,7 @@ group :staging, :production do
 end
 
 group :development, :test do
+  gem 'mailcatcher'
   gem 'rubocop', '~> 0.37.2', require: false
   gem 'factory_girl_rails', "~> 4.4.1"
 end

@@ -17,7 +17,7 @@ services:
     depends_on:
       - migration
     build: .
-    command: '/bin/bash -l -c "bundle install; rm tmp/pids/server.pid; foreman start -f Procfile.hot"'
+    command: '/bin/bash -l -c "bundle install; mailcatcher --ip=0.0.0.0; rm tmp/pids/server.pid; foreman start -f Procfile.hot"'
     tty: true
     stdin_open: true
     volumes:
@@ -33,6 +33,7 @@ services:
     ports:
       - "3000:3000"
       - "9001:9001"
+      - "1080:1080"
   worker:
     depends_on:
       - migration

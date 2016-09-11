@@ -10,3 +10,4 @@ rails-client-assets: script/export_routes_js.sh && npm run clean && cd client &&
 
 # Keep the JS fresh for server rendering. Remove if not server rendering
 rails-server-assets: script/export_translations.sh && script/wait_for_routes_js.sh && cd client && npm run build:dev:server
+

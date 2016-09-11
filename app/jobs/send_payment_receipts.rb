@@ -7,37 +7,10 @@ class SendPaymentReceipts < Struct.new(:transaction_id)
     set_service_name!(transaction[:community_id])
     receipt_to_seller = seller_should_receive_receipt(transaction[:listing_author_id])
 
-    receipts =
-      case transaction[:payment_gateway]
-
-      when :braintree
-        community = Community.find(transaction[:community_id])
-        payment = braintree_payment_for(transaction_id)
-
-        receipts = []
-        receipts << TransactionMailer.braintree_new_payment(payment, community) if receipt_to_seller
-        receipts << TransactionMailer.braintree_receipt_to_payer(payment, community)
-        receipts
-
-      when :checkout
-        community = Community.find(transaction[:community_id])
-        payment = checkout_payment_for(transaction_id)
-
-        receipts = []
-        receipts << PersonMailer.new_payment(payment, community) if receipt_to_seller
-        receipts << PersonMailer.receipt_to_payer(payment, community)
-        receipts
-
-      when :paypal
-        community = Community.find(transaction[:community_id])
-
-        receipts = []
-        receipts << TransactionMailer.paypal_new_payment(transaction) if receipt_to_seller
-        receipts << TransactionMailer.paypal_receipt_to_payer(transaction)
-        receipts
-      else
-        []
-      end
+    receipts = []
+    receipts << TransactionMailer.paypal_new_payment(transaction) if receipt_to_seller
+    receipts << TransactionMailer.paypal_receipt_to_payer(transaction)
+    receipts
 
     receipts.each { |receipt_mail| MailCarrier.deliver_now(receipt_mail) }
   end
