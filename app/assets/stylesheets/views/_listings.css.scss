@@ -233,3 +233,17 @@ $listing-author-avatar-height: 108;
 .listings-how-paypal-works-link {
   font-size: em(14);
 }
+
+.benefits-banner {
+  background: $menu-background;
+  .col-4 {
+    padding: lines(0.5);
+    h1 {
+      font-size: 6em;
+      color: white;
+    }
+  }
+  text-align: center;
+  width: 100%;
+}
+

@@ -34,6 +34,8 @@
         .title-header-wrapper
           .marketplace-title-header
             = yield :title_header
+  - elsif content_for?(:benefits_banner)
+    = yield :benefits_banner
 
   %article.page-content
     .wrapper

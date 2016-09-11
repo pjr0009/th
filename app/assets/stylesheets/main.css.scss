@@ -43,7 +43,6 @@ body {
 
 .page-content {
   padding-bottom: lines(3);
-  padding-top: lines(0.5);
 
   p {
     margin-bottom: lines(0.5);
@@ -56,10 +55,6 @@ body {
 
   br {
     height: lines(0.5);
-  }
-
-  @include media(tablet) {
-    padding-top: lines(1);
   }
 
 }
@@ -2212,3 +2207,4 @@ figure.fluidratio {
     }
   }
 }
+
