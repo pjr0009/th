@@ -28,6 +28,8 @@ class ListingsController < ApplicationController
 
   before_filter :is_authorized_to_post, :only => [ :new, :create ]
 
+  before_filter :redirect_if_payment_info_incomplete, :only => [:new, :create]
+
   def index
     @selected_tribe_navi_tab = "home"
 
@@ -215,6 +217,74 @@ class ListingsController < ApplicationController
 
     render(locals: onboarding_popup_locals.merge(view_locals))
   end
+
+  def payment_info
+
+    community_currency = @current_community.default_currency
+    payment_settings = payment_settings_api.get_active(community_id: @current_community.id).maybe.get
+    community_country_code = LocalizationUtils.valid_country_code(@current_community.country)
+
+    render(locals: {
+      order_permission_action: ask_order_permission_listings_path,
+      commission_from_seller: t("paypal_accounts.commission", commission: payment_settings[:commission_from_seller]),
+      minimum_commission: Money.new(payment_settings[:minimum_transaction_fee_cents], community_currency),
+      commission_type: payment_settings[:commission_type],
+      currency: community_currency,
+      paypal_fees_url: PaypalCountryHelper.fee_link(community_country_code),
+      create_url: PaypalCountryHelper.create_paypal_account_url,
+      receive_funds_info_label_tr_key: PaypalCountryHelper.receive_funds_info_label_tr_key(community_country_code)
+    })
+  end
+
+
+    def ask_order_permission
+      return redirect_to action: :index unless PaypalHelper.community_ready_for_payments?(@current_community)
+
+      community_country_code = LocalizationUtils.valid_country_code(@current_community.country)
+      response = accounts_api.request(
+        body: PaypalService::API::DataTypes.create_create_account_request(
+        {
+          community_id: @current_community.id,
+          person_id: @current_user.id,
+          callback_url: permissions_verified_listings_url,
+          country: community_country_code
+        }),
+        flow: :old)
+
+      permissions_url = response.data[:redirect_url]
+
+      if permissions_url.blank?
+        flash[:error] = t("paypal_accounts.new.could_not_fetch_redirect_url")
+        return redirect_to action: :index
+      else
+        render json: {redirect_url: permissions_url}
+      end
+  end
+
+  def permissions_verified
+
+    unless params[:verification_code].present?
+      return flash_error_and_redirect_to_settings(error_msg: t("paypal_accounts.new.permissions_not_granted"))
+    end
+
+    response = accounts_api.create(
+      community_id: @current_community.id,
+      person_id: @current_user.id,
+      order_permission_request_token: params[:request_token],
+      body: PaypalService::API::DataTypes.create_account_permission_verification_request(
+        {
+          order_permission_verification_code: params[:verification_code]
+        }
+      ),
+      flow: :old)
+
+    if response[:success]
+      redirect_to new_listing_path
+    else
+      flash_error_and_redirect_to_settings(error_response: response) unless response[:success]
+    end
+  end
+
 
   def new
     category_tree = CategoryViewUtils.category_tree(
@@ -917,5 +987,15 @@ class ListingsController < ApplicationController
         price_info: ListingViewUtils.shipping_info(delivery_type, price, shipping_price_additional),
         default: true
       }
+  end
+
+  def redirect_if_payment_info_incomplete
+    unless PaypalHelper.person_payment_info_complete?(@current_user.id)
+      redirect_to payment_info_listings_path and return
+    end
+  end
+
+  def accounts_api
+    PaypalService::API::Api.accounts_api
   end
 end

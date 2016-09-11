@@ -4,6 +4,12 @@ module PaypalHelper
 
   module_function
 
+
+  def person_payment_info_complete?(person_id)
+    account_prepared?(community_id: 26619, person_id: person_id)
+  end
+
+
   # Check that we have an active provisioned :paypal payment gateway
   # for the community AND that the community admin has fully
   # configured the gateway.
@@ -34,7 +40,7 @@ module PaypalHelper
       payment_process: :preauthorize)
       .maybe
 
-    account_prepared?(community_id: community_id, person_id: person_id, settings: payment_settings)
+    account_prepared?(community_id: community_id, person_id: person_id)
   end
 
   def account_prepared_for_community?(community_id)
@@ -42,11 +48,10 @@ module PaypalHelper
   end
 
   # Private
-  def account_prepared?(community_id:, person_id: nil, settings: Maybe(nil))
+  def account_prepared?(community_id:, person_id: nil)
     acc_state = accounts_api.get(community_id: community_id, person_id: person_id).maybe()[:state].or_else(:not_connected)
-    commission_type = settings[:commission_type].or_else(nil)
 
-    acc_state == :verified || (acc_state == :connected && commission_type == :none)
+    acc_state == :verified
   end
   private_class_method :account_prepared?
 
@@ -78,33 +83,6 @@ module PaypalHelper
       .or_else(nil)
 
     return !!settings
-  end
-
-  # Check if the user has open listings in the community but has not
-  # finished connecting his paypal account.
-  def open_listings_with_missing_payment_info?(user_id, community_id)
-    paypal_active?(community_id) &&
-    !user_and_community_ready_for_payments?(user_id, community_id) &&
-    open_listings_with_payment_process?(community_id, user_id)
-  end
-
-  def open_listings_with_payment_process?(community_id, user_id)
-    processes = TransactionService::API::Api.processes.get(community_id: community_id)[:data]
-    payment_process_ids = processes.reject { |p| p[:process] == :none }.map { |p| p[:id] }
-
-    if payment_process_ids.empty?
-      false
-    else
-      listing_count = Listing
-                      .where(
-                        community_id: community_id,
-                        author_id: user_id,
-                        open: true,
-                        transaction_process_id: payment_process_ids)
-                      .count
-
-      listing_count > 0
-    end
   end
 
   def accounts_api

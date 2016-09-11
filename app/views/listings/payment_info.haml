@@ -1,0 +1,37 @@
+= render partial: "tackhunter_benefits_banner"
+
+.centered-section
+  .settings-section.payment-settings
+    %h2= t("paypal_accounts.payout_info_title")
+
+    - create_paypal_link = link_to(t("paypal_accounts.create_paypal_account_link_text"),
+                                   create_url, target: "_blank")
+    - paypal_redirect_link = "<a href='#' id='ask_paypal_permissions_redirect'>#{t("paypal_accounts.redirect_link_text")}</a>"
+
+    - content_for :javascript do
+      ST.initializeNewPaypalAccountHandler("ask_paypal_permissions", "#{order_permission_action}", ".js-paypal-redirect-order-permission");
+
+    .row.paypal-follow-steps
+      .col-12
+        = t("paypal_accounts.new.follow_steps")
+
+    .row.paypal-wizard
+      .col-12
+        .paypal-wizard-content
+          .row
+            .col-12
+              %h3.paypal-wizard-step
+                =t("paypal_accounts.new.connect_paypal_account_title_with_step", current_step: 1, total_steps: 2)
+          .row
+            .col-12
+              =t("paypal_accounts.new.connect_paypal_account_instructions")
+          .row.send-button-wrapper.without-margin
+            .col-12
+              %button#ask_paypal_permissions
+                = t("paypal_accounts.new.connect_paypal_account")
+          .row.js-paypal-redirect-order-permission.hidden
+            .col-12
+              .paypal-redirect-message
+
+                = t("paypal_accounts.redirect_message", redirect_link: paypal_redirect_link).html_safe
+  

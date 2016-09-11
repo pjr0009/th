@@ -28,7 +28,7 @@
         .title-header-wrapper
           .marketplace-title-header
             = yield :title_header
-  - else
+  - elsif content_for?(:title_header)
     %section.marketplace-lander.visible-tablet
       .title-container
         .title-header-wrapper

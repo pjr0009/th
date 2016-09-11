@@ -282,12 +282,14 @@ Kassi::Application.routes.draw do
       delete :unfollow
     end
     collection do
+      get :payment_info
+      get :ask_order_permission
+      get :permissions_verified
       get :new_form_content
       get :edit_form_content
       get :more_listings
       get :browse
       get :locations_json
-      get :verification_required
     end
     resources :comments, :only => [:create, :destroy]
     resources :listing_images do
