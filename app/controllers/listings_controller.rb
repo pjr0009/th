@@ -299,7 +299,6 @@ class ListingsController < ApplicationController
 
         ListingImage.where(id: listing_image_ids, author_id: @current_user.id).update_all(listing_id: @listing.id)
 
-        Delayed::Job.enqueue(ListingCreatedJob.new(@listing.id, @current_community.id))
         if @current_community.follow_in_use?
           Delayed::Job.enqueue(NotifyFollowersJob.new(@listing.id, @current_community.id), :run_at => NotifyFollowersJob::DELAY.from_now)
         end

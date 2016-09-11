@@ -19,7 +19,6 @@ class ApplicationController < ActionController::Base
     :redirect_locale_param,
     :generate_event_id,
     :fetch_community_admin_status,
-    :warn_about_missing_payment_info,
     :set_homepage_path,
     :report_queue_size,
     :maintenance_warning,
@@ -299,16 +298,6 @@ class ApplicationController < ActionController::Base
 
   def fetch_community_admin_status
     @is_current_community_admin = @current_user && @current_user.has_admin_rights?
-  end
-
-  # Before filter for PayPal, shows notification if user is not ready for payments
-  def warn_about_missing_payment_info
-    if @current_user && PaypalHelper.open_listings_with_missing_payment_info?(@current_user.id, @current_community.id)
-      settings_link = view_context.link_to(t("paypal_accounts.from_your_payment_settings_link_text"),
-        payment_settings_path(:paypal, @current_user), target: "_blank")
-      warning = t("paypal_accounts.missing", settings_link: settings_link)
-      flash.now[:warning] = warning.html_safe
-    end
   end
 
   def report_queue_size
