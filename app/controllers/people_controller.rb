@@ -144,6 +144,7 @@ class PeopleController < Devise::RegistrationsController
     invitation.use_once! if invitation.present?
 
     Delayed::Job.enqueue(CommunityJoinedJob.new(@person.id, @current_community.id)) if @current_community
+    flash[:notice] = "Welcome to Tack Hunter, the world's biggest tack swap!"
 
     email.confirm!
 
@@ -151,7 +152,6 @@ class PeopleController < Devise::RegistrationsController
     # else
     #   Email.send_confirmation(email, @current_community)
 
-    #   flash[:notice] = t("layouts.notifications.account_creation_succesful_you_still_need_to_confirm_your_email")
     #   redirect_to confirmation_pending_path
     # end
   end
