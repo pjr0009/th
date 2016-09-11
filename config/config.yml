@@ -26,9 +26,6 @@ development:
   # manually to your production paypal account profile.
   paypal_ipn_domain:
   paypal_ipn_protocol: https
-  mail_delivery_method: smtp
-  smtp_email_address: 0.0.0.0
-  smtp_email_port: 1025
 
 production:
   s3_bucket_name: <%= ENV['S3_BUCKET_NAME'] %>

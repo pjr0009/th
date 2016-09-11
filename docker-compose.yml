@@ -17,7 +17,7 @@ services:
     depends_on:
       - migration
     build: .
-    command: '/bin/bash -l -c "bundle install; mailcatcher --ip=0.0.0.0; rm tmp/pids/server.pid; foreman start -f Procfile.hot"'
+    command: '/bin/bash -l -c "bundle install; rm tmp/pids/server.pid; foreman start -f Procfile.hot"'
     tty: true
     stdin_open: true
     volumes:
@@ -33,12 +33,11 @@ services:
     ports:
       - "3000:3000"
       - "9001:9001"
-      - "1080:1080"
   worker:
     depends_on:
       - migration
     build: .
-    command: '/bin/bash -l -c "bundle install; bundle exec rake jobs:work"'
+    command: '/bin/bash -l -c "bundle install; mailcatcher --http-ip=0.0.0.0; bundle exec rake jobs:work"'
     tty: true
     stdin_open: true
     volumes:
@@ -51,6 +50,9 @@ services:
       AWS_ACCESS_KEY_ID: AKIAJIZ5VYU4FPBOTWLQ
       AWS_SECRET_ACCESS_KEY: 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
       S3_BUCKET_NAME: assets.tackhunter-dev.com
+    ports:
+      - "1080:1080"
+      - "1025:1025"
   db:
     image: mysql
     volumes_from:

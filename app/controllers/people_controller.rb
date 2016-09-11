@@ -145,18 +145,15 @@ class PeopleController < Devise::RegistrationsController
 
     Delayed::Job.enqueue(CommunityJoinedJob.new(@person.id, @current_community.id)) if @current_community
 
-    # send email confirmation
-    # (unless disabled for testing environment)
-    if APP_CONFIG.skip_email_confirmation
-      email.confirm!
+    email.confirm!
 
-      redirect_to search_path
-    else
-      Email.send_confirmation(email, @current_community)
+    redirect_to search_path
+    # else
+    #   Email.send_confirmation(email, @current_community)
 
-      flash[:notice] = t("layouts.notifications.account_creation_succesful_you_still_need_to_confirm_your_email")
-      redirect_to confirmation_pending_path
-    end
+    #   flash[:notice] = t("layouts.notifications.account_creation_succesful_you_still_need_to_confirm_your_email")
+    #   redirect_to confirmation_pending_path
+    # end
   end
 
   def build_devise_resource_from_person(person_params)
