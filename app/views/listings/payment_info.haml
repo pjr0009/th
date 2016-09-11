@@ -1,38 +1,37 @@
 - content_for :benefits_banner do
   = render partial: "tackhunter_benefits_banner"
 
-.centered-section
-  .settings-section.payment-settings
-    %h2= t("paypal_accounts.payout_info_title")
+.payment-info.centered-section
+  .row
+    .col-12
+      %h2 Where should we send your payments?
 
-    - create_paypal_link = link_to(t("paypal_accounts.create_paypal_account_link_text"),
-                                   create_url, target: "_blank")
-    - paypal_redirect_link = "<a href='#' id='ask_paypal_permissions_redirect'>#{t("paypal_accounts.redirect_link_text")}</a>"
-
-    - content_for :javascript do
-      ST.initializeNewPaypalAccountHandler("ask_paypal_permissions", "#{order_permission_action}", ".js-paypal-redirect-order-permission");
-
-    .row.paypal-follow-steps
+      - content_for :javascript do
+        ST.initializeNewPaypalAccountHandler("ask_paypal_permissions", "#{order_permission_action}", ".js-paypal-redirect-order-permission");
+      - create_paypal_link = link_to(t("paypal_accounts.create_paypal_account_link_text"),
+                                     create_url, target: "_blank")
+      - paypal_redirect_link = "<a href='#' id='ask_paypal_permissions_redirect'>#{t("paypal_accounts.redirect_link_text")}</a>"
+      .row
+        .col-12
+          Tack Hunter uses Paypal to pay our sellers. Let's get your account connected, then you'll be ready to sell!
+      .row
+        .col-12.payment-checklist
+          %div
+            %i.icon-check
+            You'll receive your payments instantly
+          %div
+            %i.icon-check
+            Your private Paypal informantion is never shared with Tack Hunter
+          %div
+            %i.icon-check
+            You can easily issue refunds from Tack Hunter. We'll refund the commission fee too :)
+    .row.send-button-wrapper
       .col-12
-        = t("paypal_accounts.new.follow_steps")
+        %button#ask_paypal_permissions
+          %i.icon-lock
+          Securely connect your Paypal account
+      .row.js-paypal-redirect-order-permission.hidden
+        .col-12
+          .paypal-redirect-message
+            = t("paypal_accounts.redirect_message", redirect_link: paypal_redirect_link).html_safe
 
-    .row.paypal-wizard
-      .col-12
-        .paypal-wizard-content
-          .row
-            .col-12
-              %h3.paypal-wizard-step
-                =t("paypal_accounts.new.connect_paypal_account_title_with_step", current_step: 1, total_steps: 2)
-          .row
-            .col-12
-              =t("paypal_accounts.new.connect_paypal_account_instructions")
-          .row.send-button-wrapper.without-margin
-            .col-12
-              %button#ask_paypal_permissions
-                = t("paypal_accounts.new.connect_paypal_account")
-          .row.js-paypal-redirect-order-permission.hidden
-            .col-12
-              .paypal-redirect-message
-
-                = t("paypal_accounts.redirect_message", redirect_link: paypal_redirect_link).html_safe
-  
