@@ -34,12 +34,12 @@ production:
   s3_upload_bucket_name: <%= ENV['S3_BUCKET_NAME'] %>
   mail_delivery_method: smtp
   # Paypal credentials for the platform owner.
-  paypal_username: admin-facilitator_api1.tackhunter.com
-  paypal_password: 9WZPG8PJKG73ZZ46
-  paypal_signature: AC5YHZoILywPAMWQ4-6lMckFrgzjAZ-rp67.l5GyiQwp6ByVUzPJTaIO
-  paypal_app_id: APP-80W284485P519543T # Global test id
+  paypal_username: <%= ENV["PP_USER"] %>
+  paypal_password: <%= ENV["PP_PASSWORD"] %>
+  paypal_signature: <%= ENV["PP_SIGNATURE"] %>
+  paypal_app_id: <%= ENV["PP_APP_ID"] %> # Global test id
   # Paypal environment to use. Either :sandbox or :live
-  paypal_mode: sandbox
+  paypal_mode: live
   # The domain that we want Paypal to send IPN notifications to
   # Note! You must also add the hook url for your production deployment
   # manually to your production paypal account profile.
