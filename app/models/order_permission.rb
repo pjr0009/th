@@ -31,5 +31,5 @@ class OrderPermission < ActiveRecord::Base
 
   belongs_to :paypal_account, class_name: "PaypalAccount"
 
-  validates_presence_of :paypal_account, :paypal_username_to
+  validates_presence_of :paypal_account
 end
