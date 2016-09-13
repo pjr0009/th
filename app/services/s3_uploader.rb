@@ -20,7 +20,7 @@ class S3Uploader
   end
 
   def url
-    "https://#{@bucket}.tackehunter.com/"
+    "https://#{@bucket}.tackhunter.com/"
   end
 
   private
