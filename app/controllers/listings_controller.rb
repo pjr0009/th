@@ -238,8 +238,6 @@ class ListingsController < ApplicationController
 
 
     def ask_order_permission
-      return redirect_to action: :index unless PaypalHelper.community_ready_for_payments?(@current_community)
-
       community_country_code = LocalizationUtils.valid_country_code(@current_community.country)
       response = accounts_api.request(
         body: PaypalService::API::DataTypes.create_create_account_request(
@@ -599,20 +597,9 @@ class ListingsController < ApplicationController
     @listing.listing_shape_id = shape[:id]
 
     payment_type = MarketplaceService::Community::Query.payment_type(@current_community.id)
-    allow_posting, error_msg = payment_setup_status(
-                     community: @current_community,
-                     user: @current_user,
-                     listing: @listing,
-                     payment_type: payment_type,
-                     process: process)
-
-    if allow_posting
-      render :partial => "listings/form/form_content", locals: form_locals(shape).merge(
-               run_js_immediately: true
-             )
-    else
-      render :partial => "listings/payout_registration_before_posting", locals: { error_msg: error_msg }
-    end
+    render :partial => "listings/form/form_content", locals: form_locals(shape).merge(
+             run_js_immediately: true
+           )
   end
 
   def select_unit(listing_unit, shape)
@@ -839,39 +826,6 @@ class ListingsController < ApplicationController
       else
         hash.merge(k.to_sym => v)
       end
-    end
-  end
-
-  def payment_setup_status(community:, user:, listing:, payment_type:, process:)
-    case [payment_type, process]
-    when matches([nil]),
-         matches([__, :none])
-      [true, ""]
-    when matches([:braintree])
-      can_post = !PaymentRegistrationGuard.new(community, user, listing).requires_registration_before_posting?
-      settings_link = payment_settings_path(community.payment_gateway.gateway_type, user)
-      error_msg = t("listings.new.you_need_to_fill_payout_details_before_accepting", :payment_settings_link => view_context.link_to(t("listings.new.payment_settings_link"), settings_link)).html_safe
-
-      [can_post, error_msg]
-    when matches([:paypal])
-      can_post = PaypalHelper.community_ready_for_payments?(community.id)
-      error_msg =
-        if user.has_admin_rights?
-          t("listings.new.community_not_configured_for_payments_admin",
-            payment_settings_link: view_context.link_to(
-              t("listings.new.payment_settings_link"),
-              admin_paypal_preferences_path()))
-            .html_safe
-        else
-          t("listings.new.community_not_configured_for_payments",
-            contact_admin_link: view_context.link_to(
-              t("listings.new.contact_admin_link_text"),
-              new_user_feedback_path))
-            .html_safe
-        end
-      [can_post, error_msg]
-    else
-      [true, ""]
     end
   end
 

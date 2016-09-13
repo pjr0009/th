@@ -5,79 +5,81 @@
     = render :partial => "layouts/left_hand_navigation", :locals => { :links => left_hand_navigation_links }
 
   .col-9
-    .settings-section.payment-settings
-      %h2= t("paypal_accounts.payout_info_title")
+    - create_paypal_link = link_to(t("paypal_accounts.create_paypal_account_link_text"),
+                                   create_url, target: "_blank")
+    - upgrade_paypal_link = link_to(t("paypal_accounts.upgrade_paypal_account_link_text"),
+                                    upgrade_url, target: "_blank")
+    - paypal_redirect_link = "<a href='#' id='ask_paypal_permissions_redirect'>#{t("paypal_accounts.redirect_link_text")}</a>"
+    = render partial: "paypal_info", locals: { create_paypal_account_link: create_paypal_link,
+        upgrade_paypal_account_link: upgrade_paypal_link,
+        paypal_account_linked: next_action != :ask_order_permission,
+        receive_funds_info_label_tr_key: receive_funds_info_label_tr_key,
+        commission_required: commission_type != :none }
 
-      - if community_ready_for_payments
-        - create_paypal_link = link_to(t("paypal_accounts.create_paypal_account_link_text"),
-                                       create_url, target: "_blank")
-        - upgrade_paypal_link = link_to(t("paypal_accounts.upgrade_paypal_account_link_text"),
-                                        upgrade_url, target: "_blank")
-        - paypal_redirect_link = "<a href='#' id='ask_paypal_permissions_redirect'>#{t("paypal_accounts.redirect_link_text")}</a>"
-        = render partial: "paypal_info", locals: { create_paypal_account_link: create_paypal_link,
-            upgrade_paypal_account_link: upgrade_paypal_link,
-            paypal_account_linked: next_action != :ask_order_permission,
-            receive_funds_info_label_tr_key: receive_funds_info_label_tr_key,
-            commission_required: commission_type != :none }
+    - if next_action == :ask_order_permission
+      .payment-info
+        .row
+          .col-12
+            %h2 How should we pay you?
 
-        - if next_action == :ask_order_permission
-          - content_for :javascript do
-            ST.initializeNewPaypalAccountHandler("ask_paypal_permissions", "#{order_permission_action}", ".js-paypal-redirect-order-permission");
-
-          .row.paypal-follow-steps
+            - content_for :javascript do
+              ST.initializeNewPaypalAccountHandler("ask_paypal_permissions", "#{order_permission_action}", ".js-paypal-redirect-order-permission");
+            .row
+              .col-12
+                Tack Hunter uses Paypal to pay our sellers. Once your account is connected you'll be ready to sell!
+            .row
+              .col-12.payment-checklist
+                %div
+                  %i.icon-check
+                  You'll receive your payments instantly
+                %div
+                  %i.icon-check
+                  Your private Paypal informantion is never shared with Tack Hunter
+                %div
+                  %i.icon-check
+                  We have the lowest commission fee in the industry (3%), and you only pay if your item sells!
+                %div
+                  %i.icon-check
+                  You can easily issue refunds from Tack Hunter. We'll even refund the commission fee :)
+          .row.send-button-wrapper
             .col-12
-              = t("paypal_accounts.new.follow_steps")
+              %button#ask_paypal_permissions
+                %i.icon-lock
+                Securely connect your Paypal account
+            .row.js-paypal-redirect-order-permission.hidden
+              .col-12
+                .paypal-redirect-message
+                  = t("paypal_accounts.redirect_message", redirect_link: paypal_redirect_link).html_safe
 
-          .row.paypal-wizard
-            .col-12
-              .paypal-wizard-content
-                .row
-                  .col-12
-                    %h3.paypal-wizard-step
-                      =t("paypal_accounts.new.connect_paypal_account_title_with_step", current_step: 1, total_steps: 2)
-                .row
-                  .col-12
-                    =t("paypal_accounts.new.connect_paypal_account_instructions")
-                .row.send-button-wrapper.without-margin
-                  .col-12
-                    %button#ask_paypal_permissions
-                      = t("paypal_accounts.new.connect_paypal_account")
-                .row.js-paypal-redirect-order-permission.hidden
-                  .col-12
-                    .paypal-redirect-message
 
-                      = t("paypal_accounts.redirect_message", redirect_link: paypal_redirect_link).html_safe
-        - else
-          - content_for :javascript do
-            ST.initializeNewPaypalAccountHandler("ask_paypal_permissions", "#{order_permission_action}", ".js-paypal-redirect-change-account");
-          .row.paypal-wizard
-            .col-12
-              .paypal-wizard-content
-                .row
-                  .col-12
-                    %h3.paypal-wizard-step-complete
-                      = t("paypal_accounts.paypal_account_all_set_up")
-                .row
-                  .col-12
-                    =t("paypal_accounts.can_receive_payments")
-                .row.paypal-first-steps-list
-                  .col-12
-                    =icon_tag("check", ["icon-fix", "paypal-success-mark"])
-                    =t("paypal_accounts.paypal_account_connected_summary", :email => paypal_account_email)
-                .row.paypal-last-steps-list
-                  .col-12
-                    =icon_tag("check", ["icon-fix", "paypal-success-mark"])
-                    =t("paypal_accounts.paypal_permission_granted_summary")
-                .row.paypal-link-wrapper
-                  .col-12
-                    %a.paypal-change-link#ask_paypal_permissions
-                      = t("paypal_accounts.change_account")
-                .row.hidden.js-paypal-redirect-change-account
-                  .col-12
-                    .paypal-redirect-message
-                      - paypal_redirect_link = "<a href='#' id='ask_paypal_permissions_redirect'>#{t("paypal_accounts.redirect_link_text")}</a>"
-                      = t("paypal_accounts.redirect_message", redirect_link: paypal_redirect_link).html_safe
-      - else
-        = t("paypal_accounts.admin_account_not_connected",
-            contact_admin_link: link_to(t("paypal_accounts.contact_admin_link_text"),
-                                        new_user_feedback_path)).html_safe
+    - else
+      - content_for :javascript do
+        ST.initializeNewPaypalAccountHandler("ask_paypal_permissions", "#{order_permission_action}", ".js-paypal-redirect-change-account");
+      .row.paypal-wizard
+        .col-12
+          .paypal-wizard-content
+            .row
+              .col-12
+                %h3.paypal-wizard-step-complete
+                  = t("paypal_accounts.paypal_account_all_set_up")
+            .row
+              .col-12
+                =t("paypal_accounts.can_receive_payments")
+            .row.paypal-first-steps-list
+              .col-12
+                =icon_tag("check", ["icon-fix", "paypal-success-mark"])
+                =t("paypal_accounts.paypal_account_connected_summary", :email => paypal_account_email)
+            .row.paypal-last-steps-list
+              .col-12
+                =icon_tag("check", ["icon-fix", "paypal-success-mark"])
+                =t("paypal_accounts.paypal_permission_granted_summary")
+            .row.paypal-link-wrapper
+              .col-12
+                %a.paypal-change-link#ask_paypal_permissions
+                  = t("paypal_accounts.change_account")
+            .row.hidden.js-paypal-redirect-change-account
+              .col-12
+                .paypal-redirect-message
+                  - paypal_redirect_link = "<a href='#' id='ask_paypal_permissions_redirect'>#{t("paypal_accounts.redirect_link_text")}</a>"
+                  = t("paypal_accounts.redirect_message", redirect_link: paypal_redirect_link).html_safe
+  

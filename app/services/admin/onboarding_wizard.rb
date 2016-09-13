@@ -95,8 +95,7 @@ module Admin
       # and also dangerous as PaypalHelper logic is used in all other
       # places.
       if !setup_status[:paypal] &&
-         community &&
-         PaypalHelper.community_ready_for_payments?(community.id)
+         community
         :paypal
       end
     end

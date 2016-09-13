@@ -4,7 +4,8 @@
 .payment-info.centered-section
   .row
     .col-12
-      %h2 Where should we send your payments?
+      %h2 How should we pay you?
+
 
       - content_for :javascript do
         ST.initializeNewPaypalAccountHandler("ask_paypal_permissions", "#{order_permission_action}", ".js-paypal-redirect-order-permission");
@@ -13,7 +14,7 @@
       - paypal_redirect_link = "<a href='#' id='ask_paypal_permissions_redirect'>#{t("paypal_accounts.redirect_link_text")}</a>"
       .row
         .col-12
-          Tack Hunter uses Paypal to pay our sellers. Let's get your account connected, then you'll be ready to sell!
+          Tack Hunter uses Paypal to pay our sellers. Once your account is connected you'll be ready to sell!
       .row
         .col-12.payment-checklist
           %div

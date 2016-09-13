@@ -10,24 +10,11 @@ module PaypalHelper
   end
 
 
-  # Check that we have an active provisioned :paypal payment gateway
-  # for the community AND that the community admin has fully
-  # configured the gateway.
-  def community_ready_for_payments?(community_id)
-    account_prepared_for_community?(community_id) &&
-      Maybe(TransactionService::API::Api.settings.get_active(community_id: community_id))
-      .map {|res| res[:success] ? res[:data] : nil}
-      .select {|set| set[:payment_gateway] == :paypal && set[:commission_from_seller] && set[:minimum_price_cents]}
-      .map {|_| true}
-      .or_else(false)
-  end
-
   # Check that both the community is fully configured with an active
   # :paypal payment gateway and that the given user has connected his
   # paypal account.
   def user_and_community_ready_for_payments?(person_id, community_id)
-    PaypalHelper.account_prepared_for_user?(person_id, community_id) &&
-      PaypalHelper.community_ready_for_payments?(community_id)
+    PaypalHelper.account_prepared_for_user?(person_id, community_id)
   end
 
   # Check that the user has connected his paypal account for the

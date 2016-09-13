@@ -1,13 +1,6 @@
 class PaypalService::CheckoutOrdersController < ApplicationController
   skip_before_filter :verify_authenticity_token
 
-  before_filter do
-    unless PaypalHelper.community_ready_for_payments?(@current_community.id)
-      render :nothing => true, :status => 400
-    end
-  end
-
-
   def success
 
     return redirect_to error_not_found_path if params[:token].blank?
