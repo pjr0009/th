@@ -37,10 +37,9 @@
         Contact
       %ul
         %li
-          %a
-            Feedback
+          = link_to "Feedback", new_user_feedback_path, rel: "nofollow"
         %li
-          %a
+          %a{href: "mailto:support@tackhunter.com", rel: "nofollow"}
             Email Us
         %li
           %a
