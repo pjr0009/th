@@ -65,22 +65,20 @@ class Admin::CommunityTransactionsController < ApplicationController
           }
         })
       end
-      with_feature(:export_transactions_as_csv) do
-        format.csv do
-          marketplace_name = if @current_community.use_domain
-            @current_community.domain
-          else
-            @current_community.ident
-          end
+      format.csv do
+        marketplace_name = if @current_community.use_domain
+          @current_community.domain
+        else
+          @current_community.ident
+        end
 
-          self.response.headers["Content-Type"] ||= 'text/csv'
-          self.response.headers["Content-Disposition"] = "attachment; filename=#{marketplace_name}-transactions-#{Date.today}.csv"
-          self.response.headers["Content-Transfer-Encoding"] = "binary"
-          self.response.headers["Last-Modified"] = Time.now.ctime.to_s
+        self.response.headers["Content-Type"] ||= 'text/csv'
+        self.response.headers["Content-Disposition"] = "attachment; filename=#{marketplace_name}-transactions-#{Date.today}.csv"
+        self.response.headers["Content-Transfer-Encoding"] = "binary"
+        self.response.headers["Last-Modified"] = Time.now.ctime.to_s
 
-          self.response_body = Enumerator.new do |yielder|
-            generate_csv_for(yielder, conversations)
-          end
+        self.response_body = Enumerator.new do |yielder|
+          generate_csv_for(yielder, conversations)
         end
       end
     end
