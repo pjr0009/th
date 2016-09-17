@@ -13,6 +13,8 @@ Kassi::Application.routes.draw do
     get '/blog/:slug' => 'posts#show', :as => :buttercms_post
   end
 
+  get "/about/privacy" => "about#privacy"
+
   namespace :mercury do
     resources :images
   end
@@ -310,15 +312,7 @@ Kassi::Application.routes.draw do
     end
   end
 
-  resources :infos do
-    collection do
-      get :about
-      get :how_to_use
-      get :terms
-      get :privacy
-      get :news
-    end
-  end
+
   resource :terms do
     member do
       post :accept
@@ -346,7 +340,7 @@ Kassi::Application.routes.draw do
     get "/signup" => "people#new", :as => :sign_up
     get '/people/auth/:provider/setup' => 'sessions#facebook_setup' #needed for devise setup phase hook to work
 
-    resources :people, param: :username, :path => "", :only => :show, :constraints => { :username => /[_a-z0-9]{3,20}/ }
+    resources :people, param: :username, :only => :show, :constraints => { :username => /[_a-z0-9]{3,20}/ }
 
     resources :people, except: [:show] do
       collection do
@@ -454,7 +448,6 @@ Kassi::Application.routes.draw do
 
   get "/people/:person_id(*path)" => redirect(id_to_username), :constraints => {:person_id => /[a-zA-Z0-9_-]{22}/ }
 
-  get "/:person_id(*path)" => redirect(id_to_username), :constraints => {:person_id => /[a-zA-Z0-9_-]{22}/ }
 
   #keep this matcher last
   #catches all non matched routes, shows 404 and logs more reasonably than the alternative RoutingError + stacktrace
