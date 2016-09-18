@@ -4,7 +4,7 @@
 .payment-info.centered-section
   .row
     .col-12
-      %h2 How should we pay you?
+      %h4 Step 1: Where should users send your payments?
 
 
       - content_for :javascript do
@@ -14,7 +14,8 @@
       - paypal_redirect_link = "<a href='#' id='ask_paypal_permissions_redirect'>#{t("paypal_accounts.redirect_link_text")}</a>"
       .row
         .col-12
-          Tack Hunter uses Paypal to pay our sellers. Once your account is connected you'll be ready to sell!
+          %small
+            You're almost ready to start selling! We need to set up how you'll get paid when users buy your items. Tack Hunter is seamlessly integrated with PayPal for security and simplicity. Once your account is connected you'll be able to list as many items as you want.
       .row
         .col-12.payment-checklist
           %div
@@ -25,7 +26,11 @@
             Your private Paypal informantion is never shared with Tack Hunter
           %div
             %i.icon-check
-            You can easily issue refunds from Tack Hunter. We'll refund the commission fee too :)
+            We'll never debit your account, and our 3% fee is automatically subtracted from the buyers payment before it's sent to you. 
+          %div
+            %i.icon-check
+            Saddle trial didn't work out? You can easily issue refunds from Tack Hunter.
+
     .row.send-button-wrapper
       .col-12
         %button#ask_paypal_permissions

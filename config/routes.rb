@@ -14,7 +14,7 @@ Kassi::Application.routes.draw do
   end
 
   get "/about/privacy" => "about#privacy", as: "privacy_about"
-  get "/about/terms" => "about#terms", as: "privacy_terms"
+  get "/about/terms" => "about#terms", as: "terms_about"
 
   namespace :mercury do
     resources :images

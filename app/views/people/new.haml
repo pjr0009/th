@@ -64,14 +64,11 @@
     = form.password_field :password2, :class => :text_field, :maxlength => "255"
 
     -# Terms
-    .outer-checkbox-container
-      .checkbox-container
-        - unless @skip_terms_checkbox
-          %input{:type => "checkbox", :id => "person_terms", :name => "person[terms]"}
-          = form.label :terms, t('.i_accept_the'), :class => "checkbox"
-          = link_to t(".terms"), "#", :tabindex => "-1", :id => "terms_link", :class => "form"
-
-    = form.hidden_field :consent, :value => @current_community.consent
+    .row{style: "margin-top: 10px;"}
+      %small
+        By Registering, you agree that you've read and accepted our 
+        = link_to "Terms of Service", terms_about_path, :target => "_blank" 
+        and that you're at least 18 years old.
 
     = button_tag t('.create_new_account')
 
