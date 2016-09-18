@@ -1,9 +1,9 @@
 - title_service_name = "#{@current_community.full_name(I18n.locale)}"
 
 - if content_for?(:title)
-  - title = "#{content_for(:title)} - #{title_service_name}"
+  - title = "#{content_for(:title)} | #{title_service_name}"
 - else
-  - title = "#{title_service_name} - #{community_slogan}"
+  - title = "#{title_service_name} | #{community_slogan}"
 
 - if content_for?(:keywords)
   - keywords = content_for(:keywords)

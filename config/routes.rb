@@ -13,7 +13,8 @@ Kassi::Application.routes.draw do
     get '/blog/:slug' => 'posts#show', :as => :buttercms_post
   end
 
-  get "/about/privacy" => "about#privacy"
+  get "/about/privacy" => "about#privacy", as: "privacy_about"
+  get "/about/terms" => "about#terms", as: "privacy_terms"
 
   namespace :mercury do
     resources :images
