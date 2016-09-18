@@ -4,9 +4,6 @@
 - content_for :title_header do 
   %h1
     = @post.title
-= image_tag(@post.featured_image)
-%h1
-  = link_to "By #{@post.author.first_name} #{@post.author.last_name}", buttercms_author_path(@post.author.slug)
 %small
   Categories:
   - @post.categories.each do |category| 

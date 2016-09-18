@@ -18,8 +18,9 @@
       .header-right
         = link_to sign_up_path, class: "header-text-link header-hover" do
           = t("header.signup")
-    .header-right
-      = link_to "Blog", buttercms_blog_path, :class => "header-text-link header-hover"
+    -if false
+      .header-right
+        = link_to "Blog", buttercms_blog_path, :class => "header-text-link header-hover"
     .header-right.header-padding.visible-tablet
       = link_to "Sell", new_listing_path, :class => "new-listing-link", :id => "new-listing-link"
    
