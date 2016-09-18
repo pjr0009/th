@@ -13,7 +13,7 @@ class HomepageController < ApplicationController
 
     @homepage = true
 
-    @view_type = HomepageController.selected_view_type(params[:view], @current_community.default_browse_view, APP_DEFAULT_VIEW_TYPE, VIEW_TYPES)
+    @view_type = HomepageController.selected_view_type("grid", @current_community.default_browse_view, APP_DEFAULT_VIEW_TYPE, VIEW_TYPES)
 
     @big_cover_photo = !(@current_user || CustomLandingPage::LandingPageStore.enabled?(@current_community.id)) || params[:big_cover_photo]
 
