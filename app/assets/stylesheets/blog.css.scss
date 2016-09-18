@@ -1,0 +1,13 @@
+.post-card {
+  background: #fff;
+  border: 1px solid #ddd;
+  .summary {
+    padding: 0.5em;
+  }
+  .categories {
+    padding: 0 0.5em;
+  }
+  img {
+    width: 100%;
+  }
+}
