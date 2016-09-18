@@ -15,6 +15,9 @@
   - elsif(@view_type.eql?("map"))
     = javascript_include_tag "https://maps.googleapis.com/maps/api/js?libraries=places#{key_param}"
     = javascript_include_tag "markerclusterer.js"
+-# show the category name if  one is selected, otherwise show default tagline
+- if @selected_category
+  - content_for :title, @selected_category.display_name(I18n.locale)
 
 - content_for :title_header do
   .browse-view-search-form
