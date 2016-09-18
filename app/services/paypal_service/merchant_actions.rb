@@ -245,6 +245,10 @@ module PaypalService
       
       create_chained_payment: PaypalAction.def_action(
         input_transformer: -> (req, config) {
+
+          commission_fee = req[:payment_total] * 0.03
+          tackHunterPayerId = Rails.env.production? ? ENV["PP_PAYER_ID"] : "WCWU2NEN8YMAN"
+
           req_details = {
             actionType: "CREATE",
             cancelUrl: req[:cancel],
@@ -252,12 +256,21 @@ module PaypalService
             memo: req[:memo],
             returnUrl: req[:success],
             receiverList: {
-              :receiver => [{
+              :receiver => [
+                {
                   accountId: req[:payer_id], 
                   amount: req[:payment_total],
-                  paymentType: "GOODS"
-                }]
-              }
+                  paymentType: "GOODS",
+                  primary: true
+                },
+                {
+                  accountId: tackHunterPayerId, 
+                  amount: commission_fee,
+                  paymentType: "SERVICE",
+                  primary: false
+                }
+              ]
+            }
 
           }
 
