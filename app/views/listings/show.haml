@@ -7,6 +7,17 @@
   - maps_key = @current_community.google_maps_key
   - key_param = maps_key ? "?key=#{maps_key}" : ""
   = javascript_include_tag "https://maps.googleapis.com/maps/api/js#{key_param}"
+  :plain
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "IndividualProduct",
+        "name": "#{@listing.title}",
+        "url" : "#{listing_url(@listing)}",
+        "category": "#{@listing.category.display_name('en')}",
+        "description": "#{@listing.description}"
+      }
+    </script>
 
 - content_for :title, raw(@listing.title)
 - content_for :meta_author, @listing.author.name(@current_community)
