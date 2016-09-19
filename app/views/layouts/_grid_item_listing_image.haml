@@ -4,17 +4,17 @@
   Includes:
   - Listing image
 
-= link_to(listing_path(listing.url), :class => "#{modifier_class} fluid-thumbnail-grid-image-item-link") do
+= link_to(listing_path(listing.url), :'itemprop' => "url",:class => "#{modifier_class} fluid-thumbnail-grid-image-item-link") do
   .fluid-thumbnail-grid-image-image-container
     - with_first_listing_image(listing) do |first_image_url|
-      = image_tag first_image_url, {:alt => listed_listing_title(listing), :class => "fluid-thumbnail-grid-image-image"}
+      = image_tag first_image_url, {:alt => listed_listing_title(listing), :'itemprop' => "image", :class => "fluid-thumbnail-grid-image-image"}
 
-  %h4.fluid-thumbnail-grid-listing-title
+  %h4.fluid-thumbnail-grid-listing-title{:itemprop => "name"}
     = listing.title
 
   .fluid-thumbnail-grid-image-price-container
     - if listing.price
-      %span.fluid-thumbnail-grid-image-price
+      %span.fluid-thumbnail-grid-image-price{:itemprop => "price"}
         = humanized_money_with_symbol(listing.price).upcase
         - price_unit = price_quantity_slash_unit(listing)
       - if !price_unit.blank?

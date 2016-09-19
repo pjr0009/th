@@ -94,16 +94,9 @@
         .home-map
           = render :partial => "map", locals: { viewport: viewport }
       - else
-        - if @view_type.eql?("grid")
-          %div{class: @category_menu_enabled ? "home-fluid-thumbnail-grid-narrow" : "home-fluid-thumbnail-grid-wide"}
-            .home-fluid-thumbnail-grid
-              = render partial: "grid_item", collection: @listings, as: :listing, locals: { show_distance: location_search_in_use }
-        - else
-          .home-listings
-            - if (location_search_in_use)
-              = render partial: "list_item_with_distance", collection: @listings, as: :listing, locals: { shape_name_map: shape_name_map, testimonials_in_use: testimonials_in_use, show_distance: location_search_in_use }
-            - else
-              = render partial: "list_item", collection: @listings, as: :listing, locals: { shape_name_map: shape_name_map, testimonials_in_use: testimonials_in_use }
+        %div{class: @category_menu_enabled ? "home-fluid-thumbnail-grid-narrow" : "home-fluid-thumbnail-grid-wide"}
+          .home-fluid-thumbnail-grid{:itemscope => "", :itemtype => "https://schema.org/ItemList"}
+            = render partial: "grid_item", collection: @listings, as: :listing, locals: { show_distance: location_search_in_use }
         .home-loading-more
           = will_paginate(@listings)
     - else

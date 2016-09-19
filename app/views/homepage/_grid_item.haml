@@ -1,5 +1,5 @@
 - frontpage_fragment_cache("grid_item", listing) do
-  .home-fluid-thumbnail-grid-item
+  .home-fluid-thumbnail-grid-item{:itemprop => "itemListElement", :itemscope => "", :itemtype => "https://schema.org/Product"}
     %div
       -# Listing image
       = render :partial => "layouts/grid_item_listing_image", :locals => {:listing => listing, :modifier_class => ""}
