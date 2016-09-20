@@ -12,9 +12,9 @@
   %h4.fluid-thumbnail-grid-listing-title{:itemprop => "name"}
     = listing.title
 
-  .fluid-thumbnail-grid-image-price-container{:itemprop => "offers" :itemscope => "" :itemtype => "http://schema.org/Offer"}
+  .fluid-thumbnail-grid-image-price-container{:itemprop => "offers", :itemscope => "", :itemtype => "http://schema.org/Offer"}
     - if listing.price
-      %span.fluid-thumbnail-grid-image-price{:itemprop => "price" :content => "#{listing.price}"}
+      %span.fluid-thumbnail-grid-image-price{:itemprop => "price", :content => "#{listing.price}"}
         = humanized_money_with_symbol(listing.price).upcase
         - price_unit = price_quantity_slash_unit(listing)
       - if !price_unit.blank?
