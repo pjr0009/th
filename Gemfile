@@ -84,6 +84,7 @@ gem 'paypal-sdk-merchant', '~> 1.116.0'
 gem 'paypal-sdk-adaptivepayments'
 gem 'airbrake', '~> 4.1.0'
 gem 'librato-rails', "~> 0.11.1"
+gem 'friendly_id'
 
 gem 'jwt', '~> 1.5.2'
 

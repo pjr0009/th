@@ -4,7 +4,7 @@ Kassi::Application.routes.draw do
   get "/about/privacy" => "about#privacy", as: "privacy_about"
   get "/about/terms" => "about#terms", as: "terms_about"
 
-  # resources :blog
+  resources :news
 
   namespace :mercury do
     resources :images
