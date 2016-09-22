@@ -1,0 +1,27 @@
+= stylesheet_link_tag "news_post"
+= content_for :hero do
+  .feature-post
+    .row
+      .col-12
+        %h1.feature-title 
+          = @post.title.capitalize
+
+    .row
+      .col-12
+        %h2
+          By
+          = @post.author
+  .hero-feature-image{style: "background-image: url('https://s3.amazonaws.com/assets.tackhunter.com/logos/images/communities/cover_photos/26619/hd_header/AdobeStock_90047375.jpeg')"}
+.row.news-post  
+  .col-12
+    .news-post-meta-header.clearfix
+      .news-post-published-on
+        %small
+          Published on 
+          = @post.created_at.strftime('%B %e at %l:%M %p')
+      .clearfix.news-post-social-links
+        %a.icon-twitter
+        %a.icon-facebook
+
+    .news-post-content
+      = render "/news/articles/#{@post.partial}"

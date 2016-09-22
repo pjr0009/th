@@ -1,0 +1,37 @@
+= stylesheet_link_tag "blog"
+= content_for :hero do
+  .hero-navigation
+    .row
+      %h1
+        Tack Hunter News
+  .feature-post.with-header
+    .row
+      .col-12
+        = link_to @featured_post.title.capitalize, news_path(@featured_post), class: "feature-title"
+
+    .row
+      .col-12
+        %h2
+          By
+          = @featured_post.author
+    .row
+      .col-12
+        = link_to "Read Now", news_path(@featured_post), class: "button"
+  .hero-feature-image{style: "background-image: url('https://s3.amazonaws.com/assets.tackhunter.com/logos/images/communities/cover_photos/26619/hd_header/AdobeStock_90047375.jpeg')"}
+.row.news-posts
+  - @posts.each do |post|
+    .col-3
+      .news-card
+        = link_to news_path(post) do
+          .news-card-image{style: "background-image: url(https://s3.amazonaws.com/assets.tackhunter.com/logos/images/communities/cover_photos/26619/hd_header/AdobeStock_90047375.jpeg)"}
+          .news-card-summary
+            %h4.news-card-title
+              = post.title.capitalize
+            / Author
+            %p
+              Which sunshirt should you choose?
+
+          .news-card-footer
+            %small
+              By
+              = post.author
