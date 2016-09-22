@@ -43,6 +43,18 @@ $grid-1-4-width: lines(10.75) - ($grid-1-4-padding * 2);
   }
 }
 
+@mixin clear-wrapper($mobilePadding: lines(0.5)) {
+  margin: 0 auto;
+  max-width: lines(42);
+  padding-left: $mobilePadding;
+  padding-right: $mobilePadding;
+
+  @include media(tablet) {
+    padding-left: lines(0.5);
+    padding-right: lines(0.5);
+  }
+}
+
 /**
   Undo the mobile margin set by .wrapper
   This is cubersome, because the .wrapper is in the main layout and not per page

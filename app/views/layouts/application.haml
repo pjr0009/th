@@ -17,7 +17,8 @@
 
   = render partial: 'layouts/global_header', locals: header_props()
   - if content_for?(:hero)
-    = yield :hero
+    %header.hero
+      = yield :hero
     
   - if display_expiration_notice?
     = render partial: "layouts/expiration_notice",
