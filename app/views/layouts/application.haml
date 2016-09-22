@@ -16,12 +16,12 @@
         = react_component("OnboardingTopBar", props: props, prerender: true)
 
   = render partial: 'layouts/global_header', locals: header_props()
-
+  - if content_for?(:hero)
+    = yield :hero
+    
   - if display_expiration_notice?
     = render partial: "layouts/expiration_notice",
         :locals => {external_plan_service_login_url: admin_plan_path}
-
-  
   - if params[:controller] == "homepage" && params[:action] == "index"
     %section.marketplace-lander.hidden-tablet
       .title-container
