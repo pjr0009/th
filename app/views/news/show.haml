@@ -3,13 +3,9 @@
   .hero-feature-image{style: "background-image: url('https://s3.amazonaws.com/assets.tackhunter.com/logos/images/communities/cover_photos/26619/hd_header/AdobeStock_90047375.jpeg')"}
   .hero-footer
     .row
-      .hero-footer-title.clearfix
-        %h1
-          Sunshirt Showdown  
-        .clearfix.hero-social-links
-          %a.icon-twitter
-          %a.icon-facebook
-      .hero-meta-header.clearfix
+      .col-8
+        %h1.hero-footer-title
+          = @post.title.capitalize
         .hero-published-on
           %small
             By
@@ -17,7 +13,10 @@
               Kate Stewart
             Published on 
             = @post.created_at.strftime('%B %e at %l:%M %p')
-
+      .col-4.visible-tablet
+        .clearfix.hero-social-links
+          %a.icon-twitter
+          %a.icon-facebook
 
 .row.news-post  
   .col-12
