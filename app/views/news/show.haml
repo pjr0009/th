@@ -1,4 +1,38 @@
 = stylesheet_link_tag "news_post"
+%script{type: "application/ld+json"}
+  :plain
+    {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://www.tackhunter.com/news/#{@news_post.slug}"
+      },
+      "headline": "#{@news_post.title.capitalize}",
+      "image": {
+        "@type": "ImageObject",
+        "url": "#{@news_post.image(:feature)}",
+        "height": 380,
+        "width":1400
+      },
+      "datePublished": "#{@news_post.created_at.iso8601}",
+      "dateModified": "#{@news_post.updated_at.iso8601}",
+      "author": {
+        "@type": "Person",
+        "name": "#{@news_post.person.username}"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Tack Hunter",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://assets.tackhunter.com/logos/logo-black.png",
+          "width": 181,
+          "height": 40
+        }
+      },
+      "description": "#{@news_post.summary}"
+    }
 = content_for :hero do
   .hero-feature-post
     .row
