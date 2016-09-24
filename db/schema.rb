@@ -716,7 +716,7 @@ ActiveRecord::Schema.define(version: 20160920182336) do
   create_table "news_posts", force: :cascade do |t|
     t.string   "title",              limit: 255
     t.string   "partial",            limit: 255
-    t.integer  "person_id",          limit: 4
+    t.string   "person_id",          limit: 255
     t.string   "slug",               limit: 255
     t.string   "summary",            limit: 255
     t.datetime "created_at",                     null: false
@@ -726,6 +726,8 @@ ActiveRecord::Schema.define(version: 20160920182336) do
     t.integer  "image_file_size",    limit: 4
     t.datetime "image_updated_at"
   end
+
+  add_index "news_posts", ["person_id"], name: "index_news_posts_on_person_id", using: :btree
 
   create_table "order_permissions", force: :cascade do |t|
     t.integer  "paypal_account_id",   limit: 4,   null: false
@@ -947,6 +949,7 @@ ActiveRecord::Schema.define(version: 20160920182336) do
     t.string   "organization_name",                  limit: 255
     t.boolean  "deleted",                                          default: false
     t.string   "cloned_from",                        limit: 22
+    t.string   "website",                            limit: 255
   end
 
   add_index "people", ["authentication_token"], name: "index_people_on_authentication_token", using: :btree

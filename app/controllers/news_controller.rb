@@ -3,8 +3,8 @@ class NewsController < ApplicationController
 
   # GET /blogs
   def index
-    @posts = NewsPost.all
-    @featured_post = NewsPost.first
+    @news_posts = NewsPost.all
+    @featured_news_post = NewsPost.first
   end
 
   # GET /blogs/1
@@ -29,7 +29,7 @@ class NewsController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_news_post
-      @post = NewsPost.find(params[:id])
+      @news_post = NewsPost.find(params[:id])
     end
 
     # Only allow a trusted parameter "white list" through.

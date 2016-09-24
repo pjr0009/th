@@ -2274,22 +2274,13 @@ figure.fluidratio {
       margin: 0;
     }
     .hero-social-links {
-      padding: 1em 0;
+      padding: 0.625em 0.625em 0.625em 0;
       float: right;
       a {
         color: $button;
         font-size: 1.5rem;
         float: right;
         margin-left: 0.5em;
-      }
-    }
-     
-    .hero-published-on {
-      width: 100%;
-      padding: 0 0 0.75em 0;
-      float: left;
-      a {
-        color: #1091e7;
       }
     }
   
@@ -2302,14 +2293,29 @@ figure.fluidratio {
       border-bottom: 0;
     }
   }
-  .feature-post {
-
-    a.feature-title {
+  .hero-author-avatar, .hero-author-details {
+    float: left;
+  }
+  .hero-author-avatar {
+    width: 60px;
+    img {
+      height: 3em;
+    }
+  }
+  .hero-author-details {
+    a {
+      color: #1091e7;
+    }
+    margin-top: 0.75em;
+  }
+  .hero-feature-post {
+    line-height: initial;
+    a.hero-feature-title {
       &:hover {
         color: $button
       }
     }
-    .feature-title {
+    .hero-feature-title {
       font-family: Georgia;
       font-weight: bolder;
       font-size: 3rem;

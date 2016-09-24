@@ -5,10 +5,12 @@
   border: 1px solid #ddd;
   border-top: 0;
 }
+.hero div.hero-feature-post {
+  top: 60%;
+}
 
 .news-post {
   font-family: Georgia;
-  
   .news-post-content {
     padding-top: 2em;
     .center {

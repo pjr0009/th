@@ -1,18 +1,28 @@
 = stylesheet_link_tag "news_post"
 = content_for :hero do
-  .hero-feature-image{style: "background-image: url('#{@post.feature_image_large}')"}
+  .hero-feature-post
+    .row
+      .col-12
+        %h1.hero-feature-title
+          = @news_post.title.capitalize
+  .hero-feature-image{style: "background-image: url('#{@news_post.image(:feature)}')"}
+
   .hero-footer
     .row
-      .col-8
-        %h1.hero-footer-title
-          = @post.title.capitalize
-        .hero-published-on
+      .col-8.clearfix
+        .hero-author-avatar
+          .col-1
+          - avatar_url = @news_post.person.image.present? ? @news_author.person.image.url(:thumb) : image_path("profile_image/thumb/missing.png")
+          = image_tag avatar_url, alt: '', class: 'header-user-avatar'
+          .col-4
+        .hero-author-details
           %small
-            By
-            %a{href: "#"}
-              Kate Stewart
-            Published on 
-            = @post.created_at.strftime('%B %e at %l:%M %p')
+            %div
+              %a{href: "#"}
+                Kate Stewart
+            %div
+              Published on 
+              = @news_post.created_at.strftime('%B %e at %l:%M %p')
       .col-4.visible-tablet
         .clearfix.hero-social-links
           %a.icon-twitter
@@ -21,4 +31,4 @@
 .row.news-post  
   .col-12
     .news-post-content
-      = render "/news/articles/#{@post.partial}"
+      = render "/news/articles/#{@news_post.partial}"

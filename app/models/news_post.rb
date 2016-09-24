@@ -5,7 +5,7 @@
 #  id                 :integer          not null, primary key
 #  title              :string(255)
 #  partial            :string(255)
-#  person_id          :integer
+#  person_id          :string(255)
 #  slug               :string(255)
 #  summary            :string(255)
 #  created_at         :datetime         not null
@@ -14,6 +14,10 @@
 #  image_content_type :string(255)
 #  image_file_size    :integer
 #  image_updated_at   :datetime
+#
+# Indexes
+#
+#  index_news_posts_on_person_id  (person_id)
 #
 
 class NewsPost < ActiveRecord::Base
@@ -26,12 +30,12 @@ class NewsPost < ActiveRecord::Base
         :feature => "1400x380#",
         :email => "150x100#"}
   after_create :set_partial_name
+  belongs_to :person
 
   validates_attachment_size :image, :less_than => APP_CONFIG.max_image_filesize.to_i, :unless => Proc.new {|model| model.image.nil? }
   validates_attachment_content_type :image,
                                     :content_type => ["image/jpeg", "image/png", "image/gif", "image/pjpeg", "image/x-png"], # the two last types are sent by IE.
                                     :unless => Proc.new {|model| model.image.nil? }
-
   private
   def set_partial_name
     self.partial = self.slug.underscore

@@ -42,6 +42,7 @@
 #  organization_name                  :string(255)
 #  deleted                            :boolean          default(FALSE)
 #  cloned_from                        :string(22)
+#  website                            :string(255)
 #
 # Indexes
 #
@@ -92,6 +93,7 @@ class Person < ActiveRecord::Base
   has_one :location, -> { where(location_type: :person) }, :dependent => :destroy
   has_one :braintree_account, :dependent => :destroy
   has_one :checkout_account, dependent: :destroy
+  has_many :news_posts
 
   has_many :participations, :dependent => :destroy
   has_many :conversations, :through => :participations, :dependent => :destroy
