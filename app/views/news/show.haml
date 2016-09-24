@@ -1,6 +1,6 @@
 = stylesheet_link_tag "news_post"
 = content_for :hero do
-  .hero-feature-image{style: "background-image: url('https://s3.amazonaws.com/assets.tackhunter.com/logos/images/communities/cover_photos/26619/hd_header/AdobeStock_90047375.jpeg')"}
+  .hero-feature-image{style: "background-image: url('#{@post.feature_image_large}')"}
   .hero-footer
     .row
       .col-8

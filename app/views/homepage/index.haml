@@ -3,7 +3,7 @@
 
 - content_for :coverfade_class do
   = "without-text"
-
+- @selected_category = @main_categories.second
 - content_for :extra_javascript do
   - # maps.google can't be loaded twice
   - key_param = "&key=AIzaSyBD0dCxEL8qLH4TLaRb5Hq76WR4V1ymtlI"
@@ -18,10 +18,12 @@
 -# show the category name if  one is selected, otherwise show default tagline
 - if @selected_category
   - content_for :title, @selected_category.display_name(I18n.locale)
-
+  - content_for :keywords, @selected_category.children.map{|c| c.display_name(I18n.locale)}.join(", ")
+  - content_for :meta_description, "Find Great Deals On New And Used #{@selected_category.display_name(I18n.locale)}"
 - content_for :title_header do
   .browse-view-search-form
     = render partial: "search_bar"
+
 
 - #schema markup for homepage search in SERPS
 - content_for :extra_javascript do

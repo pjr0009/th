@@ -15,7 +15,7 @@
 - else
   - meta_author = @current_community.name(I18n.locale)
 
-- full_url = "#{@current_community.full_url}#{request.fullpath}"
+- full_url = "#{request.url}"
 
 - if content_for?(:meta_description)
   - meta_description = "#{content_for(:meta_description)}"

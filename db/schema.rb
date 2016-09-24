@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160920182336) do
+ActiveRecord::Schema.define(version: 20160923220012) do
 
   create_table "auth_tokens", force: :cascade do |t|
     t.string   "token",            limit: 255
@@ -946,12 +946,15 @@ ActiveRecord::Schema.define(version: 20160920182336) do
   add_index "people", ["username"], name: "index_people_on_username", using: :btree
 
   create_table "posts", force: :cascade do |t|
-    t.string   "title",      limit: 255
-    t.string   "partial",    limit: 255
-    t.string   "author",     limit: 255
-    t.string   "slug",       limit: 255
-    t.datetime "created_at",             null: false
-    t.datetime "updated_at",             null: false
+    t.string   "title",                    limit: 255
+    t.string   "partial",                  limit: 255
+    t.string   "author",                   limit: 255
+    t.string   "slug",                     limit: 255
+    t.datetime "created_at",                             null: false
+    t.datetime "updated_at",                             null: false
+    t.string   "feature_image_large",      limit: 255,   null: false
+    t.string   "external_attribution_url", limit: 255
+    t.text     "summary",                  limit: 65535, null: false
   end
 
   create_table "prospect_emails", force: :cascade do |t|
