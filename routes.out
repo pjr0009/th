@@ -1,0 +1,482 @@
+                                                      Prefix Verb     URI Pattern                                                                        Controller#Action
+                                                        root GET      /                                                                                  homepage#index
+                                               privacy_about GET      /about/privacy(.:format)                                                           about#privacy
+                                                 terms_about GET      /about/terms(.:format)                                                             about#terms
+                                                  news_index GET      /news(.:format)                                                                    news#index
+                                                             POST     /news(.:format)                                                                    news#create
+                                                    new_news GET      /news/new(.:format)                                                                news#new
+                                                   edit_news GET      /news/:id/edit(.:format)                                                           news#edit
+                                                        news GET      /news/:id(.:format)                                                                news#show
+                                                             PATCH    /news/:id(.:format)                                                                news#update
+                                                             PUT      /news/:id(.:format)                                                                news#update
+                                                             DELETE   /news/:id(.:format)                                                                news#destroy
+                                              mercury_images GET      /mercury/images(.:format)                                                          mercury/images#index
+                                                             POST     /mercury/images(.:format)                                                          mercury/images#create
+                                           new_mercury_image GET      /mercury/images/new(.:format)                                                      mercury/images#new
+                                          edit_mercury_image GET      /mercury/images/:id/edit(.:format)                                                 mercury/images#edit
+                                               mercury_image GET      /mercury/images/:id(.:format)                                                      mercury/images#show
+                                                             PATCH    /mercury/images/:id(.:format)                                                      mercury/images#update
+                                                             PUT      /mercury/images/:id(.:format)                                                      mercury/images#update
+                                                             DELETE   /mercury/images/:id(.:format)                                                      mercury/images#destroy
+                                              mercury_engine          /                                                                                  Mercury::Engine
+                                                             GET      /robots.txt(.:format)                                                              RobotsGenerator
+                                                             GET      /:dv_file(.:format)                                                                domain_validation#index {:dv_file=>/.*\.txt/}
+                                                      design GET      /design(.:format)                                                                  design#design
+                                                mail_preview          /mail_view                                                                         MailPreview
+                                          webhooks_braintree GET      /webhooks/braintree(.:format)                                                      braintree_webhooks#challenge
+                                                             POST     /webhooks/braintree(.:format)                                                      braintree_webhooks#hooks
+                                             paypal_ipn_hook POST     /webhooks/paypal_ipn(.:format)                                                     paypal_ipn#ipn_hook
+                                              webhooks_plans POST     /webhooks/plans(.:format)                                                          plans#create
+                                             webhooks_trials GET      /webhooks/trials(.:format)                                                         plans#get_trials
+                                                     bounces POST     /bounces(.:format)                                                                 amazon_bounces#notification
+                                                             GET      /people/:person_id/inbox/:id(.:format)                                             redirect(301, /fi/people/%{person_id}/messages/%{id})
+                                  new_request_without_locale GET      /listings/new/:type(.:format)                                                      listings#new
+                                               change_locale GET      /change_locale(.:format)                                                           i18n#change_locale
+                                                       admin GET      /admin(.:format)                                                                   admin/getting_started_guide#index
+                                        marketplace_category GET      /marketplace/:category(.:format)                                                   homepage#index
+                            int_api_create_trial_marketplace POST     /int_api/create_trial_marketplace(.:format)                                        int_api/marketplaces#create
+                                     int_api_prospect_emails POST     /int_api/prospect_emails(.:format)                                                 int_api/marketplaces#create_prospect_email
+                                         ui_api_topbar_props GET      /ui_api/topbar_props(.:format)                                                     topbar_api#props
+                                                 _lp_preview GET      /_lp_preview(.:format)                                                             landing_page#preview
+                                                      search GET      /                                                                                  homepage#index
+                                                             GET      /500(.:format)                                                                     errors#server_error
+                                             error_not_found GET      /404(.:format)                                                                     errors#not_found
+                                        error_not_acceptable GET      /406(.:format)                                                                     errors#not_acceptable
+                                                  error_gone GET      /410(.:format)                                                                     errors#gone
+                                         community_not_found GET      /community_not_found(.:format)                                                     errors#community_not_found
+                                                 communities POST     /communities(.:format)                                                             communities#create
+                                               new_community GET      /communities/new(.:format)                                                         communities#new
+                                   person_omniauth_authorize GET|POST /people/auth/:provider(.:format)                                                   sessions#passthru {:provider=>/facebook/}
+                                    person_omniauth_callback GET|POST /people/auth/:action/callback(.:format)                                            sessions#(?-mix:facebook)
+                                              mercury_update PUT      /mercury_update(.:format)                                                          mercury_update#update
+                                       transaction_op_status GET      /transactions/op_status/:process_token(.:format)                                   transactions#op_status
+                                             new_transaction GET      /transactions/new(.:format)                                                        transactions#new
+                                        preauthorize_payment GET      /listings/:listing_id/preauthorize(.:format)                                       preauthorize_transactions#preauthorize
+                                       preauthorized_payment POST     /listings/:listing_id/preauthorized(.:format)                                      preauthorize_transactions#preauthorized
+                                              initiate_order GET      /listings/:listing_id/initiate(.:format)                                           preauthorize_transactions#initiate
+                                             initiated_order POST     /listings/:listing_id/initiated(.:format)                                          preauthorize_transactions#initiated
+                                            post_pay_listing GET      /listings/:listing_id/post_pay(.:format)                                           post_pay_transactions#new
+                                          create_transaction POST     /listings/:listing_id/create_transaction(.:format)                                 post_pay_transactions#create
+                                              create_contact POST     /listings/:listing_id/create_contact(.:format)                                     free_transactions#create_contact
+                                          contact_to_listing GET      /listings/:listing_id/contact(.:format)                                            free_transactions#contact
+                                                      logout GET      /logout(.:format)                                                                  sessions#destroy
+                                        confirmation_pending GET      /confirmation_pending(.:format)                                                    community_memberships#confirmation_pending
+                                                       login GET      /login(.:format)                                                                   sessions#new
+                                              listing_bubble GET      /listing_bubble/:id(.:format)                                                      listings#listing_bubble
+                                     listing_bubble_multiple GET      /listing_bubble_multiple/:ids(.:format)                                            listings#listing_bubble_multiple
+                              new_braintree_settings_payment GET      /:person_id/settings/payments/braintree/new(.:format)                              braintree_accounts#new
+                             show_braintree_settings_payment GET      /:person_id/settings/payments/braintree/show(.:format)                             braintree_accounts#show
+                           create_braintree_settings_payment POST     /:person_id/settings/payments/braintree/create(.:format)                           braintree_accounts#create
+                             paypal_account_settings_payment GET      /:person_id/settings/payments/paypal_account(.:format)                             paypal_accounts#index
+                                             pending_consent GET      /community_memberships/pending_consent(.:format)                                   community_memberships#pending_consent
+                                                give_consent POST     /community_memberships/give_consent(.:format)                                      community_memberships#give_consent
+                                               access_denied GET      /community_memberships/access_denied(.:format)                                     community_memberships#access_denied
+ community_memberships_check_email_availability_and_validity GET      /community_memberships/check_email_availability_and_validity(.:format)             community_memberships#check_email_availability_and_validity
+                 community_memberships_check_invitation_code GET      /community_memberships/check_invitation_code(.:format)                             community_memberships#check_invitation_code
+                      success_paypal_service_checkout_orders GET      /paypal_service/checkout_orders/success(.:format)                                  paypal_service/checkout_orders#success
+                       cancel_paypal_service_checkout_orders GET      /paypal_service/checkout_orders/cancel(.:format)                                   paypal_service/checkout_orders#cancel
+            success_processed_paypal_service_checkout_orders GET      /paypal_service/checkout_orders/success_processed(.:format)                        paypal_service/checkout_orders#success_processed
+                              paypal_service_checkout_orders GET      /paypal_service/checkout_orders(.:format)                                          paypal_service/checkout_orders#index
+                                                             POST     /paypal_service/checkout_orders(.:format)                                          paypal_service/checkout_orders#create
+                           new_paypal_service_checkout_order GET      /paypal_service/checkout_orders/new(.:format)                                      paypal_service/checkout_orders#new
+                          edit_paypal_service_checkout_order GET      /paypal_service/checkout_orders/:id/edit(.:format)                                 paypal_service/checkout_orders#edit
+                               paypal_service_checkout_order GET      /paypal_service/checkout_orders/:id(.:format)                                      paypal_service/checkout_orders#show
+                                                             PATCH    /paypal_service/checkout_orders/:id(.:format)                                      paypal_service/checkout_orders#update
+                                                             PUT      /paypal_service/checkout_orders/:id(.:format)                                      paypal_service/checkout_orders#update
+                                                             DELETE   /paypal_service/checkout_orders/:id(.:format)                                      paypal_service/checkout_orders#destroy
+                                    admin_paypal_preferences GET      /admin/paypal_preferences(.:format)                                                admin/paypal_preferences#index
+                 admin_paypal_preferences_preferences_update POST     /admin/paypal_preferences/preferences_update(.:format)                             admin/paypal_preferences#preferences_update
+                     admin_paypal_preferences_account_create GET      /admin/paypal_preferences/account_create(.:format)                                 admin/paypal_preferences#account_create
+               admin_paypal_preferences_permissions_verified GET      /admin/paypal_preferences/permissions_verified(.:format)                           admin/paypal_preferences#permissions_verified
+                                              admin_settings GET      /admin/settings(.:format)                                                          admin/communities#settings
+                                       admin_update_settings PATCH    /admin/settings(.:format)                                                          admin/communities#update_settings
+                                 admin_getting_started_guide GET      /admin/getting_started_guide(.:format)                                             admin/getting_started_guide#index
+          admin_getting_started_guide_slogan_and_description GET      /admin/getting_started_guide/slogan_and_description(.:format)                      admin/getting_started_guide#slogan_and_description
+                     admin_getting_started_guide_cover_photo GET      /admin/getting_started_guide/cover_photo(.:format)                                 admin/getting_started_guide#cover_photo
+                          admin_getting_started_guide_filter GET      /admin/getting_started_guide/filter(.:format)                                      admin/getting_started_guide#filter
+                          admin_getting_started_guide_paypal GET      /admin/getting_started_guide/paypal(.:format)                                      admin/getting_started_guide#paypal
+                         admin_getting_started_guide_listing GET      /admin/getting_started_guide/listing(.:format)                                     admin/getting_started_guide#listing
+                      admin_getting_started_guide_invitation GET      /admin/getting_started_guide/invitation(.:format)                                  admin/getting_started_guide#invitation
+                                    admin_look_and_feel_edit GET      /admin/look_and_feel/edit(.:format)                                                admin/communities#edit_look_and_feel
+                                         admin_look_and_feel PATCH    /admin/look_and_feel(.:format)                                                     admin/communities#update_look_and_feel
+                                          admin_details_edit GET      /admin/details/edit(.:format)                                                      admin/community_customizations#edit_details
+                                               admin_details PATCH    /admin/details(.:format)                                                           admin/community_customizations#update_details
+                          edit_welcome_email_admin_community GET      /admin/communities/:id/edit_welcome_email(.:format)                                admin/communities#edit_welcome_email
+                       create_sender_address_admin_community POST     /admin/communities/:id/create_sender_address(.:format)                             admin/communities#create_sender_address
+                          check_email_status_admin_community GET      /admin/communities/:id/check_email_status(.:format)                                admin/communities#check_email_status
+                   resend_verification_email_admin_community POST     /admin/communities/:id/resend_verification_email(.:format)                         admin/communities#resend_verification_email
+                      edit_text_instructions_admin_community GET      /admin/communities/:id/edit_text_instructions(.:format)                            admin/communities#edit_text_instructions
+                          test_welcome_email_admin_community GET      /admin/communities/:id/test_welcome_email(.:format)                                admin/communities#test_welcome_email
+                            payment_gateways_admin_community GET      /admin/communities/:id/payment_gateways(.:format)                                  admin/communities#payment_gateways
+                                                             PUT      /admin/communities/:id/payment_gateways(.:format)                                  admin/communities#update_payment_gateway
+                                                             POST     /admin/communities/:id/payment_gateways(.:format)                                  admin/communities#create_payment_gateway
+                                social_media_admin_community GET      /admin/communities/:id/social_media(.:format)                                      admin/communities#social_media
+                                   analytics_admin_community GET      /admin/communities/:id/analytics(.:format)                                         admin/communities#analytics
+                                                             PUT      /admin/communities/:id/social_media(.:format)                                      admin/communities#update_social_media
+                                                             PUT      /admin/communities/:id/analytics(.:format)                                         admin/communities#update_analytics
+                                  menu_links_admin_community GET      /admin/communities/:id/menu_links(.:format)                                        admin/communities#menu_links
+                                                             PUT      /admin/communities/:id/menu_links(.:format)                                        admin/communities#update_menu_links
+                          delete_marketplace_admin_community DELETE   /admin/communities/:id/delete_marketplace(.:format)                                admin/communities#delete_marketplace
+                             getting_started_admin_community GET      /admin/communities/:id/getting_started(.:format)                                   redirect(301, /admin/getting_started_guide)
+                                edit_details_admin_community GET      /admin/communities/:id/edit_details(.:format)                                      redirect(301, /admin/details/edit)
+                              update_details_admin_community PUT      /admin/communities/:id/update_details(.:format)                                    admin/community_customizations#update_details
+                          edit_look_and_feel_admin_community GET      /admin/communities/:id/edit_look_and_feel(.:format)                                redirect(301, /admin/look_and_feel/edit)
+                                                             PUT      /admin/communities/:id/edit_look_and_feel(.:format)                                admin/community_customizations#update_look_and_feel
+                                    settings_admin_community GET      /admin/communities/:id/settings(.:format)                                          redirect(301, /admin/settings)
+                             update_settings_admin_community PUT      /admin/communities/:id/update_settings(.:format)                                   admin/communities#update_settings
+                       getting_started_guide_admin_community GET      /admin/communities/:id/getting_started_guide(.:format)                             redirect(301, /admin/getting_started_guide)
+getting_started_guide_slogan_and_description_admin_community GET      /admin/communities/:id/getting_started_guide/slogan_and_description(.:format)      redirect(301, /admin/getting_started_guide/slogan_and_description)
+           getting_started_guide_cover_photo_admin_community GET      /admin/communities/:id/getting_started_guide/cover_photo(.:format)                 redirect(301, /admin/getting_started_guide/cover_photo)
+                getting_started_guide_filter_admin_community GET      /admin/communities/:id/getting_started_guide/filter(.:format)                      redirect(301, /admin/getting_started_guide/filter)
+                getting_started_guide_paypal_admin_community GET      /admin/communities/:id/getting_started_guide/paypal(.:format)                      redirect(301, /admin/getting_started_guide/paypal)
+               getting_started_guide_listing_admin_community GET      /admin/communities/:id/getting_started_guide/listing(.:format)                     redirect(301, /admin/getting_started_guide/listing)
+            getting_started_guide_invitation_admin_community GET      /admin/communities/:id/getting_started_guide/invitation(.:format)                  redirect(301, /admin/getting_started_guide/invitation)
+                                admin_community_transactions GET      /admin/communities/:community_id/transactions(.:format)                            admin/community_transactions#index
+                                      admin_community_emails GET      /admin/communities/:community_id/emails(.:format)                                  admin/emails#index
+                                                             POST     /admin/communities/:community_id/emails(.:format)                                  admin/emails#create
+                                   new_admin_community_email GET      /admin/communities/:community_id/emails/new(.:format)                              admin/emails#new
+                                  edit_admin_community_email GET      /admin/communities/:community_id/emails/:id/edit(.:format)                         admin/emails#edit
+                                       admin_community_email GET      /admin/communities/:community_id/emails/:id(.:format)                              admin/emails#show
+                                                             PATCH    /admin/communities/:community_id/emails/:id(.:format)                              admin/emails#update
+                                                             PUT      /admin/communities/:community_id/emails/:id(.:format)                              admin/emails#update
+                                                             DELETE   /admin/communities/:community_id/emails/:id(.:format)                              admin/emails#destroy
+                    ban_admin_community_community_membership PUT      /admin/communities/:community_id/community_memberships/:id/ban(.:format)           admin/community_memberships#ban
+         promote_admin_admin_community_community_memberships POST     /admin/communities/:community_id/community_memberships/promote_admin(.:format)     admin/community_memberships#promote_admin
+       posting_allowed_admin_community_community_memberships POST     /admin/communities/:community_id/community_memberships/posting_allowed(.:format)   admin/community_memberships#posting_allowed
+                       admin_community_community_memberships GET      /admin/communities/:community_id/community_memberships(.:format)                   admin/community_memberships#index
+                                                             POST     /admin/communities/:community_id/community_memberships(.:format)                   admin/community_memberships#create
+                    new_admin_community_community_membership GET      /admin/communities/:community_id/community_memberships/new(.:format)               admin/community_memberships#new
+                   edit_admin_community_community_membership GET      /admin/communities/:community_id/community_memberships/:id/edit(.:format)          admin/community_memberships#edit
+                        admin_community_community_membership GET      /admin/communities/:community_id/community_memberships/:id(.:format)               admin/community_memberships#show
+                                                             PATCH    /admin/communities/:community_id/community_memberships/:id(.:format)               admin/community_memberships#update
+                                                             PUT      /admin/communities/:community_id/community_memberships/:id(.:format)               admin/community_memberships#update
+                                                             DELETE   /admin/communities/:community_id/community_memberships/:id(.:format)               admin/community_memberships#destroy
+                          admin_community_paypal_preferences GET      /admin/communities/:community_id/paypal_preferences(.:format)                      redirect(301, /admin/paypal_preferences)
+       preferences_update_admin_community_paypal_preferences POST     /admin/communities/:community_id/paypal_preferences/preferences_update(.:format)   admin/paypal_preferences#preferences_update
+           account_create_admin_community_paypal_preferences GET      /admin/communities/:community_id/paypal_preferences/account_create(.:format)       redirect(301, /admin/paypal_preferences/account_create)
+     permissions_verified_admin_community_paypal_preferences GET      /admin/communities/:community_id/paypal_preferences/permissions_verified(.:format) redirect(301, /admin/paypal_preferences/permissions_verified)
+                                           admin_communities GET      /admin/communities(.:format)                                                       admin/communities#index
+                                                             POST     /admin/communities(.:format)                                                       admin/communities#create
+                                         new_admin_community GET      /admin/communities/new(.:format)                                                   admin/communities#new
+                                        edit_admin_community GET      /admin/communities/:id/edit(.:format)                                              admin/communities#edit
+                                             admin_community GET      /admin/communities/:id(.:format)                                                   admin/communities#show
+                                                             PATCH    /admin/communities/:id(.:format)                                                   admin/communities#update
+                                                             PUT      /admin/communities/:id(.:format)                                                   admin/communities#update
+                                                             DELETE   /admin/communities/:id(.:format)                                                   admin/communities#destroy
+                              edit_price_admin_custom_fields GET      /admin/custom_fields/edit_price(.:format)                                          admin/custom_fields#edit_price
+                           edit_location_admin_custom_fields GET      /admin/custom_fields/edit_location(.:format)                                       admin/custom_fields#edit_location
+                                   order_admin_custom_fields POST     /admin/custom_fields/order(.:format)                                               admin/custom_fields#order
+                            update_price_admin_custom_fields PUT      /admin/custom_fields/update_price(.:format)                                        admin/custom_fields#update_price
+                         update_location_admin_custom_fields PUT      /admin/custom_fields/update_location(.:format)                                     admin/custom_fields#update_location
+                                         admin_custom_fields GET      /admin/custom_fields(.:format)                                                     admin/custom_fields#index
+                                                             POST     /admin/custom_fields(.:format)                                                     admin/custom_fields#create
+                                      new_admin_custom_field GET      /admin/custom_fields/new(.:format)                                                 admin/custom_fields#new
+                                     edit_admin_custom_field GET      /admin/custom_fields/:id/edit(.:format)                                            admin/custom_fields#edit
+                                          admin_custom_field GET      /admin/custom_fields/:id(.:format)                                                 admin/custom_fields#show
+                                                             PATCH    /admin/custom_fields/:id(.:format)                                                 admin/custom_fields#update
+                                                             PUT      /admin/custom_fields/:id(.:format)                                                 admin/custom_fields#update
+                                                             DELETE   /admin/custom_fields/:id(.:format)                                                 admin/custom_fields#destroy
+                                       remove_admin_category GET      /admin/categories/:id/remove(.:format)                                             admin/categories#remove
+                             destroy_and_move_admin_category DELETE   /admin/categories/:id/destroy_and_move(.:format)                                   admin/categories#destroy_and_move
+                                      order_admin_categories POST     /admin/categories/order(.:format)                                                  admin/categories#order
+                                            admin_categories GET      /admin/categories(.:format)                                                        admin/categories#index
+                                                             POST     /admin/categories(.:format)                                                        admin/categories#create
+                                          new_admin_category GET      /admin/categories/new(.:format)                                                    admin/categories#new
+                                         edit_admin_category GET      /admin/categories/:id/edit(.:format)                                               admin/categories#edit
+                                              admin_category GET      /admin/categories/:id(.:format)                                                    admin/categories#show
+                                                             PATCH    /admin/categories/:id(.:format)                                                    admin/categories#update
+                                                             PUT      /admin/categories/:id(.:format)                                                    admin/categories#update
+                                                             DELETE   /admin/categories/:id(.:format)                                                    admin/categories#destroy
+                                  order_admin_listing_shapes POST     /admin/listing_shapes/order(.:format)                                              admin/listing_shapes#order
+                          close_listings_admin_listing_shape GET      /admin/listing_shapes/:id/close_listings(.:format)                                 admin/listing_shapes#close_listings
+                                        admin_listing_shapes GET      /admin/listing_shapes(.:format)                                                    admin/listing_shapes#index
+                                                             POST     /admin/listing_shapes(.:format)                                                    admin/listing_shapes#create
+                                     new_admin_listing_shape GET      /admin/listing_shapes/new(.:format)                                                admin/listing_shapes#new
+                                    edit_admin_listing_shape GET      /admin/listing_shapes/:id/edit(.:format)                                           admin/listing_shapes#edit
+                                         admin_listing_shape GET      /admin/listing_shapes/:id(.:format)                                                admin/listing_shapes#show
+                                                             PATCH    /admin/listing_shapes/:id(.:format)                                                admin/listing_shapes#update
+                                                             PUT      /admin/listing_shapes/:id(.:format)                                                admin/listing_shapes#update
+                                                             DELETE   /admin/listing_shapes/:id(.:format)                                                admin/listing_shapes#destroy
+                                                  admin_plan GET      /admin/plan(.:format)                                                              admin/plans#show
+                                                 invitations GET      /invitations(.:format)                                                             invitations#index
+                                                             POST     /invitations(.:format)                                                             invitations#create
+                                              new_invitation GET      /invitations/new(.:format)                                                         invitations#new
+                                             edit_invitation GET      /invitations/:id/edit(.:format)                                                    invitations#edit
+                                                  invitation GET      /invitations/:id(.:format)                                                         invitations#show
+                                                             PATCH    /invitations/:id(.:format)                                                         invitations#update
+                                                             PUT      /invitations/:id(.:format)                                                         invitations#update
+                                                             DELETE   /invitations/:id(.:format)                                                         invitations#destroy
+                                              user_feedbacks GET      /user_feedbacks(.:format)                                                          feedbacks#index
+                                                             POST     /user_feedbacks(.:format)                                                          feedbacks#create
+                                           new_user_feedback GET      /user_feedbacks/new(.:format)                                                      feedbacks#new
+                                          edit_user_feedback GET      /user_feedbacks/:id/edit(.:format)                                                 feedbacks#edit
+                                               user_feedback GET      /user_feedbacks/:id(.:format)                                                      feedbacks#show
+                                                             PATCH    /user_feedbacks/:id(.:format)                                                      feedbacks#update
+                                                             PUT      /user_feedbacks/:id(.:format)                                                      feedbacks#update
+                                                             DELETE   /user_feedbacks/:id(.:format)                                                      feedbacks#destroy
+                                      sign_in_homepage_index GET      /homepage/sign_in(.:format)                                                        homepage#sign_in
+                                         join_homepage_index POST     /homepage/join(.:format)                                                           homepage#join
+                                              homepage_index GET      /homepage(.:format)                                                                homepage#index
+                                                             POST     /homepage(.:format)                                                                homepage#create
+                                                new_homepage GET      /homepage/new(.:format)                                                            homepage#new
+                                               edit_homepage GET      /homepage/:id/edit(.:format)                                                       homepage#edit
+                                                    homepage GET      /homepage/:id(.:format)                                                            homepage#show
+                                                             PATCH    /homepage/:id(.:format)                                                            homepage#update
+                                                             PUT      /homepage/:id(.:format)                                                            homepage#update
+                                                             DELETE   /homepage/:id(.:format)                                                            homepage#destroy
+                                              follow_listing POST     /listings/:id/follow(.:format)                                                     listings#follow
+                                            unfollow_listing DELETE   /listings/:id/unfollow(.:format)                                                   listings#unfollow
+                                       payment_info_listings GET      /listings/payment_info(.:format)                                                   listings#payment_info
+                               ask_order_permission_listings GET      /listings/ask_order_permission(.:format)                                           listings#ask_order_permission
+                               permissions_verified_listings GET      /listings/permissions_verified(.:format)                                           listings#permissions_verified
+                                   new_form_content_listings GET      /listings/new_form_content(.:format)                                               listings#new_form_content
+                                  edit_form_content_listings GET      /listings/edit_form_content(.:format)                                              listings#edit_form_content
+                                      more_listings_listings GET      /listings/more_listings(.:format)                                                  listings#more_listings
+                                             browse_listings GET      /listings/browse(.:format)                                                         listings#browse
+                                     locations_json_listings GET      /listings/locations_json(.:format)                                                 listings#locations_json
+                                            listing_comments POST     /listings/:listing_id/comments(.:format)                                           comments#create
+                                             listing_comment DELETE   /listings/:listing_id/comments/:id(.:format)                                       comments#destroy
+                        add_from_file_listing_listing_images POST     /listings/:listing_id/listing_images/add_from_file(.:format)                       listing_images#add_from_file
+                         add_from_url_listing_listing_images PUT      /listings/:listing_id/listing_images/add_from_url(.:format)                        listing_images#add_from_url
+                                      listing_listing_images GET      /listings/:listing_id/listing_images(.:format)                                     listing_images#index
+                                                             POST     /listings/:listing_id/listing_images(.:format)                                     listing_images#create
+                                   new_listing_listing_image GET      /listings/:listing_id/listing_images/new(.:format)                                 listing_images#new
+                                  edit_listing_listing_image GET      /listings/:listing_id/listing_images/:id/edit(.:format)                            listing_images#edit
+                                       listing_listing_image GET      /listings/:listing_id/listing_images/:id(.:format)                                 listing_images#show
+                                                             PATCH    /listings/:listing_id/listing_images/:id(.:format)                                 listing_images#update
+                                                             PUT      /listings/:listing_id/listing_images/:id(.:format)                                 listing_images#update
+                                                             DELETE   /listings/:listing_id/listing_images/:id(.:format)                                 listing_images#destroy
+                                                    listings GET      /listings(.:format)                                                                listings#index
+                                                             POST     /listings(.:format)                                                                listings#create
+                                                 new_listing GET      /listings/new(.:format)                                                            listings#new
+                                                edit_listing GET      /listings/:id/edit(.:format)                                                       listings#edit
+                                                     listing GET      /listings/:id(.:format)                                                            listings#show
+                                                             PATCH    /listings/:id(.:format)                                                            listings#update
+                                                             PUT      /listings/:id(.:format)                                                            listings#update
+                                                             DELETE   /listings/:id(.:format)                                                            listings#destroy
+                                  image_status_listing_image GET      /listing_images/:id/image_status(.:format)                                         listing_images#image_status
+                                add_from_file_listing_images POST     /listing_images/add_from_file(.:format)                                            listing_images#add_from_file
+                                 add_from_url_listing_images PUT      /listing_images/add_from_url(.:format)                                             listing_images#add_from_url
+                                              listing_images GET      /listing_images(.:format)                                                          listing_images#index
+                                                             POST     /listing_images(.:format)                                                          listing_images#create
+                                           new_listing_image GET      /listing_images/new(.:format)                                                      listing_images#new
+                                          edit_listing_image GET      /listing_images/:id/edit(.:format)                                                 listing_images#edit
+                                               listing_image GET      /listing_images/:id(.:format)                                                      listing_images#show
+                                                             PATCH    /listing_images/:id(.:format)                                                      listing_images#update
+                                                             PUT      /listing_images/:id(.:format)                                                      listing_images#update
+                                                             DELETE   /listing_images/:id(.:format)                                                      listing_images#destroy
+                                                accept_terms POST     /terms/accept(.:format)                                                            terms#accept
+                                                       terms POST     /terms(.:format)                                                                   terms#create
+                                                   new_terms GET      /terms/new(.:format)                                                               terms#new
+                                                  edit_terms GET      /terms/edit(.:format)                                                              terms#edit
+                                                             GET      /terms(.:format)                                                                   terms#show
+                                                             PATCH    /terms(.:format)                                                                   terms#update
+                                                             PUT      /terms(.:format)                                                                   terms#update
+                                                             DELETE   /terms(.:format)                                                                   terms#destroy
+                               request_new_password_sessions POST     /sessions/request_new_password(.:format)                                           sessions#request_new_password
+                              change_mistyped_email_sessions POST     /sessions/change_mistyped_email(.:format)                                          sessions#change_mistyped_email
+                                                    sessions GET      /sessions(.:format)                                                                sessions#index
+                                                             POST     /sessions(.:format)                                                                sessions#create
+                                                 new_session GET      /sessions/new(.:format)                                                            sessions#new
+                                                edit_session GET      /sessions/:id/edit(.:format)                                                       sessions#edit
+                                                     session GET      /sessions/:id(.:format)                                                            sessions#show
+                                                             PATCH    /sessions/:id(.:format)                                                            sessions#update
+                                                             PUT      /sessions/:id(.:format)                                                            sessions#update
+                                                             DELETE   /sessions/:id(.:format)                                                            sessions#destroy
+                                               consent_index GET      /consent(.:format)                                                                 consent#index
+                                                             POST     /consent(.:format)                                                                 consent#create
+                                                 new_consent GET      /consent/new(.:format)                                                             consent#new
+                                                edit_consent GET      /consent/:id/edit(.:format)                                                        consent#edit
+                                                     consent GET      /consent/:id(.:format)                                                             consent#show
+                                                             PATCH    /consent/:id(.:format)                                                             consent#update
+                                                             PUT      /consent/:id(.:format)                                                             consent#update
+                                                             DELETE   /consent/:id(.:format)                                                             consent#destroy
+                                         message_arrived_sms GET      /sms/message_arrived(.:format)                                                     sms#message_arrived
+                                                         sms POST     /sms(.:format)                                                                     sms#create
+                                                     new_sms GET      /sms/new(.:format)                                                                 sms#new
+                                                    edit_sms GET      /sms/edit(.:format)                                                                sms#edit
+                                                             GET      /sms(.:format)                                                                     sms#show
+                                                             PATCH    /sms(.:format)                                                                     sms#update
+                                                             PUT      /sms(.:format)                                                                     sms#update
+                                                             DELETE   /sms(.:format)                                                                     sms#destroy
+                                          new_person_session GET      /people/login(.:format)                                                            devise/sessions#new
+                                              person_session POST     /people/login(.:format)                                                            devise/sessions#create
+                                      destroy_person_session DELETE   /people/sign_out(.:format)                                                         devise/sessions#destroy
+                                             person_password POST     /people/password(.:format)                                                         devise/passwords#create
+                                         new_person_password GET      /people/password/new(.:format)                                                     devise/passwords#new
+                                        edit_person_password GET      /people/password/edit(.:format)                                                    devise/passwords#edit
+                                                             PATCH    /people/password(.:format)                                                         devise/passwords#update
+                                                             PUT      /people/password(.:format)                                                         devise/passwords#update
+                                  cancel_person_registration GET      /people/cancel(.:format)                                                           people#cancel
+                                         person_registration POST     /people(.:format)                                                                  people#create
+                                     new_person_registration GET      /people/sign_up(.:format)                                                          people#new
+                                    edit_person_registration GET      /people/edit(.:format)                                                             people#edit
+                                                             PATCH    /people(.:format)                                                                  people#update
+                                                             PUT      /people(.:format)                                                                  people#update
+                                                             DELETE   /people(.:format)                                                                  people#destroy
+                                                confirmation GET      /people/confirmation(.:format)                                                     confirmations#show
+                                         people_confirmation PUT      /people/confirmation(.:format)                                                     confirmations#create
+                                              people_sign_up GET      /people/sign_up(.:format)                                                          redirect(301, /%{locale}/login)
+                                                     sign_up GET      /signup(.:format)                                                                  people#new
+                                                             GET      /people/auth/:provider/setup(.:format)                                             sessions#facebook_setup
+                                                      person GET      /people/:username(.:format)                                                        people#show {:username=>/[_a-z0-9]{3,20}/}
+                          check_username_availability_people GET      /people/check_username_availability(.:format)                                      people#check_username_availability
+                             check_email_availability_people GET      /people/check_email_availability(.:format)                                         people#check_email_availability
+                check_email_availability_and_validity_people GET      /people/check_email_availability_and_validity(.:format)                            people#check_email_availability_and_validity
+                                check_invitation_code_people GET      /people/check_invitation_code(.:format)                                            people#check_invitation_code
+                                create_facebook_based_people GET      /people/create_facebook_based(.:format)                                            people#create_facebook_based
+                                                      people GET      /people(.:format)                                                                  people#index
+                                                             POST     /people(.:format)                                                                  people#create
+                                                  new_person GET      /people/new(.:format)                                                              people#new
+                                                 edit_person GET      /people/:id/edit(.:format)                                                         people#edit
+                                                             PATCH    /people/:id(.:format)                                                              people#update
+                                                             PUT      /people/:id(.:format)                                                              people#update
+                                                             DELETE   /people/:id(.:format)                                                              people#destroy
+                                        close_person_listing PUT      /:person_id/listings/:id/close(.:format)                                           listings#close
+                                  move_to_top_person_listing PUT      /:person_id/listings/:id/move_to_top(.:format)                                     listings#move_to_top
+                        show_in_updates_email_person_listing PUT      /:person_id/listings/:id/show_in_updates_email(.:format)                           listings#show_in_updates_email
+                                             person_listings GET      /:person_id/listings(.:format)                                                     listings#index
+                                                             POST     /:person_id/listings(.:format)                                                     listings#create
+                                          new_person_listing GET      /:person_id/listings/new(.:format)                                                 listings#new
+                                         edit_person_listing GET      /:person_id/listings/:id/edit(.:format)                                            listings#edit
+                                              person_listing GET      /:person_id/listings/:id(.:format)                                                 listings#show
+                                                             PATCH    /:person_id/listings/:id(.:format)                                                 listings#update
+                                                             PUT      /:person_id/listings/:id(.:format)                                                 listings#update
+                                                             DELETE   /:person_id/listings/:id(.:format)                                                 listings#destroy
+                                      person_person_messages GET      /:person_id/person_messages(.:format)                                              person_messages#index
+                                                             POST     /:person_id/person_messages(.:format)                                              person_messages#create
+                                   new_person_person_message GET      /:person_id/person_messages/new(.:format)                                          person_messages#new
+                                  edit_person_person_message GET      /:person_id/person_messages/:id/edit(.:format)                                     person_messages#edit
+                                       person_person_message GET      /:person_id/person_messages/:id(.:format)                                          person_messages#show
+                                                             PATCH    /:person_id/person_messages/:id(.:format)                                          person_messages#update
+                                                             PUT      /:person_id/person_messages/:id(.:format)                                          person_messages#update
+                                                             DELETE   /:person_id/person_messages/:id(.:format)                                          person_messages#destroy
+                                                person_inbox GET      /:person_id/inbox(.:format)                                                        inboxes#show
+                                    received_person_messages GET      /:person_id/messages/received(.:format)                                            inboxes#show
+                                       accept_person_message GET      /:person_id/messages/:id/accept(.:format)                                          accept_conversations#accept
+                                       reject_person_message GET      /:person_id/messages/:id/reject(.:format)                                          accept_conversations#reject
+                                   acceptance_person_message PUT      /:person_id/messages/:id/acceptance(.:format)                                      accept_conversations#acceptance
+                                      confirm_person_message GET      /:person_id/messages/:id/confirm(.:format)                                         confirm_conversations#confirm
+                                       cancel_person_message GET      /:person_id/messages/:id/cancel(.:format)                                          confirm_conversations#cancel
+                               request_refund_person_message GET      /:person_id/messages/:id/request_refund(.:format)                                  confirm_conversations#request_refund
+                                 confirmation_person_message PUT      /:person_id/messages/:id/confirmation(.:format)                                    confirm_conversations#confirmation
+                         accept_preauthorized_person_message GET      /:person_id/messages/:id/accept_preauthorized(.:format)                            accept_preauthorized_conversations#accept
+                         reject_preauthorized_person_message GET      /:person_id/messages/:id/reject_preauthorized(.:format)                            accept_preauthorized_conversations#reject
+                     acceptance_preauthorized_person_message PUT      /:person_id/messages/:id/acceptance_preauthorized(.:format)                        accept_preauthorized_conversations#accepted_or_rejected
+                                     person_message_messages GET      /:person_id/messages/:message_id/messages(.:format)                                messages#index
+                                                             POST     /:person_id/messages/:message_id/messages(.:format)                                messages#create
+                                  new_person_message_message GET      /:person_id/messages/:message_id/messages/new(.:format)                            messages#new
+                                 edit_person_message_message GET      /:person_id/messages/:message_id/messages/:id/edit(.:format)                       messages#edit
+                                      person_message_message GET      /:person_id/messages/:message_id/messages/:id(.:format)                            messages#show
+                                                             PATCH    /:person_id/messages/:message_id/messages/:id(.:format)                            messages#update
+                                                             PUT      /:person_id/messages/:message_id/messages/:id(.:format)                            messages#update
+                                                             DELETE   /:person_id/messages/:message_id/messages/:id(.:format)                            messages#destroy
+                               skip_person_message_feedbacks PUT      /:person_id/messages/:message_id/feedbacks/skip(.:format)                          testimonials#skip
+                                    person_message_feedbacks GET      /:person_id/messages/:message_id/feedbacks(.:format)                               testimonials#index
+                                                             POST     /:person_id/messages/:message_id/feedbacks(.:format)                               testimonials#create
+                                 new_person_message_feedback GET      /:person_id/messages/:message_id/feedbacks/new(.:format)                           testimonials#new
+                                edit_person_message_feedback GET      /:person_id/messages/:message_id/feedbacks/:id/edit(.:format)                      testimonials#edit
+                                     person_message_feedback GET      /:person_id/messages/:message_id/feedbacks/:id(.:format)                           testimonials#show
+                                                             PATCH    /:person_id/messages/:message_id/feedbacks/:id(.:format)                           testimonials#update
+                                                             PUT      /:person_id/messages/:message_id/feedbacks/:id(.:format)                           testimonials#update
+                                                             DELETE   /:person_id/messages/:message_id/feedbacks/:id(.:format)                           testimonials#destroy
+                                 done_person_message_payment GET      /:person_id/messages/:message_id/payments/:id/done(.:format)                       payments#done
+                                     person_message_payments GET      /:person_id/messages/:message_id/payments(.:format)                                payments#index
+                                                             POST     /:person_id/messages/:message_id/payments(.:format)                                payments#create
+                                  new_person_message_payment GET      /:person_id/messages/:message_id/payments/new(.:format)                            payments#new
+                                 edit_person_message_payment GET      /:person_id/messages/:message_id/payments/:id/edit(.:format)                       payments#edit
+                                      person_message_payment GET      /:person_id/messages/:message_id/payments/:id(.:format)                            payments#show
+                                                             PATCH    /:person_id/messages/:message_id/payments/:id(.:format)                            payments#update
+                                                             PUT      /:person_id/messages/:message_id/payments/:id(.:format)                            payments#update
+                                                             DELETE   /:person_id/messages/:message_id/payments/:id(.:format)                            payments#destroy
+                           person_message_braintree_payments GET      /:person_id/messages/:message_id/braintree_payments(.:format)                      braintree_payments#index
+                                                             POST     /:person_id/messages/:message_id/braintree_payments(.:format)                      braintree_payments#create
+                        new_person_message_braintree_payment GET      /:person_id/messages/:message_id/braintree_payments/new(.:format)                  braintree_payments#new
+                       edit_person_message_braintree_payment GET      /:person_id/messages/:message_id/braintree_payments/:id/edit(.:format)             braintree_payments#edit
+                            person_message_braintree_payment GET      /:person_id/messages/:message_id/braintree_payments/:id(.:format)                  braintree_payments#show
+                                                             PATCH    /:person_id/messages/:message_id/braintree_payments/:id(.:format)                  braintree_payments#update
+                                                             PUT      /:person_id/messages/:message_id/braintree_payments/:id(.:format)                  braintree_payments#update
+                                                             DELETE   /:person_id/messages/:message_id/braintree_payments/:id(.:format)                  braintree_payments#destroy
+                                             person_messages GET      /:person_id/messages(.:format)                                                     conversations#index
+                                                             POST     /:person_id/messages(.:format)                                                     conversations#create
+                                          new_person_message GET      /:person_id/messages/new(.:format)                                                 conversations#new
+                                         edit_person_message GET      /:person_id/messages/:id/edit(.:format)                                            conversations#edit
+                                              person_message GET      /:person_id/messages/:id(.:format)                                                 conversations#show
+                                                             PATCH    /:person_id/messages/:id(.:format)                                                 conversations#update
+                                                             PUT      /:person_id/messages/:id(.:format)                                                 conversations#update
+                                                             DELETE   /:person_id/messages/:id(.:format)                                                 conversations#destroy
+                  ask_order_permission_person_paypal_account GET      /:person_id/paypal_account/ask_order_permission(.:format)                          paypal_accounts#ask_order_permission
+                 ask_billing_agreement_person_paypal_account GET      /:person_id/paypal_account/ask_billing_agreement(.:format)                         paypal_accounts#ask_billing_agreement
+                  permissions_verified_person_paypal_account GET      /:person_id/paypal_account/permissions_verified(.:format)                          paypal_accounts#permissions_verified
+             billing_agreement_success_person_paypal_account GET      /:person_id/paypal_account/billing_agreement_success(.:format)                     paypal_accounts#billing_agreement_success
+              billing_agreement_cancel_person_paypal_account GET      /:person_id/paypal_account/billing_agreement_cancel(.:format)                      paypal_accounts#billing_agreement_cancel
+                                   refund_person_transaction GET      /:person_id/transactions/:id/refund(.:format)                                      transactions#refund
+                                         person_transactions POST     /:person_id/transactions(.:format)                                                 transactions#create
+                                      new_person_transaction GET      /:person_id/transactions/new(.:format)                                             transactions#new
+                                          person_transaction GET      /:person_id/transactions/:id(.:format)                                             transactions#show
+                                                             PATCH    /:person_id/transactions/:id(.:format)                                             transactions#update
+                                                             PUT      /:person_id/transactions/:id(.:format)                                             transactions#update
+                                     person_checkout_account POST     /:person_id/checkout_account(.:format)                                             checkout_accounts#create
+                                 new_person_checkout_account GET      /:person_id/checkout_account/new(.:format)                                         checkout_accounts#new
+                                                             GET      /:person_id/checkout_account(.:format)                                             checkout_accounts#show
+                                     account_person_settings GET      /:person_id/settings/account(.:format)                                             settings#account
+                               notifications_person_settings GET      /:person_id/settings/notifications(.:format)                                       settings#notifications
+                                    payments_person_settings GET      /:person_id/settings/payments(.:format)                                            settings#payments
+                                 unsubscribe_person_settings GET      /:person_id/settings/unsubscribe(.:format)                                         settings#unsubscribe
+                                             person_settings POST     /:person_id/settings(.:format)                                                     settings#create
+                                         new_person_settings GET      /:person_id/settings/new(.:format)                                                 settings#new
+                                        edit_person_settings GET      /:person_id/settings/edit(.:format)                                                settings#edit
+                                                             GET      /:person_id/settings(.:format)                                                     settings#show
+                                                             PATCH    /:person_id/settings(.:format)                                                     settings#update
+                                                             PUT      /:person_id/settings(.:format)                                                     settings#update
+                                                             DELETE   /:person_id/settings(.:format)                                                     settings#destroy
+                                         person_testimonials GET      /:person_id/testimonials(.:format)                                                 testimonials#index
+                                                             POST     /:person_id/testimonials(.:format)                                                 testimonials#create
+                                      new_person_testimonial GET      /:person_id/testimonials/new(.:format)                                             testimonials#new
+                                     edit_person_testimonial GET      /:person_id/testimonials/:id/edit(.:format)                                        testimonials#edit
+                                          person_testimonial GET      /:person_id/testimonials/:id(.:format)                                             testimonials#show
+                                                             PATCH    /:person_id/testimonials/:id(.:format)                                             testimonials#update
+                                                             PUT      /:person_id/testimonials/:id(.:format)                                             testimonials#update
+                                                             DELETE   /:person_id/testimonials/:id(.:format)                                             testimonials#destroy
+                              send_confirmation_person_email POST     /:person_id/emails/:id/send_confirmation(.:format)                                 emails#send_confirmation
+                                               person_emails GET      /:person_id/emails(.:format)                                                       emails#index
+                                                             POST     /:person_id/emails(.:format)                                                       emails#create
+                                            new_person_email GET      /:person_id/emails/new(.:format)                                                   emails#new
+                                           edit_person_email GET      /:person_id/emails/:id/edit(.:format)                                              emails#edit
+                                                person_email GET      /:person_id/emails/:id(.:format)                                                   emails#show
+                                                             PATCH    /:person_id/emails/:id(.:format)                                                   emails#update
+                                                             PUT      /:person_id/emails/:id(.:format)                                                   emails#update
+                                                             DELETE   /:person_id/emails/:id(.:format)                                                   emails#destroy
+                                            person_followers GET      /:person_id/followers(.:format)                                                    followers#index
+                                                             POST     /:person_id/followers(.:format)                                                    followers#create
+                                         new_person_follower GET      /:person_id/followers/new(.:format)                                                followers#new
+                                        edit_person_follower GET      /:person_id/followers/:id/edit(.:format)                                           followers#edit
+                                             person_follower GET      /:person_id/followers/:id(.:format)                                                followers#show
+                                                             PATCH    /:person_id/followers/:id(.:format)                                                followers#update
+                                                             PUT      /:person_id/followers/:id(.:format)                                                followers#update
+                                                             DELETE   /:person_id/followers/:id(.:format)                                                followers#destroy
+                                      person_followed_people GET      /:person_id/followed_people(.:format)                                              followed_people#index
+                                                             POST     /:person_id/followed_people(.:format)                                              followed_people#create
+                                  new_person_followed_person GET      /:person_id/followed_people/new(.:format)                                          followed_people#new
+                                 edit_person_followed_person GET      /:person_id/followed_people/:id/edit(.:format)                                     followed_people#edit
+                                      person_followed_person GET      /:person_id/followed_people/:id(.:format)                                          followed_people#show
+                                                             PATCH    /:person_id/followed_people/:id(.:format)                                          followed_people#update
+                                                             PUT      /:person_id/followed_people/:id(.:format)                                          followed_people#update
+                                                             DELETE   /:person_id/followed_people/:id(.:format)                                          followed_people#destroy
+                                                             GET      /                                                                                  people#index
+                                                             POST     /                                                                                  people#create
+                                                             GET      /new(.:format)                                                                     people#new
+                                                             GET      /:id/edit(.:format)                                                                people#edit
+                                                             PATCH    /:id(.:format)                                                                     people#update
+                                                             PUT      /:id(.:format)                                                                     people#update
+                                                             DELETE   /:id(.:format)                                                                     people#destroy
+                                         single_conversation GET      /:person_id/messages/:conversation_type/:id(.:format)                              conversations#show
+                                                             GET      /:person_id/settings/profile(.:format)                                             redirect(301, /%{person_id}/settings)
+                                                             GET      /people/:person_id(*path)(.:format)                                                redirect(301) {:person_id=>/[a-zA-Z0-9_-]{22}/}
+                                                                      /*path(.:format)                                                                   errors#not_found
+
+Routes for Mercury::Engine:
+mercury_editor GET      /editor(/*requested_uri)(.:format)        mercury#edit
+               GET      /mercury/:type/:resource(.:format)        mercury#resource
+               GET|POST /mercury/snippets/:name/options(.:format) mercury#snippet_options
+               GET|POST /mercury/snippets/:name/preview(.:format) mercury#snippet_preview
