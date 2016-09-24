@@ -68,6 +68,8 @@ module Kassi
       'app-bundle.css',
       'app-bundle.js',
       'vendor-bundle.js',
+      'news_post.css.scss',
+      'news_index.css.scss'
     ]
 
     # Read the config from the config.yml
