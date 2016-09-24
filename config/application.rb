@@ -148,7 +148,7 @@ module Kassi
       paperclip_options.merge!({
         :path => "images/:class/:attachment/:id/:style/:filename",
         :url => ":s3_alias_url",
-        :s3_host_alias => "assets.tackhunter.com",
+        :s3_host_alias => APP_CONFIG.s3_bucket_name,
         :storage => :s3,
         :s3_protocol => 'https',
         :s3_credentials => {

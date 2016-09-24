@@ -1,10 +1,10 @@
 class NewsController < ApplicationController
-  before_action :set_post, only: [:show]
+  before_action :set_news_post, only: [:show]
 
   # GET /blogs
   def index
-    @posts = Post.all
-    @featured_post = Post.first
+    @posts = NewsPost.all
+    @featured_post = NewsPost.first
   end
 
   # GET /blogs/1
@@ -28,8 +28,8 @@ class NewsController < ApplicationController
 
   private
     # Use callbacks to share common setup or constraints between actions.
-    def set_post
-      @post = Post.find(params[:id])
+    def set_news_post
+      @post = NewsPost.find(params[:id])
     end
 
     # Only allow a trusted parameter "white list" through.

@@ -26,10 +26,9 @@ services:
       - container:ruby_gems
     environment:
       SPHINX_HOST: search
-      BUTTER_TOKEN: 03cad913262d44335d34f1c28e011a45126c2790
       AWS_ACCESS_KEY_ID: AKIAJIZ5VYU4FPBOTWLQ
       AWS_SECRET_ACCESS_KEY: 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
-      S3_BUCKET_NAME: assets.tackhunter-dev.com
+      S3_BUCKET_NAME: assets-local.tackhunter.com
     ports:
       - "3000:3000"
       - "9001:9001"
@@ -46,10 +45,9 @@ services:
       - container:ruby_gems
     environment:
       SPHINX_HOST: search
-      BUTTER_TOKEN: 03cad913262d44335d34f1c28e011a45126c2790
       AWS_ACCESS_KEY_ID: AKIAJIZ5VYU4FPBOTWLQ
       AWS_SECRET_ACCESS_KEY: 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
-      S3_BUCKET_NAME: assets.tackhunter-dev.com
+      S3_BUCKET_NAME: assets-local.tackhunter.com
     ports:
       - "1080:1080"
       - "1025:1025"

@@ -12,6 +12,10 @@
 #  feature_image_large      :string(255)      not null
 #  external_attribution_url :string(255)
 #  summary                  :text(65535)      not null
+#  post_image_file_name     :string(255)
+#  post_image_content_type  :string(255)
+#  post_image_file_size     :integer
+#  post_image_updated_at    :datetime
 #
 
 require 'rails_helper'

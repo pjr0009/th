@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160923220012) do
+ActiveRecord::Schema.define(version: 20160920182336) do
 
   create_table "auth_tokens", force: :cascade do |t|
     t.string   "token",            limit: 255
@@ -713,6 +713,20 @@ ActiveRecord::Schema.define(version: 20160923220012) do
 
   add_index "messages", ["conversation_id"], name: "index_messages_on_conversation_id", using: :btree
 
+  create_table "news_posts", force: :cascade do |t|
+    t.string   "title",              limit: 255
+    t.string   "partial",            limit: 255
+    t.integer  "person_id",          limit: 4
+    t.string   "slug",               limit: 255
+    t.string   "summary",            limit: 255
+    t.datetime "created_at",                     null: false
+    t.datetime "updated_at",                     null: false
+    t.string   "image_file_name",    limit: 255
+    t.string   "image_content_type", limit: 255
+    t.integer  "image_file_size",    limit: 4
+    t.datetime "image_updated_at"
+  end
+
   create_table "order_permissions", force: :cascade do |t|
     t.integer  "paypal_account_id",   limit: 4,   null: false
     t.datetime "created_at",                      null: false
@@ -944,18 +958,6 @@ ActiveRecord::Schema.define(version: 20160923220012) do
   add_index "people", ["reset_password_token"], name: "index_people_on_reset_password_token", unique: true, using: :btree
   add_index "people", ["username", "community_id"], name: "index_people_on_username_and_community_id", unique: true, using: :btree
   add_index "people", ["username"], name: "index_people_on_username", using: :btree
-
-  create_table "posts", force: :cascade do |t|
-    t.string   "title",                    limit: 255
-    t.string   "partial",                  limit: 255
-    t.string   "author",                   limit: 255
-    t.string   "slug",                     limit: 255
-    t.datetime "created_at",                             null: false
-    t.datetime "updated_at",                             null: false
-    t.string   "feature_image_large",      limit: 255,   null: false
-    t.string   "external_attribution_url", limit: 255
-    t.text     "summary",                  limit: 65535, null: false
-  end
 
   create_table "prospect_emails", force: :cascade do |t|
     t.string   "email",      limit: 255
