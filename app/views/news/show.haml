@@ -12,7 +12,7 @@
       .col-8.clearfix
         .hero-author-avatar
           .col-1
-          - avatar_url = @news_post.person.image.present? ? @news_author.person.image.url(:thumb) : image_path("profile_image/thumb/missing.png")
+          - avatar_url = @news_post.person.image.present? ? @news_post.person.image.url(:thumb) : image_path("profile_image/thumb/missing.png")
           = image_tag avatar_url, alt: '', class: 'header-user-avatar'
           .col-4
         .hero-author-details
