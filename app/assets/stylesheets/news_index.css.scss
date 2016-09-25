@@ -3,32 +3,3 @@
 .news-posts {
   margin-top: 1em;
 }
-.news-card {
-  background: #fff;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
-  border: 1px solid #ddd;
-  .news-card-image {
-    width: 100%;
-    height: 160px;
-    background-size: cover;
-    background-position: 50%;
-    background-repeat: no-repeat;
-  }
-  .news-card-title, .news-card-footer, .news-card-summary {
-    padding: 0 0.75rem 1rem 0.75rem;
-  }
-  .news-card-title {
-    padding-bottom: 0;
-  }
-
-  .news-card-title {
-    font-family: Georgia;
-    color: #767676
-  }
-  .news-card-summary {
-    color: #6f6f6f;
-  }
-  .news-card-footer {
-    color: $button;
-  }
-}
