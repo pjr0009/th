@@ -3,6 +3,8 @@ Kassi::Application.routes.draw do
   
   get "/about/privacy" => "about#privacy", as: "privacy_about"
   get "/about/terms" => "about#terms", as: "terms_about"
+  get "/about/why_tackhunter" => "about#why_tackhunter", as: "why_tackhunter_about"
+  get "/about/payments_and_fees" => "about#payments_and_fees", as: "payments_and_fees_about"
 
   resources :news
 

@@ -1,0 +1,107 @@
+:css
+  tbody tr:nth-child(odd){
+    background: none;
+  }
+  table {
+    border: 1px solid #767676;
+  }
+  table tr, table td, table th {
+    border: 1px solid #767676;
+  }
+= content_for :hero do
+  .hero-feature-post
+    .row
+      .col-12
+        %h1.hero-feature-title{style: "margin: 0;"}
+          Payments & Fees
+    .row
+      .col-12
+        %h2
+          What we charge, and when.
+  .hero-feature-image{style: "background-image: url('https://s3.amazonaws.com/assets.tackhunter.com/marketing/about-page-banner.jpeg')"}
+.row
+  .col-4{style: "text-align: center;"}
+    %h1{style: "font-size: 6rem; color: #00a26c;"}
+      %i.icon-tag
+    %h2
+      A 3% fee, only if it sells.
+    %p List as many items as you want for free. If your item sells, we take a 3% cut. That's all there is to it. Buyer didn't like it and wants a refund? We'll refund the fee to them as well. Our goal is to provide a safe and secure marketplace to connect riders and small tack store owners.
+  .col-4{style: "text-align: center;"}
+    %h1{style: "font-size: 6rem; color: #00a26c;"}
+      %i.icon-shopping-cart
+    %h2
+      Paypal.
+    %p 
+      Our checkout experience is seamlessly integrated with PayPal. We chose PayPal because of the awesome protection it provides buyers and sellers. When you accept payments via PayPal, a fee may be deducted from the total amount transferred to your PayPal account. For most sellers this fee is $0.30 plus 2.9%.
+
+      Note: This is a fee that PayPal charges for its payment service separate from your Tack Hunter fees.
+  .col-4{style: "text-align: center;"}
+    %h1{style: "font-size: 6rem; color: #00a26c;"}
+      %i.icon-credit-card
+    %h2
+      Can I pay with a debit/credit card?
+    %p 
+      Our checkout process lets you pay via your PayPal account, or with a credit/debit card.
+.row
+  %h1{style: "text-align: center;"}
+    Example of selling a $1000 item
+  %table
+    %thead
+      %tr
+        %th
+        %th
+          Tack Hunter
+        %th
+          Ebay
+        %th
+          Avg. Consignment Store
+    %tbody
+      %tr
+        %td
+          Listing Fee / Minimum Fee
+        %td
+          0
+        %td
+          $0.30
+        %td
+          $0-$50
+      %tr
+        %td
+          Payment processing fee
+        %td
+          $29.30
+        %td
+          $29.30
+        %td
+          $0
+      %tr
+        %td
+          Fee once it sells
+        %td
+          $30.00
+        %td
+          $100
+        %td
+          $250 - $300
+    %tfoot
+      %tr
+        %td
+          %strong Total Fees Once Sold
+        %td{style: "background: #00a26c; border: 1px solid white; color: white;"}
+          %strong $59.30
+        %td{style: "background: red; border: 1px solid white; color: white;"}
+          %strong $129.60
+        %td{style: "background: red; border: 1px solid white; color: white;"}
+          %strong $250 - $300
+      %tr
+        %td
+          Total Profit
+        %td
+          $940.70
+        %td
+          $870.40
+        %td
+          $700 - $750
+
+
+      
