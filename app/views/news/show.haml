@@ -1,4 +1,6 @@
 = stylesheet_link_tag "news_post"
+- content_for :title, @news_post.title
+- content_for :meta_description, @news_post.summary
 %script{type: "application/ld+json"}
   :plain
     {
