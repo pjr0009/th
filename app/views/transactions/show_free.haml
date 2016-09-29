@@ -5,7 +5,7 @@
 
   .col-4
     .row{style: "background: #fff; border: 1px solid #ddd; border-radius: 4px;"}
-      = image_tag listing_image, :style => "width: 100%;"
+      = image_tag listing_image_big, :style => "width: 100%;"
       %h2{style: "padding: 0 1rem; margin: 0;"}
         = link_to_unless listing[:deleted], listing[:title], listing_path(id: listing[:id])
       %p{style: "padding: 0 1rem;"}

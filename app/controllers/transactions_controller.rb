@@ -163,7 +163,7 @@ class TransactionsController < ApplicationController
       message_form_action: person_message_messages_path(@current_user, :message_id => conversation[:id]),
     }
     unless listing.listing_images.blank?
-      render_params.merge!({listing_image: listing.listing_images.first.image.url(:medium)})
+      render_params.merge!({listing_image: listing.listing_images.first.image.url(:thumb), listing_image_big: listing.listing_images.first.image.url(:medium)})
     end
 
     #render the special version of the transaction in the event that the buyer initiated it by contacting the seller
