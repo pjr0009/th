@@ -54,6 +54,8 @@ module Kassi
 
     # Add webfonts folder which can contain icons used like fonts
     config.assets.paths << Rails.root.join("app", "assets", "webfonts")
+    config.assets.paths << Rails.root.join("app", "assets", "stylesheets", "custom_news_styles")
+    config.assets.paths << Rails.root.join("app", "assets", "javascripts", "custom_news_scripts")
     config.assets.paths << VENDOR_CSS_PATH
 
     # Define here additional Asset Pipeline Manifests to include to precompilation
