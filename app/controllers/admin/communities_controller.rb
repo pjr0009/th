@@ -397,7 +397,7 @@ class Admin::CommunitiesController < ApplicationController
   end
 
   def can_set_sender_address(plan)
-    plan[:features][:admin_email]
+    true
   end
 
   def ensure_white_label_plan
