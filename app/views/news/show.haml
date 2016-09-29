@@ -35,6 +35,10 @@
       },
       "description": "#{@news_post.summary}"
     }
+- content_for :meta_image, @news_post.image(:medium)
+- content_for :meta_image_height, "270px"
+- content_for :meta_image_width, "360px"
+  
 = content_for :hero do
   .hero-feature-post
     .row
