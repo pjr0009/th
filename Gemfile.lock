@@ -88,6 +88,7 @@ GEM
     airbrake (4.1.0)
       builder
       multi_json
+    angularjs-rails (1.5.6)
     annotate (2.6.10)
       activerecord (>= 3.2, <= 4.3)
       rake (~> 10.4)
@@ -568,6 +569,7 @@ PLATFORMS
 DEPENDENCIES
   activerecord-session_store (~> 1.0.0.pre)
   airbrake (~> 4.1.0)
+  angularjs-rails
   annotate (~> 2.6.5)
   awesome_print (~> 1.6.1)
   aws-sdk (~> 2)
