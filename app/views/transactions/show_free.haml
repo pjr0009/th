@@ -1,7 +1,17 @@
 = render :partial => "conversations/conversation_header", locals: {other_party: conversation_other_party}
-.row.transaction-listing
-  %h2
-    = link_to_unless listing[:deleted], listing[:title], listing_path(id: listing[:id])
-
 .row
-  = render :partial => "conversations/messages_and_form", locals: {role: role, message_form: message_form, message_form_action: message_form_action, messages: messages}
+  .col-8
+    = render :partial => "conversations/messages_and_form", locals: {role: role, message_form: message_form, message_form_action: message_form_action, messages: messages}
+
+  .col-4
+    .row{style: "background: #fff; border: 1px solid #ddd; border-radius: 4px;"}
+      = image_tag listing_image, :style => "width: 100%;"
+      %h2{style: "padding: 0 1rem; margin: 0;"}
+        = link_to_unless listing[:deleted], listing[:title], listing_path(id: listing[:id])
+      %p{style: "padding: 0 1rem;"}
+        = listing[:description]
+      %div{style: "padding: 0 1em;"}
+        = link_to new_transaction_path({listing_id: listing[:id]}), :class => "book-button" do
+          .content{style: "margin-top: .75em"}
+            %i.icon-lock
+            Complete purchase
