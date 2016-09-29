@@ -1,0 +1,369 @@
+= javascript_include_tag "angular"
+= javascript_include_tag "angular-toggle-switch.min.js"
+= javascript_include_tag "https://cdnjs.cloudflare.com/ajax/libs/angularjs-slider/5.5.1/rzslider.min.js"
+= stylesheet_link_tag "https://cdnjs.cloudflare.com/ajax/libs/angularjs-slider/5.5.1/rzslider.min.css"
+= stylesheet_link_tag "angular-toggle-switch"
+= stylesheet_link_tag "angular-toggle-switch-bootstrap"
+.row
+  %p I recently started looking for a truck that was capable of towing my horses around. I quickly found myself overwhelmed with tons of confusing terminology. There had to be a simpler way. After doing a ton of research, I made a tool that everyone can use to save time when truck shopping. Keep in mind that driving an overloaded vehicle is not only dangerous for you and your horses, but it also is a financial liability (it's unlikely that your insurance will cover a crash that resulted from exceeding your car manufacturer’s limits).
+
+.row
+  %h2.center Truck Ratings 101
+  %div{style: "height: 75px; overflow: hidden; background: #f7f7f7; border-radius: 4px; box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1); border: 1px solid #ddd;width: 80%; margin: auto;"}
+    %img{src: "https://s3.amazonaws.com/assets-local.tackhunter.com/horse1.png", style: "width: 100%;"}
+.row
+  %p 
+    The
+    %strong
+      GCVW
+    is an important aspect. When it's all said and done, this is what you'll want to stay under. Also, it's always a good idea to allow for a 5-8% margin of error when calculating your gross combined weight. Now lets get started:
+.row
+  %h2.center 
+    Which truck is right for you?
+  %p We've created this calcuator to give you a rough estimate of your GCVW. Our methodology for calculating the GCVW was as follows: We first looked at many of the top horse trailer manufacturers, and averaged the weight on a per horse basis. We further segmented these averages by distinguishing between goosneck and bumper pull trialers. This is because on average goosneck trailers weigh more. Lastly we included a 250lbs addition for water, tack, hay, and other riding equipment. Once we compute the estimated gross vehicle weight for the fully loaded trailer (not the truck), we then combined this number with the curb weight of various trucks. The information for the trucks was gathered via the manufacturers website as of September 25th, 2016
+
+
+.row{"ng-app": "truckApp", "ng-controller": "truckAppCtrl"}
+  .row
+
+    .col-8
+      %div
+        %strong
+          Number of horses:
+
+
+          %img{"ng-repeat": "horse in getNumber(horseSlider.value) track by $index", src: "https://s3.amazonaws.com/assets-local.tackhunter.com/pony-variant-cartoon-silhouette.svg", style: "width: 20px; height: 20px; margin-left: 5px;"}
+
+          
+      .row{style: "padding-top: 1em;"}
+        .col-12{style: "padding: 0 1em;"}
+          %rzslider{"rz-slider-model": "horseSlider.value", "rz-slider-options": "horseSlider.options"}
+      .row{style: "padding-top: 1em;"}
+        %div
+          %strong
+            Avg. number of passengers:
+
+
+            %img{"ng-repeat": "passenger in getNumber(passengerSlider.value) track by $index", src: "https://s3.amazonaws.com/assets-local.tackhunter.com/woman-standing-up.svg", style: "width: 20px; height: 20px; margin-left: 5px;"}
+        .row
+          .col-12{style: "padding: 0 1em;"}
+            %rzslider{"rz-slider-model": "passengerSlider.value", "rz-slider-options": "passengerSlider.options"}  
+      .row{style: "padding-top: 1em;"}
+        .col-4
+          %div
+            %strong
+              Dressing/Tack Room?
+          %div
+            %toggle-switch{"ng-model": "dressingRoom", "on-label": "Yes", "off-label": "No"} 
+          %div
+            %small
+              Adds weight, cost more, but could reduce your vehicle's payload.
+        .col-4 
+          %div
+            %strong
+              Living Quarters?
+          %div
+            %toggle-switch{"ng-model": "livingQuarter", "on-label": "Yes", "off-label": "No"}  
+          %div
+            %small
+              Need to snooze? Be prepared to save on hotels, but pay more upfront on the truck
+        .col-4 
+          %div
+            %strong
+              Aluminum?
+          %div
+            %toggle-switch{"ng-model": "aluminum", "on-label": "Yes", "off-label": "No"}  
+          %div
+            %small
+              More expensive, but may save you from buying a bigger truck.
+
+    .col-4
+      %table
+        %tr
+          %td
+            
+            Est. horse weight
+          %td{"ng-bind": "horseWeight()+'lbs'"}
+        %tr
+          %td
+            Est. trailer weight
+          %td{"ng-bind": "trailerWeight()+'lbs'"}
+        %tr
+          %td
+            Est. payload
+          %td{"ng-bind": "passengerWeight()+'lbs'"}
+        %tr
+          %td
+            Est. truck weight
+          %td{"ng-bind": "truckWeight()+'lbs'"}
+        %tr
+          %td
+            Recommended hitch type
+          %td{"ng-bind": "hitchText()"}
+
+        %tr
+          %td
+            %strong
+              GCVW
+          %td{"ng-bind": "superTotal()+'lbs'"}
+  %div{"ng-switch": "getResult()"}
+    %h2.center.ng-cloak
+      With {{horseSlider.value}} x horses and {{passengerSlider.value}} x passengers, you'll want a truck like this:
+    .row.ng-cloak{"ng-switch-when": "1"}
+      .col-4
+        .news-card
+          .news-card-image{style: "background-image: url('https://assets.tackhunter.com/news/chevy-colorado.jpeg')"}
+      .col-8      
+        %table
+          %tr
+            %td
+              Type
+            %td Light Duty (Class 1)
+          %tr
+            %td
+              Typical GCVW
+            %td
+              8,500lbs
+          %tr
+            %td
+              Curb Weight
+            %td
+              4,000lbs  
+          %tr
+            %td
+              Examples in this class
+            %td
+              Chevy colorado*    
+    .row.ng-cloak{"ng-switch-when": "2"}
+      .col-4
+        .news-card
+          .news-card-image{style: "background-image: url('https://s3.amazonaws.com/assets-local.tackhunter.com/ford-f150.jpg')"}
+      .col-8      
+        %table
+          %tr
+            %td
+              Type
+            %td Light Duty (Class 2a)
+          %tr
+            %td
+              Typical GCVW
+            %td
+              6,000-10,500lbs
+          %tr
+            %td
+              Typical curb weight
+            %td
+              5000lbs  
+          %tr
+            %td
+              Examples in this class
+            %td
+              Ford F-150 v6, Ford-150 v8, Chevy 1500*
+    .row.ng-cloak{"ng-switch-when": "3"}
+      .col-4
+        .news-card
+          .news-card-image{style: "background-image: url('https://assets.tackhunter.com/news/097-Ford-Denver.JPG')"}
+      .col-8      
+        %table
+          %tr
+            %td
+              Type
+            %td Light-Medium Duty (Class 2b)
+          %tr
+            %td
+              GCVW
+            %td
+              10,000-16,000lbs
+          %tr
+            %td
+              Typical curb weight
+            %td
+              6000lbs
+          %tr
+            %td
+              Examples in this class
+            %td
+              Ford F-250 diesel, Ford F-250 v8, Chevy 2500*
+    .row.ng-cloak{"ng-switch-when": "4"}
+      .col-4
+        .news-card
+          .news-card-image{style: "background-image: url('https://assets.tackhunter.com/news/082-Ford-Denver.JPG')"}
+      .col-8      
+        %table
+          %tr
+            %td
+              Type
+            %td Medium Duty (Class 3)
+          %tr
+            %td
+              Typical GCVW
+            %td
+              10,000-20,000lbs
+          %tr
+            %td
+              Typical curb weight
+            %td
+              6300
+          %tr
+            %td
+              Examples in this class
+            %td
+              Ford F-350, Chevy 3500*
+    .row.ng-cloak{"ng-switch-when": "5"}
+      .col-4
+        .news-card
+          .news-card-image{style: "background-image: url('https://s3.amazonaws.com/assets.tackhunter.com/news/17FordF450Platinum_2399_HR.jpg')"}
+      .col-8      
+        %table
+          %tr
+            %td
+              Type
+            %td Heavy Duty (Class 5)
+          %tr
+            %td
+              Typical GCVW
+            %td
+              16,000-30,000+lbs
+          %tr
+            %td
+              Typical curb weight
+            %td
+              8,500lbs
+          %tr
+            %td
+              Examples in this class
+            %td
+              Ford F-450* 
+    .row
+      %small
+        * when properly equipped. Ensure that you get the proper towing packages, wheel base, single rear wheel vs daully, engine, and rear axle ratio to fit the GCWR   
+           
+:css
+  [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+    display: none !important;
+  }
+  .trailer-option.selected, .horse-option.selected {
+    background: #ddd;
+    border: 2px solid #00a26c;
+    border-radius: 4px;
+  }
+  .trailer-option:hover, .horse-option:hover {
+    background: #ddd;
+    border-radius: 4px;
+  }
+  .trailer-option {
+    cursor: pointer;
+  }
+  tbody tr:nth-child(odd){
+    background: none;
+  }
+  table {
+    border: 1px solid #ddd;
+  }
+  table tr, table td, table th {
+    border: 1px solid #ddd;
+  }
+
+:javascript
+  var app = angular.module("truckApp", ["rzModule",'toggle-switch'])
+  app.controller("truckAppCtrl", ["$scope", function($scope){
+    $scope.aluminum = true;
+    $scope.dressingRoom = false;
+    $scope.livingQuarter = false;
+    $scope.horseSlider = {
+      value: 1,
+      options: {
+        floor: 1,
+        ceil: 9,
+        showTicks: true
+      }
+    };
+    $scope.passengerSlider = {
+      value: 1,
+      options: {
+        floor: 1,
+        ceil: 5,
+        showTicks: true
+      }
+    };
+    $scope.getNumber = function(num) {
+        return new Array(num);   
+    }
+
+    $scope.getResult = function(){
+      var total = $scope.superTotal();
+      if(total > 0 && total < 8350){
+        return "1";
+      } else if(total > 8350 && total < 14050) {
+        return "2";
+      } else if(total >  14050 && total < 20300) {
+        return "3";
+      } else if(total > 20300 && total < 28000) {
+        return "4";
+      } else if(total > 28000) {
+        return "5";
+      }
+    }
+
+    $scope.horseWeight = function() {
+      return $scope.horseSlider.value * 1200;
+    };
+    $scope.trailerWeight = function() {
+      var start = ($scope.horseSlider.value) * 970 + 1300;
+      var options = 0;
+      
+      if($scope.livingQuarter){
+        options += 1100;
+      }
+      if($scope.dressingRoom){
+        options += 400;
+      }
+      var total = start + options;
+      if($scope.aluminum){
+        total = total * .90;
+      }
+      return total;
+    };
+    $scope.passengerWeight = function() {
+      return $scope.passengerSlider.value * 150;
+    };
+
+    $scope.truckWeight = function(){
+      var w = 0;
+      var total = $scope.getTotal();
+      if(total > 0 && total < 5000){
+        w = 4000;
+      } else if(total > 5000 && total < 7000) {
+        w = 5000;
+      } else if(total >  7000 && total < 16000) {
+        w = 6000;
+      } else if(total > 16000 && total < 25500) {
+        w = 6300;
+      } else if(total > 25500) {
+        w = 8500;
+      }
+      return w;
+    }
+    $scope.hitchText = function(){
+      if($scope.horseSlider.value > 3 || ($scope.horseSlider.value > 2 && $scope.livingQuarter)) {
+        return "Gooseneck";
+      } else {
+        return "Bumper Pull";
+      }
+    }
+
+    $scope.getTotal = function(){
+      var horseWeight = $scope.horseWeight();
+      var trailerWeight = $scope.trailerWeight();
+      var passengerWeight = $scope.passengerWeight();
+      
+
+      var total = horseWeight + trailerWeight + (passengerWeight * 2);
+
+      return total;
+    }
+    $scope.superTotal = function(){
+      return $scope.getTotal() + $scope.truckWeight();
+    }
+  }])
+
