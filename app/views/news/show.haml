@@ -55,7 +55,7 @@
           %small
             %div
               %a{href: "#"}
-                Kate Stewart
+                = @news_post.person.username
             %div
               Published on 
               = @news_post.created_at.strftime('%B %e at %l:%M %p')
