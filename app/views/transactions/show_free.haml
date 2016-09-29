@@ -9,7 +9,7 @@
       %h2{style: "padding: 0 1rem; margin: 0;"}
         = link_to_unless listing[:deleted], listing[:title], listing_path(id: listing[:id])
       %p{style: "padding: 0 1rem;"}
-        = listing[:description]
+        = truncate(listing[:description], length: 100)
       %div{style: "padding: 0 1em;"}
         = link_to new_transaction_path({listing_id: listing[:id]}), :class => "book-button" do
           .content{style: "margin-top: .75em"}
