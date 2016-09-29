@@ -30,7 +30,7 @@
 
           %img{"ng-repeat": "horse in getNumber(horseSlider.value) track by $index", src: "https://s3.amazonaws.com/assets-local.tackhunter.com/pony-variant-cartoon-silhouette.svg", style: "width: 20px; height: 20px; margin-left: 5px;"}
 
-          
+         
       .row{style: "padding-top: 1em;"}
         .col-12{style: "padding: 0 1em;"}
           %rzslider{"rz-slider-model": "horseSlider.value", "rz-slider-options": "horseSlider.options"}
@@ -78,12 +78,14 @@
         %tr
           %td
             
-            Est. horse weight
-          %td{"ng-bind": "horseWeight()+'lbs'"}
+            Est. total horse weight (in lbs)
+          %td
+            %input{"ng-model": "horseWeight"}
         %tr
           %td
-            Est. trailer weight
-          %td{"ng-bind": "trailerWeight()+'lbs'"}
+            Est. trailer weight (in lbs)
+          %td
+            %input{"ng-model": "trailerWeight"}
         %tr
           %td
             Est. payload
@@ -301,6 +303,25 @@
       }
     }
 
+    $scope.$watch("horseSlider.value", function(newVal, oldVal){
+      $scope.horseWeight = $scope.horseSlider.value * 1200;
+      var start = ($scope.horseSlider.value) * 970 + 1300;
+      var options = 0;
+      
+      if($scope.livingQuarter){
+        options += 1100;
+      }
+      if($scope.dressingRoom){
+        options += 400;
+      }
+      var total = start + options;
+      if($scope.aluminum){
+        total = total * .90;
+      }
+      $scope.trailerWeight = total;
+    })
+
+
     $scope.horseWeight = function() {
       return $scope.horseSlider.value * 1200;
     };
@@ -349,8 +370,8 @@
     }
 
     $scope.getTotal = function(){
-      var horseWeight = $scope.horseWeight();
-      var trailerWeight = $scope.trailerWeight();
+      var horseWeight = parseInt($scope.horseWeight);
+      var trailerWeight = parseInt($scope.trailerWeight);
       var passengerWeight = $scope.passengerWeight();
       
 
