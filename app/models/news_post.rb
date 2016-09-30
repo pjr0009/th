@@ -28,6 +28,7 @@ class NewsPost < ActiveRecord::Base
         :medium => "360x270#",
         :thumb => "120x120#",
         :feature => "1400x380#",
+        :fb => "1200x630",
         :email => "150x100#"}
   after_create :set_partial_name
   belongs_to :person
