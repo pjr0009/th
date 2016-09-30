@@ -5,18 +5,18 @@
 
 .row
   %h2.center Truck Ratings 101
-  %div{style: "height: 75px; overflow: hidden; background: #f7f7f7; border-radius: 4px; box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1); border: 1px solid #ddd;width: 80%; margin: auto;"}
-    %img{src: "https://s3.amazonaws.com/assets-local.tackhunter.com/horse1.png", style: "width: 100%;"}
+  %div{style: "height: auto; overflow: hidden; width: 90%; margin: auto;"}
+    %img{src: "https://assets.tackhunter.com/news/horse-trailering-ratings.png", style: "width: 100%;"}
 .row
   %p 
     The
     %strong
-      GCVW
-    is an important aspect. When it's all said and done, this is what you'll want to stay under. Also, it's always a good idea to allow for a 5-8% margin of error when calculating your gross combined weight. Now lets get started:
+      GCWR
+    is an important aspect. When it's all said and done, this is what you'll want to stay under. Also, it's always a good idea to allow for a 5-8% margin of error when calculating your gross combined weight rating. Now lets get started:
 .row
   %h2.center 
     Which truck is right for you?
-  %p We've created this calcuator to give you a rough estimate of your GCVW. Our methodology for calculating the GCVW was as follows: We first looked at many of the top horse trailer manufacturers, and averaged the weight on a per horse basis. We further segmented these averages by distinguishing between goosneck and bumper pull trialers. This is because on average goosneck trailers weigh more. Lastly we included a 250lbs addition for water, tack, hay, and other riding equipment. Once we compute the estimated gross vehicle weight for the fully loaded trailer (not the truck), we then combined this number with the curb weight of various trucks. The information for the trucks was gathered via the manufacturers website as of September 25th, 2016
+  %p We've created this calcuator to give you a rough estimate of your GCWR. Our methodology for calculating the GCWR was as follows: We first looked at many of the top horse trailer manufacturers, and averaged the weight on a per horse basis. We further segmented these averages by distinguishing between goosneck and bumper pull trialers. This is because on average goosneck trailers weigh more. Lastly we included a 250lbs addition for water, tack, hay, and other riding equipment. Once we compute the estimated gross vehicle weight for the fully loaded trailer (not the truck), we then combined this number with the curb weight of various trucks. The information for the trucks was gathered via the manufacturers website as of September 25th, 2016
 
 
 .row{"ng-app": "truckApp", "ng-controller": "truckAppCtrl"}
@@ -50,7 +50,7 @@
             %strong
               Dressing/Tack Room?
           %div
-            %toggle-switch{"ng-model": "dressingRoom", "on-label": "Yes", "off-label": "No"} 
+            %toggle-switch{"ng-model": "toggles.dressingRoom", "on-label": "Yes", "off-label": "No"} 
           %div
             %small
               Adds weight, cost more, but could reduce your vehicle's payload.
@@ -59,7 +59,7 @@
             %strong
               Living Quarters?
           %div
-            %toggle-switch{"ng-model": "livingQuarter", "on-label": "Yes", "off-label": "No"}  
+            %toggle-switch{"ng-model": "toggles.livingQuarter", "on-label": "Yes", "off-label": "No"}  
           %div
             %small
               Need to snooze? Be prepared to save on hotels, but pay more upfront on the truck
@@ -68,7 +68,7 @@
             %strong
               Aluminum?
           %div
-            %toggle-switch{"ng-model": "aluminum", "on-label": "Yes", "off-label": "No"}  
+            %toggle-switch{"ng-model": "toggles.aluminum", "on-label": "Yes", "off-label": "No"}  
           %div
             %small
               More expensive, but may save you from buying a bigger truck.
@@ -102,8 +102,13 @@
         %tr
           %td
             %strong
-              GCVW
+              GCWR
           %td{"ng-bind": "superTotal()+'lbs'"}
+        %tr
+          %td
+          %td
+            %button.button{"ng-click": "resetStuff()"}
+              Reset
   %div{"ng-switch": "getResult()"}
     %h2.center.ng-cloak
       With {{horseSlider.value}} x horses and {{passengerSlider.value}} x passengers, you'll want a truck like this:
@@ -119,7 +124,7 @@
             %td Light Duty (Class 1)
           %tr
             %td
-              Typical GCVW
+              Typical GCWR
             %td
               8,500lbs
           %tr
@@ -144,7 +149,7 @@
             %td Light Duty (Class 2a)
           %tr
             %td
-              Typical GCVW
+              Typical GCWR
             %td
               6,000-10,500lbs
           %tr
@@ -169,7 +174,7 @@
             %td Light-Medium Duty (Class 2b)
           %tr
             %td
-              GCVW
+              GCWR
             %td
               10,000-16,000lbs
           %tr
@@ -194,7 +199,7 @@
             %td Medium Duty (Class 3)
           %tr
             %td
-              Typical GCVW
+              Typical GCWR
             %td
               10,000-20,000lbs
           %tr
@@ -219,7 +224,7 @@
             %td Heavy Duty (Class 5)
           %tr
             %td
-              Typical GCVW
+              Typical GCWR
             %td
               16,000-30,000+lbs
           %tr
@@ -265,9 +270,10 @@
 :javascript
   var app = angular.module("truckApp", ["rzModule",'toggle-switch'])
   app.controller("truckAppCtrl", ["$scope", function($scope){
-    $scope.aluminum = true;
-    $scope.dressingRoom = false;
-    $scope.livingQuarter = false;
+    $scope.toggles = {};
+    $scope.toggles.aluminum = true;
+    $scope.toggles.dressingRoom = false;
+    $scope.toggles.livingQuarter = false;
     $scope.horseSlider = {
       value: 1,
       options: {
@@ -303,23 +309,41 @@
       }
     }
 
+    $scope.$watch("toggles", function(newVal, oldVal){
+      if(newVal.aluminum != oldVal.aluminum || newVal.livingQuarter != oldVal.livingQuarter || newVal.dressingRoom != oldVal.dressingRoom){
+        $scope.setAfterToggle();
+      }
+    }, true)
+
     $scope.$watch("horseSlider.value", function(newVal, oldVal){
+      $scope.setAfterToggle();
+
+    })
+
+    $scope.setAfterToggle = function(){
       $scope.horseWeight = $scope.horseSlider.value * 1200;
       var start = ($scope.horseSlider.value) * 970 + 1300;
+      $scope.trailerWeight = parseInt(start);    
+
+      $scope.setTrailerWeight(start);
+    }
+
+
+    $scope.setTrailerWeight = function(startWeight) {
       var options = 0;
       
-      if($scope.livingQuarter){
+      if($scope.toggles.livingQuarter){
         options += 1100;
       }
-      if($scope.dressingRoom){
+      if($scope.toggles.dressingRoom){
         options += 400;
       }
-      var total = start + options;
-      if($scope.aluminum){
+      var total = startWeight + options;
+      if($scope.toggles.aluminum){
         total = total * .90;
       }
-      $scope.trailerWeight = total;
-    })
+      $scope.trailerWeight = parseInt(total);    
+    }
 
 
     $scope.horseWeight = function() {
@@ -329,20 +353,20 @@
       var start = ($scope.horseSlider.value) * 970 + 1300;
       var options = 0;
       
-      if($scope.livingQuarter){
+      if($scope.toggles.livingQuarter){
         options += 1100;
       }
-      if($scope.dressingRoom){
+      if($scope.toggles.dressingRoom){
         options += 400;
       }
       var total = start + options;
-      if($scope.aluminum){
+      if($scope.toggles.aluminum){
         total = total * .90;
       }
       return total;
     };
     $scope.passengerWeight = function() {
-      return $scope.passengerSlider.value * 150;
+      return ($scope.passengerSlider.value * 150) + 250;
     };
 
     $scope.truckWeight = function(){
@@ -362,7 +386,7 @@
       return w;
     }
     $scope.hitchText = function(){
-      if($scope.horseSlider.value > 3 || ($scope.horseSlider.value > 2 && $scope.livingQuarter)) {
+      if($scope.horseSlider.value > 3 || ($scope.horseSlider.value > 2 && $scope.toggles.livingQuarter)) {
         return "Gooseneck";
       } else {
         return "Bumper Pull";
@@ -381,6 +405,16 @@
     }
     $scope.superTotal = function(){
       return $scope.getTotal() + $scope.truckWeight();
+    }
+
+    $scope.resetStuff = function(){
+      $scope.horseSlider.value = 1;
+      $scope.passengerSlider.value = 1;
+      $scope.toggles = {
+        aluminum: true,
+        dressingRoom: false,
+        livingQuarter: false
+      };
     }
   }])
 
