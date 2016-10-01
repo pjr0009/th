@@ -1,0 +1,72 @@
+= stylesheet_link_tag "custom_news_styles/how_much_is_my_saddle_worth"
+= javascript_include_tag "custom_news_scripts/how_much_is_my_saddle_worth"
+
+
+.slide-wrapper{"ng-app": "saddleApp", "ng-controller": "saddleAppCtrl"}
+  #slides
+    .slide
+      %row.center
+        %h1
+          How Much Is My Saddle Worth?
+      %row
+        %div{style: "margin: auto; width: 30%;"}
+          %img{src: "https://assets.tackhunter.com/news/horse-saddle.svg", style: "width: 100%;"}
+      %row  
+        %p
+          Saddle doesn't fit? Thinking of upgrading? The tack experts here at Tack Hunter compiled market values for many different saddles so you know what a fair asking price is
+      %row.center
+        %button{style: "margin: auto;", "ng-click": "nextStep()"}
+          Let's Get Started
+
+    .slide
+      %row.center
+        %h1
+          What type of saddle do you have?
+      %row.saddle-types
+        .col-4{"ng-repeat": "type in saddleTypes"}
+          .saddle-type
+            %img{"ng-src": "{{type.image}}", "ng-click": "nextStep()"}
+            %h6{"ng-bind": "type.name"}
+          .saddle-type-footer
+            %button{"ng-click": "setSaddleType(type.name)"}
+              Select
+
+
+    .slide
+      %row.center
+        %h1{"ng-bind": "letsFindText()"}
+      %row.center
+        %label
+          Brand
+        %input
+          
+
+
+/ %form
+/   %label
+/     Saddle Type
+/   %input
+
+/   %label
+/     Brand
+/   %input
+
+/   %label
+/     Age
+/   %input
+
+/   %label
+/     Material
+/   %input
+
+/   %label
+/     Model
+/   %input
+
+/   %label
+/     Tree Material
+/   %input
+
+/   %label
+/     Tree Size
+/   %input

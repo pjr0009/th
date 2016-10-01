@@ -1,0 +1,59 @@
+@import "mixins/all";
+
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+  display: none !important;
+}
+
+.slide-wrapper {
+
+  height: auto;
+  width: 95vw;
+  overflow:hidden; /* So the sliding bit doesn't stick out. */
+  margin:0 auto;
+}
+#slides {
+  /* This is the bit that moves. It has 4 images, so 4 * 450 = 1800. You could use javascript
+  to work this out instead by counting images. */
+  width: 950vw;
+
+  -webkit-transition:all 0.4s ease-in-out;
+  -moz-transition:all 0.4s ease-in-out;
+  -o-transition:all 0.4s ease-in-out;
+  transition:all 0.4s ease-in-out;
+}
+#slides .slide{
+  padding:0;
+  margin:0;
+  width: 95vw;
+  height: auto;
+  float:left; /* All the images are in a row next to each other. */
+}
+.saddle-types {
+
+  img { 
+    height: 120px;
+  }
+  .col-4 {
+    .saddle-type {
+      height: 200px;
+    }
+    .saddle-type-footer {
+      button {
+        margin: auto;
+      }
+    }
+    text-align: center;
+  }
+}
+
+@include media(desktop) {
+  .slide-wrapper {
+    width: em(960) !important;
+  }
+  .slide {
+    width: em(960) !important;
+  }
+  #slides {
+    width: em(960) * 10;
+  }
+}

@@ -71,7 +71,9 @@ module Kassi
       'news_post.css',
       'news_index.css',
       'custom_news_styles/how_much_truck.css',
-      'custom_news_scripts/how_much_truck.js'
+      'custom_news_scripts/how_much_truck.js',
+      'custom_news_styles/how_much_is_my_saddle_worth.css',
+      'custom_news_scripts/how_much_is_my_saddle_worth.js',
     ]
 
     # Read the config from the config.yml

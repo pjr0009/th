@@ -94,7 +94,7 @@ ul {
   @include media(tablet) {
     padding: lines(0) lines(0.5);
   }
-  @include media(desktop) {
+  @include media(tablet) {
     padding: lines(0) lines(0);
   }
 }
