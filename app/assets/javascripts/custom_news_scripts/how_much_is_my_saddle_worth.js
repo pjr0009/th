@@ -1,6 +1,13 @@
 //= require angular
-var app = angular.module("saddleApp", [])
-app.controller("saddleAppCtrl", ["$scope", function($scope){
+//= require angular-resource
+//= require angucomplete
+var app = angular.module("saddleApp", ['ngResource','angucomplete'])
+
+app.factory('Discipline', function($resource) {
+  return $resource('/disciplines/:id'); // Note the full endpoint address
+});
+
+app.controller("saddleAppCtrl", ["$scope", "Discipline", function($scope, Discipline){
   $scope.saddleConfiguration = {
     saddleType: "",
     brand: "",
@@ -33,18 +40,15 @@ app.controller("saddleAppCtrl", ["$scope", function($scope){
     return $scope.currentSlide * currentWidth * -1;
   }
 
-  $scope.setSaddleType = function(typeName){
-    $scope.saddleConfiguration.saddleType = typeName;
+  $scope.setDiscipline = function(typeName){
+    $scope.saddleConfiguration.discipline = typeName;
     $scope.nextStep();
   }
 
   $scope.letsFindText = function(){
-    return "Let's find your " + $scope.saddleConfiguration.saddleType + " saddle";
+    return "Let's find your " + $scope.saddleConfiguration.discipline + " saddle";
   }
+  $scope.disciplines = Discipline.query();
 
-  $scope.saddleTypes = [
-    {"name": "Dressage", "image":"https://s3.amazonaws.com/assets.tackhunter.com/news/dressage-saddle.jpeg"},
-    {"name": "Jumping", "image": "https://s3.amazonaws.com/assets.tackhunter.com/news/jumping-saddle.jpeg"},
-    {"name": "All Purpose", "image": "https://s3.amazonaws.com/assets.tackhunter.com/news/general-purpose-saddle.jpg"}
-  ]
+
 }])

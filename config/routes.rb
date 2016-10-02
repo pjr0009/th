@@ -1,4 +1,7 @@
 Kassi::Application.routes.draw do
+  resources :products
+  resources :disciplines
+  resources :brands
   root to: "homepage#index"
   
   get "/about/privacy" => "about#privacy", as: "privacy_about"

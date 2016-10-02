@@ -21,14 +21,14 @@
     .slide
       %row.center
         %h1
-          What type of saddle do you have?
+          What discipline is this saddle for?
       %row.saddle-types
-        .col-4{"ng-repeat": "type in saddleTypes"}
+        .col-4{"ng-repeat": "discipline in disciplines"}
           .saddle-type
-            %img{"ng-src": "{{type.image}}", "ng-click": "nextStep()"}
-            %h6{"ng-bind": "type.name"}
+            %img{"ng-src": "{{discipline.image}}", "ng-click": "nextStep()"}
+            %h6{"ng-bind": "discipline.name"}
           .saddle-type-footer
-            %button{"ng-click": "setSaddleType(type.name)"}
+            %button{"ng-click": "setDiscipline(discipline.name)"}
               Select
 
 
@@ -39,6 +39,7 @@
         %label
           Brand
         %input
+          %angucomplete{id: "ex1", placeholder: "Brand", pause: "100", selectedobject: "saddleConfiguration.brand", localdata: "brands", searchfields: "name", titlefield: "name", minlength: "2", inputclass: "form-control form-control-small"}
           
 
 

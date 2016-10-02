@@ -46,16 +46,22 @@
 #  pickup_enabled                  :boolean          default(FALSE)
 #  shipping_price_cents            :integer
 #  shipping_price_additional_cents :integer
+#  brand_id                        :integer
+#  discipiline_id                  :integer
+#  product_id                      :integer
 #
 # Indexes
 #
 #  homepage_query                      (community_id,open,sort_date,deleted)
 #  homepage_query_valid_until          (community_id,open,valid_until,sort_date,deleted)
+#  index_listings_on_brand_id          (brand_id)
 #  index_listings_on_category_id       (old_category_id)
 #  index_listings_on_community_id      (community_id)
+#  index_listings_on_discipiline_id    (discipiline_id)
 #  index_listings_on_listing_shape_id  (listing_shape_id)
 #  index_listings_on_new_category_id   (category_id)
 #  index_listings_on_open              (open)
+#  index_listings_on_product_id        (product_id)
 #  person_listings                     (community_id,author_id)
 #  updates_email_listings              (community_id,open,updates_email_at)
 #
@@ -84,6 +90,8 @@ class Listing < ActiveRecord::Base
   has_and_belongs_to_many :followers, :class_name => "Person", :join_table => "listing_followers"
 
   belongs_to :category
+  belongs_to :brand
+  belongs_to :discipline
 
   monetize :price_cents, :allow_nil => true, with_model_currency: :currency
   monetize :shipping_price_cents, allow_nil: true, with_model_currency: :currency

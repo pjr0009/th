@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160920182336) do
+ActiveRecord::Schema.define(version: 20161002183059) do
 
   create_table "auth_tokens", force: :cascade do |t|
     t.string   "token",            limit: 255
@@ -64,6 +64,20 @@ ActiveRecord::Schema.define(version: 20160920182336) do
     t.string   "hidden_account_number",  limit: 255
     t.string   "status",                 limit: 255
     t.integer  "community_id",           limit: 4
+  end
+
+  create_table "brands", force: :cascade do |t|
+    t.datetime "created_at",                            null: false
+    t.datetime "updated_at",                            null: false
+    t.string   "summary",                   limit: 255
+    t.string   "logo_file_name",            limit: 255
+    t.string   "logo_content_type",         limit: 255
+    t.integer  "logo_file_size",            limit: 4
+    t.datetime "logo_updated_at"
+    t.string   "illustration_file_name",    limit: 255
+    t.string   "illustration_content_type", limit: 255
+    t.integer  "illustration_file_size",    limit: 4
+    t.datetime "illustration_updated_at"
   end
 
   create_table "categories", force: :cascade do |t|
@@ -388,6 +402,21 @@ ActiveRecord::Schema.define(version: 20160920182336) do
   add_index "delayed_jobs", ["locked_at", "created_at"], name: "index_delayed_jobs_on_locked_created", using: :btree
   add_index "delayed_jobs", ["priority", "run_at"], name: "delayed_jobs_priority", using: :btree
 
+  create_table "disciplines", force: :cascade do |t|
+    t.text     "summary",    limit: 65535
+    t.string   "name",       limit: 255
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
+  end
+
+  create_table "disciplines_brands", id: false, force: :cascade do |t|
+    t.integer "discipline_id", limit: 4
+    t.integer "brand_id",      limit: 4
+  end
+
+  add_index "disciplines_brands", ["brand_id"], name: "index_disciplines_brands_on_brand_id", using: :btree
+  add_index "disciplines_brands", ["discipline_id"], name: "index_disciplines_brands_on_discipline_id", using: :btree
+
   create_table "emails", force: :cascade do |t|
     t.string   "person_id",            limit: 255
     t.integer  "community_id",         limit: 4,   null: false
@@ -586,17 +615,23 @@ ActiveRecord::Schema.define(version: 20160920182336) do
     t.boolean  "pickup_enabled",                                default: false
     t.integer  "shipping_price_cents",            limit: 4
     t.integer  "shipping_price_additional_cents", limit: 4
+    t.integer  "brand_id",                        limit: 4
+    t.integer  "discipiline_id",                  limit: 4
+    t.integer  "product_id",                      limit: 4
   end
 
+  add_index "listings", ["brand_id"], name: "index_listings_on_brand_id", using: :btree
   add_index "listings", ["category_id"], name: "index_listings_on_new_category_id", using: :btree
   add_index "listings", ["community_id", "author_id"], name: "person_listings", using: :btree
   add_index "listings", ["community_id", "open", "sort_date", "deleted"], name: "homepage_query", using: :btree
   add_index "listings", ["community_id", "open", "updates_email_at"], name: "updates_email_listings", using: :btree
   add_index "listings", ["community_id", "open", "valid_until", "sort_date", "deleted"], name: "homepage_query_valid_until", using: :btree
   add_index "listings", ["community_id"], name: "index_listings_on_community_id", using: :btree
+  add_index "listings", ["discipiline_id"], name: "index_listings_on_discipiline_id", using: :btree
   add_index "listings", ["listing_shape_id"], name: "index_listings_on_listing_shape_id", using: :btree
   add_index "listings", ["old_category_id"], name: "index_listings_on_category_id", using: :btree
   add_index "listings", ["open"], name: "index_listings_on_open", using: :btree
+  add_index "listings", ["product_id"], name: "index_listings_on_product_id", using: :btree
 
   create_table "locations", force: :cascade do |t|
     t.float    "latitude",       limit: 24
@@ -740,6 +775,8 @@ ActiveRecord::Schema.define(version: 20160920182336) do
     t.string   "onboarding_id",       limit: 36
     t.boolean  "permissions_granted"
   end
+
+  add_index "order_permissions", ["paypal_account_id"], name: "index_order_permissions_on_paypal_account_id", using: :btree
 
   create_table "participations", force: :cascade do |t|
     t.string   "person_id",        limit: 255
@@ -949,7 +986,6 @@ ActiveRecord::Schema.define(version: 20160920182336) do
     t.string   "organization_name",                  limit: 255
     t.boolean  "deleted",                                          default: false
     t.string   "cloned_from",                        limit: 22
-    t.string   "website",                            limit: 255
   end
 
   add_index "people", ["authentication_token"], name: "index_people_on_authentication_token", using: :btree
@@ -961,6 +997,19 @@ ActiveRecord::Schema.define(version: 20160920182336) do
   add_index "people", ["reset_password_token"], name: "index_people_on_reset_password_token", unique: true, using: :btree
   add_index "people", ["username", "community_id"], name: "index_people_on_username_and_community_id", unique: true, using: :btree
   add_index "people", ["username"], name: "index_people_on_username", using: :btree
+
+  create_table "products", force: :cascade do |t|
+    t.string   "model",              limit: 255, null: false
+    t.integer  "brand_id",           limit: 4
+    t.datetime "created_at",                     null: false
+    t.datetime "updated_at",                     null: false
+    t.string   "image_file_name",    limit: 255
+    t.string   "image_content_type", limit: 255
+    t.integer  "image_file_size",    limit: 4
+    t.datetime "image_updated_at"
+  end
+
+  add_index "products", ["brand_id"], name: "index_products_on_brand_id", using: :btree
 
   create_table "prospect_emails", force: :cascade do |t|
     t.string   "email",      limit: 255
