@@ -3,7 +3,13 @@ class BrandsController < ApplicationController
 
   # GET /brands
   def index
-    @brands = Brand.all
+    if params[:q]
+      params[:q] = params[:q].capitalize
+      @brands = Brand.limit(10).where("name LIKE ?", "#{params[:q]}%")
+    else
+      @brands = Brand.limit(10)
+    end
+    render json: @brands
   end
 
   # GET /brands/1
@@ -24,7 +30,7 @@ class BrandsController < ApplicationController
     @brand = Brand.new(brand_params)
 
     if @brand.save
-      redirect_to @brand, notice: 'Brand was successfully created.'
+      render json: @brand, status: :created, location: @brand
     else
       render :new
     end
@@ -53,6 +59,6 @@ class BrandsController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def brand_params
-      params[:brand]
+      params.require(:brand).permit(:name)
     end
 end

@@ -6,12 +6,18 @@ var app = angular.module("saddleApp", ['ngResource','angucomplete'])
 app.factory('Discipline', function($resource) {
   return $resource('/disciplines/:id'); // Note the full endpoint address
 });
-
-app.controller("saddleAppCtrl", ["$scope", "Discipline", function($scope, Discipline){
+app.factory('Brand', function($resource) {
+  return $resource('/brands/:id'); // Note the full endpoint address
+});
+app.controller("saddleAppCtrl", ["$scope", "Discipline", "Brand", function($scope, Discipline, Brand){
   $scope.saddleConfiguration = {
     saddleType: "",
-    brand: "",
-    model: ""
+    brand: {
+      name: ""
+    },
+    model: {
+      name: ""
+    }
   };
   $scope.slidesElement = document.getElementById("slides");
   $scope.currentSlideElement = document.getElementsByClassName("slide")[0];
@@ -43,6 +49,18 @@ app.controller("saddleAppCtrl", ["$scope", "Discipline", function($scope, Discip
   $scope.setDiscipline = function(typeName){
     $scope.saddleConfiguration.discipline = typeName;
     $scope.nextStep();
+  }
+
+  $scope.persistAnyNewConfigurations = function (){
+    if($scope.saddleConfiguration.brand.name){
+      $scope.nextStep();
+    } else {
+      var newBrand = new Brand()
+      newBrand.name = document.getElementById("brandName_value").value
+      newBrand.$save(function(){
+        $scope.nextStep();
+      })
+    }
   }
 
   $scope.letsFindText = function(){

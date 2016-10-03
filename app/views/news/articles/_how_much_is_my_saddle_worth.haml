@@ -38,9 +38,19 @@
       %row.center
         %label
           Brand
-        %input
-          %angucomplete{id: "ex1", placeholder: "Brand", pause: "100", selectedobject: "saddleConfiguration.brand", localdata: "brands", searchfields: "name", titlefield: "name", minlength: "2", inputclass: "form-control form-control-small"}
-          
+        %angucomplete{id: "brandName",
+          placeholder: "Brand",
+          url: "/brands?q=",
+          pause: "100",
+          selectedobject: "saddleConfiguration.brand.name",
+          localdata: "brandQuery",
+          searchfields: "name",
+          titlefield: "name",
+          minlength: "2",
+          inputclass: "form-control form-control-small"}
+        %button{"ng-click": "persistAnyNewConfigurations()"}
+          Continue
+        
 
 
 / %form

@@ -69,6 +69,7 @@ ActiveRecord::Schema.define(version: 20161002183059) do
   create_table "brands", force: :cascade do |t|
     t.datetime "created_at",                            null: false
     t.datetime "updated_at",                            null: false
+    t.string   "name",                      limit: 255
     t.string   "summary",                   limit: 255
     t.string   "logo_file_name",            limit: 255
     t.string   "logo_content_type",         limit: 255

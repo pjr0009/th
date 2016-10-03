@@ -5,6 +5,7 @@
 #  id                        :integer          not null, primary key
 #  created_at                :datetime         not null
 #  updated_at                :datetime         not null
+#  name                      :string(255)
 #  summary                   :string(255)
 #  logo_file_name            :string(255)
 #  logo_content_type         :string(255)
