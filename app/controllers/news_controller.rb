@@ -3,7 +3,7 @@ class NewsController < ApplicationController
 
   # GET /blogs
   def index
-    @news_posts = NewsPost.all
+    @news_posts = NewsPost.order(id: :desc).all
     @featured_news_post = NewsPost.first
   end
 
