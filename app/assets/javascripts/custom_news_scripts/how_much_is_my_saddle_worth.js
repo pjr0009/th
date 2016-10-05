@@ -3,16 +3,16 @@
 //= require angucomplete
 var app = angular.module("saddleApp", ['ngResource','angucomplete'])
 
-app.factory('Discipline', function($resource) {
+app.factory('Discipline', ["$resource", function($resource) {
   return $resource('/disciplines/:id'); // Note the full endpoint address
-});
-app.factory('Brand', function($resource) {
+}]);
+app.factory('Brand', ["$resource", function($resource) {
   return $resource('/brands/:id'); // Note the full endpoint address
-});
+}]);
 
-app.factory('Product', function($resource) {
+app.factory('Product', ["$resource", function($resource) {
   return $resource('/products/:id'); // Note the full endpoint address
-});
+}]);
 
 app.controller("saddleAppCtrl", ["$scope", "Discipline", "Brand", "Product", "$http", function($scope, Discipline, Brand, Product, $http){
   $scope.seatSizes = ["", "16", "16.5", "17", "17.5", "18", "18.5", "19"].reverse();
