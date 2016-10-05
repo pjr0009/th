@@ -5,24 +5,24 @@
 .slide-wrapper{"ng-app": "saddleApp", "ng-controller": "saddleAppCtrl"}
   #slides
     .slide
-      %row.center
+      .row.center
         %h1
           How Much Is My Saddle Worth?
-      %row
+      .row
         %div{style: "margin: auto; width: 30%;"}
           %img{src: "https://assets.tackhunter.com/news/horse-saddle.svg", style: "width: 100%;"}
-      %row  
+      .row  
         %p
           Saddle doesn't fit? Thinking of upgrading? The tack experts here at Tack Hunter compiled market values for many different saddles so you know what a fair asking price is
-      %row.center
+      .row.center
         %button{style: "margin: auto;", "ng-click": "nextStep()"}
           Let's Get Started
 
     .slide
-      %row.center
+      .row.center
         %h1
           What discipline is this saddle for?
-      %row.saddle-types
+      .row.saddle-types
         .col-4{"ng-repeat": "discipline in disciplines"}
           .saddle-type
             %img{"ng-src": "{{discipline.image}}", "ng-click": "nextStep()"}
@@ -33,24 +33,93 @@
 
 
     .slide
-      %row.center
+      .row.center
         %h1{"ng-bind": "letsFindText()"}
-      %row.center
-        %label
-          Brand
-        %angucomplete{id: "brandName",
-          placeholder: "Brand",
-          url: "/brands?q=",
-          pause: "100",
-          selectedobject: "saddleConfiguration.brand.name",
-          localdata: "brandQuery",
-          searchfields: "name",
-          titlefield: "name",
-          minlength: "2",
-          inputclass: "form-control form-control-small"}
-        %button{"ng-click": "persistAnyNewConfigurations()"}
-          Continue
-        
+      .row
+        .col-6{style: "float: none; margin:auto;"}
+          .row
+            %label
+              Brand
+            %angucomplete{id: "brandName",
+              placeholder: "Brand",
+              url: "/brands?q=",
+              pause: "100",
+              selectedobject: "saddleConfiguration.brand",
+              localdata: "brandQuery",
+              searchfields: "name",
+              titlefield: "name",
+              minlength: "2",
+              inputclass: "form-control form-control-small"}
+          .row
+            %label
+              Model
+            %angucomplete{id: "productModel",
+              placeholder: "Model",
+              url: "/products?q=",
+              pause: "100",
+              selectedobject: "saddleConfiguration.product",
+              localdata: "productQuery",
+              searchfields: "model",
+              titlefield: "model",
+              minlength: "2",
+              inputclass: "form-control form-control-small"}
+          .row
+            .col-4
+              %label
+                Seat Size
+              %select{"ng-model": "saddleConfiguration.seatSize"}
+                %option{"ng-repeat": "option in seatSizes","ng-bind": "option", value: "{{option}}"}
+            .col-4
+              %label
+                Tree Width
+              %select{"ng-model": "saddleConfiguration.treeWidth"}
+                %option{"ng-repeat": "option in treeWidths","ng-bind": "option", value: "{{option}}"}
+            .col-4
+              %label
+                Condition
+              %select{"ng-model": "saddleConfiguration.condition"}
+                %option{"ng-repeat": "option in conditions","ng-bind": "option", value: "{{option}}"}
+          .row.clearfix
+            %button{style: "float: left; background: #FF0033;", "ng-click": "previousStep()"}
+              Back
+            %button{"ng-disabled": "!showSubmitButton()", style: "float:right;", "ng-click": "persistAnyNewConfigurations()"}
+              Continue
+    .slide
+      .row.center
+        .col-4.center{style: "margin: auto; float: none;"}
+          %h3
+            Based on {{estimateData.sampleSize}} saddles like yours, people usually asked for:
+      .row.center
+        .col-4.center{style: "margin: auto; float: none;"}        
+          %h1{"ng-bind": "estimateData.averageAskingPrice | currency", style: "color: #00a26c; font-size: 3rem;"}
+      .row.center
+        .col-4.center{style: "margin: auto; float: none;"}     
+          %h3
+            These saddles actaully sold for an average of:
+      .row.center
+        .col-4.center{style: "margin: auto; float: none;"}       
+          %h1{"ng-bind": "estimateData.averageSellingPrice | currency", style: "color: #364156; font-size: 3rem;"}             
+      .row.center
+        .col-4.center{style: "margin: auto; float: none;"} 
+          %button{style: "width: 100%"}
+            Help me sell it!
+      .row.center
+        .col-4.center{style: "margin: auto; float: none;"} 
+          %button{style: "width: 100%; background: #FF0033;", "ng-click": "reset()"}
+            Restart       
+      / .row.center{style: "width: 50%; margin: auto;"}
+      /   .col-6.center
+      /     %div{style: "margin: 10px; margin-right: 0; padding: 10px; background: #18AF7D; border-radius: 4px;"}
+      /       %h1{"ng-bind": "estimateData.averageSellingPrice | currency", style: "color: white;"}    
+      /       %h4{style: "color: white;"}
+      /         Number of Saddles Found  
+      /   .col-6.center
+      /     %div{style: "margin: 10px; padding: 10px; background: #147756; border-radius: 4px;"}
+      /       %h1{"ng-bind": "estimateData.averageSellingPrice | currency", style: "color: white;"}    
+      /       %h4{style: "color: white;"}
+      /         Easy to Sell?  
+          
+
 
 
 / %form

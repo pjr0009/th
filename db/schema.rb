@@ -67,18 +67,15 @@ ActiveRecord::Schema.define(version: 20161002183059) do
   end
 
   create_table "brands", force: :cascade do |t|
-    t.datetime "created_at",                            null: false
-    t.datetime "updated_at",                            null: false
-    t.string   "name",                      limit: 255
-    t.string   "summary",                   limit: 255
-    t.string   "logo_file_name",            limit: 255
-    t.string   "logo_content_type",         limit: 255
-    t.integer  "logo_file_size",            limit: 4
+    t.datetime "created_at",                    null: false
+    t.datetime "updated_at",                    null: false
+    t.string   "name",              limit: 255
+    t.string   "slug",              limit: 255
+    t.string   "summary",           limit: 255
+    t.string   "logo_file_name",    limit: 255
+    t.string   "logo_content_type", limit: 255
+    t.integer  "logo_file_size",    limit: 4
     t.datetime "logo_updated_at"
-    t.string   "illustration_file_name",    limit: 255
-    t.string   "illustration_content_type", limit: 255
-    t.integer  "illustration_file_size",    limit: 4
-    t.datetime "illustration_updated_at"
   end
 
   create_table "categories", force: :cascade do |t|
@@ -404,10 +401,14 @@ ActiveRecord::Schema.define(version: 20161002183059) do
   add_index "delayed_jobs", ["priority", "run_at"], name: "delayed_jobs_priority", using: :btree
 
   create_table "disciplines", force: :cascade do |t|
-    t.text     "summary",    limit: 65535
-    t.string   "name",       limit: 255
-    t.datetime "created_at",               null: false
-    t.datetime "updated_at",               null: false
+    t.text     "summary",                   limit: 65535
+    t.string   "name",                      limit: 255
+    t.datetime "created_at",                              null: false
+    t.datetime "updated_at",                              null: false
+    t.string   "illustration_file_name",    limit: 255
+    t.string   "illustration_content_type", limit: 255
+    t.integer  "illustration_file_size",    limit: 4
+    t.datetime "illustration_updated_at"
   end
 
   create_table "disciplines_brands", id: false, force: :cascade do |t|

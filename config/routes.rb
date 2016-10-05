@@ -1,5 +1,9 @@
 Kassi::Application.routes.draw do
-  resources :products
+  resources :products do
+    collection do
+      get "get_estimate", to: "products#get_estimate"
+    end
+  end
   resources :disciplines
   resources :brands
   root to: "homepage#index"

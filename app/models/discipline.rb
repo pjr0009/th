@@ -2,11 +2,15 @@
 #
 # Table name: disciplines
 #
-#  id         :integer          not null, primary key
-#  summary    :text(65535)
-#  name       :string(255)
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
+#  id                        :integer          not null, primary key
+#  summary                   :text(65535)
+#  name                      :string(255)
+#  created_at                :datetime         not null
+#  updated_at                :datetime         not null
+#  illustration_file_name    :string(255)
+#  illustration_content_type :string(255)
+#  illustration_file_size    :integer
+#  illustration_updated_at   :datetime
 #
 
 class Discipline < ActiveRecord::Base

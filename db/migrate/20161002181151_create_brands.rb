@@ -3,6 +3,7 @@ class CreateBrands < ActiveRecord::Migration
     create_table :brands do |t|
       t.timestamps null: false
       t.string :name, unique: true
+      t.string :slug, unique: true
       t.string :summary
     end
     add_attachment :brands, :logo

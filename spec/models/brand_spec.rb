@@ -2,19 +2,16 @@
 #
 # Table name: brands
 #
-#  id                        :integer          not null, primary key
-#  created_at                :datetime         not null
-#  updated_at                :datetime         not null
-#  name                      :string(255)
-#  summary                   :string(255)
-#  logo_file_name            :string(255)
-#  logo_content_type         :string(255)
-#  logo_file_size            :integer
-#  logo_updated_at           :datetime
-#  illustration_file_name    :string(255)
-#  illustration_content_type :string(255)
-#  illustration_file_size    :integer
-#  illustration_updated_at   :datetime
+#  id                :integer          not null, primary key
+#  created_at        :datetime         not null
+#  updated_at        :datetime         not null
+#  name              :string(255)
+#  slug              :string(255)
+#  summary           :string(255)
+#  logo_file_name    :string(255)
+#  logo_content_type :string(255)
+#  logo_file_size    :integer
+#  logo_updated_at   :datetime
 #
 
 require 'rails_helper'

@@ -14,6 +14,9 @@ class BrandsController < ApplicationController
 
   # GET /brands/1
   def show
+    unless @brand.verified
+      redirect_to root_path
+    end
   end
 
   # GET /brands/new
@@ -32,7 +35,7 @@ class BrandsController < ApplicationController
     if @brand.save
       render json: @brand, status: :created, location: @brand
     else
-      render :new
+      render json: @brand, status: :ok
     end
   end
 

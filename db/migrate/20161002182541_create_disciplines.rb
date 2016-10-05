@@ -6,6 +6,6 @@ class CreateDisciplines < ActiveRecord::Migration
       t.timestamps null: false
     end
     add_reference :listings, :discipiline, index: true
-    add_attachment :brands, :illustration
+    add_attachment :disciplines, :illustration
   end
 end
