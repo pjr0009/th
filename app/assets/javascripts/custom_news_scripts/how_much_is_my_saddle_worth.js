@@ -17,8 +17,10 @@ app.factory('Product', ["$resource", function($resource) {
 }]);
 
 app.controller("saddleAppCtrl", ["$scope", "Discipline", "Brand", "Product", "$http", function($scope, Discipline, Brand, Product, $http){
-  $scope.seatSizes = ["", "16", "16.5", "17", "17.5", "18", "18.5", "19"].reverse();
-  $scope.treeWidths = ["", "Medium", "Medium Wide", "Wide"].reverse();
+  $scope.englishSeatSizes = ["", "16", "16.5", "17", "17.5", "18", "18.5", "19"].reverse();
+  $scope.westernSeatSizes = ["", "13", "13.5", "14", "14.5", "15", "15.5", "16", "16.5", "17"].reverse();
+  $scope.englishTreeWidths = ["", "Medium", "Medium Wide", "Wide"].reverse();
+  $scope.westernTreeWidths = ["", "Semi-QH", "Full-QH", "Arabian", "Gaited", "Haflinger", "Draft"].reverse();
   $scope.conditions = ["", "Brand New", "Excellent", "Good", "Fair", "Poor"].reverse();
   $scope.loading = true;
 
@@ -89,7 +91,9 @@ app.controller("saddleAppCtrl", ["$scope", "Discipline", "Brand", "Product", "$h
 
   $scope.setDiscipline = function(typeName){
     $scope.saddleConfiguration.discipline = typeName;
+    console.log(typeName)
     $scope.nextStep();
+
   }
 
 

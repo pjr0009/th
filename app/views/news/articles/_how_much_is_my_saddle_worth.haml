@@ -70,15 +70,25 @@
                 Model not found, We can give it a shot though!
 
           %div{"layout-gt-sm": "row", "layout-padding": ""}
-            %md-input-container{flex: ""}
+            %md-input-container{flex: "", "ng-show": "saddleConfiguration.discipline == 'Western'"}
               %label
                 Seat Size
               %md-select{"ng-model": "saddleConfiguration.seatSize"}
-                %md-option{"ng-repeat": "option in seatSizes","ng-bind": "option", value: "{{option}}"}
-            %md-input-container{flex: ""}
+                %md-option{"ng-repeat": "option in westernSeatSizes","ng-bind": "option", value: "{{option}}"}
+            %md-input-container{flex: "", "ng-show": "saddleConfiguration.discipline != 'Western'"}
+              %label
+                Seat Size
+              %md-select{"ng-model": "saddleConfiguration.seatSize"}
+                %md-option{"ng-repeat": "option in englishSeatSizes","ng-bind": "option", value: "{{option}}"}
+            %md-input-container{flex: "", "ng-show": "saddleConfiguration.discipline == 'Western'"}
               %label
                 Tree Width
-              %md-select{"ng-model": "saddleConfiguration.treeWidth"}
+              %md-select{"ng-model": "saddleConfiguration.westernTreeWidth"}
+                %md-option{"ng-repeat": "option in treeWidths","ng-bind": "option", value: "{{option}}"}
+            %md-input-container{flex: "", "ng-show": "saddleConfiguration.discipline != 'Western'"}
+              %label
+                Tree Width
+              %md-select{"ng-model": "saddleConfiguration.englishTreeWidth"}
                 %md-option{"ng-repeat": "option in treeWidths","ng-bind": "option", value: "{{option}}"}
             %md-input-container{flex: ""}
               %label
