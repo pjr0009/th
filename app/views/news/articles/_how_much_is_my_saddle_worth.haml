@@ -55,7 +55,7 @@
               Model
             %angucomplete{id: "productModel",
               placeholder: "Model",
-              url: "/products?q=",
+              url: "/products?brand_id={{saddleConfiguration.brand.originalObject.id}}&q=",
               pause: "100",
               selectedobject: "saddleConfiguration.product",
               localdata: "productQuery",

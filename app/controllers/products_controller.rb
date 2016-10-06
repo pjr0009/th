@@ -5,7 +5,11 @@ class ProductsController < ApplicationController
   def index
     if params[:q]
       params[:q] = params[:q].capitalize
-      @products = Product.limit(10).where("model LIKE ?", "#{params[:q]}%")
+      if params[:brand_id]
+        @products = Product.limit(10).where("brand_id = ? AND model LIKE ?", params[:brand_id], "#{params[:q]}%")
+      else
+        @products = Product.limit(10).where("model LIKE ?", "#{params[:q]}%")
+      end
     else
       @products = Product.limit(10)
     end

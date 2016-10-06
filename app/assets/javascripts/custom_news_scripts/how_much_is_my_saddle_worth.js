@@ -40,10 +40,8 @@ app.controller("saddleAppCtrl", ["$scope", "Discipline", "Brand", "Product", "$h
     return $scope.saddleConfiguration.treeWidth && 
     $scope.saddleConfiguration.seatSize && 
     $scope.saddleConfiguration.condition && 
-    $scope.saddleConfiguration.brand.originalObject.name &&
-    $scope.saddleConfiguration.brand.originalObject.name.length > 0 && 
-    $scope.saddleConfiguration.product.originalObject.model &&
-    $scope.saddleConfiguration.product.originalObject.model.length > 0;
+    $scope.saddleConfiguration.brand && 
+    $scope.saddleConfiguration.product;
   }
   $scope.estimateData = {};
   $scope.slidesElement = document.getElementById("slides");
