@@ -78,8 +78,6 @@ app.controller("saddleAppCtrl", ["$scope", "Discipline", "Brand", "Product", "$h
   }
 
   $scope.reset = function() {
-    $scope.currentSlide = -1;
-    $scope.nextStep();
     document.getElementById("productModel_value").value = "";
     document.getElementById("brandName_value").value = "";
     $scope.saddleConfiguration = {
@@ -98,6 +96,8 @@ app.controller("saddleAppCtrl", ["$scope", "Discipline", "Brand", "Product", "$h
         }
       }
     };
+    $scope.currentSlide = -1;
+    $scope.nextStep();
   };
 
 

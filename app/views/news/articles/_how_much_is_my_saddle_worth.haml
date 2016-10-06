@@ -101,12 +101,11 @@
           %h1{"ng-bind": "estimateData.averageSellingPrice | currency", style: "color: #364156; font-size: 3rem;"}             
       .row.center
         .col-4.center{style: "margin: auto; float: none;"} 
-          %button{style: "width: 100%"}
-            Help me sell it!
+          = link_to "Help me Sell It!", new_listing_path, class: "button", style: "width: 100%;"
       .row.center
         .col-4.center{style: "margin: auto; float: none;"} 
           %button{style: "width: 100%; background: #FF0033;", "ng-click": "reset()"}
-            Restart       
+            Restart      
       / .row.center{style: "width: 50%; margin: auto;"}
       /   .col-6.center
       /     %div{style: "margin: 10px; margin-right: 0; padding: 10px; background: #18AF7D; border-radius: 4px;"}
