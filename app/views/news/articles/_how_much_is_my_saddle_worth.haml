@@ -83,13 +83,13 @@
             %md-input-container{flex: "", "ng-show": "saddleConfiguration.discipline == 'Western'"}
               %label
                 Tree Width
-              %md-select{"ng-model": "saddleConfiguration.westernTreeWidth"}
-                %md-option{"ng-repeat": "option in treeWidths","ng-bind": "option", value: "{{option}}"}
+              %md-select{"ng-model": "saddleConfiguration.treeWidth"}
+                %md-option{"ng-repeat": "option in westernTreeWidths","ng-bind": "option", value: "{{option}}"}
             %md-input-container{flex: "", "ng-show": "saddleConfiguration.discipline != 'Western'"}
               %label
                 Tree Width
-              %md-select{"ng-model": "saddleConfiguration.englishTreeWidth"}
-                %md-option{"ng-repeat": "option in treeWidths","ng-bind": "option", value: "{{option}}"}
+              %md-select{"ng-model": "saddleConfiguration.treeWidth"}
+                %md-option{"ng-repeat": "option in englishTreeWidths","ng-bind": "option", value: "{{option}}"}
             %md-input-container{flex: ""}
               %label
                 Condition
