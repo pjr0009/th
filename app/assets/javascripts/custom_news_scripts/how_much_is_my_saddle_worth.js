@@ -48,11 +48,13 @@ app.controller("saddleAppCtrl", ["$scope", "Discipline", "Brand", "Product", "$h
     $scope.caclulateAndSetNextSlideNumber();
     var newTransform = $scope.calculateNextTransform();
     $scope.slidesElement.style.transform = "translateX(" + newTransform + "px)";
+    $scope.slidesElement.style.webkitTransform = "translateX(" + newTransform + "px)";
   }
   $scope.previousStep = function() {
     $scope.caclulateAndSetPreviousSlideNumber();
     var newTransform = $scope.calculateNextTransform();
     $scope.slidesElement.style.transform = "translateX(" + newTransform + "px)";
+    $scope.slidesElement.style.webkitTransform = "translateX(" + newTransform + "px)";
   }
   $scope.caclulateAndSetPreviousSlideNumber = function(){
     if(($scope.currentSlide - 1) <= 0){
