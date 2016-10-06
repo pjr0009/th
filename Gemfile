@@ -12,6 +12,7 @@ gem 'compass-rails', '~> 2.0'
 
 gem 'foreman'
 gem 'angularjs-rails'
+gem 'rails-angular-material'
 
 # Requiring 'compass' gem directly is not normally needed,
 # 'compass-rails' already does that.

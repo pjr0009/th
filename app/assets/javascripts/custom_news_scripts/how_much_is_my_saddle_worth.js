@@ -1,7 +1,9 @@
 //= require angular
 //= require angular-resource
-//= require angucomplete
-var app = angular.module("saddleApp", ['ngResource','angucomplete'])
+//= require angular-animate
+//= require angular-aria
+//= require angular-material
+var app = angular.module("saddleApp", ['ngResource', 'ngMaterial'])
 
 app.factory('Discipline', ["$resource", function($resource) {
   return $resource('/disciplines/:id'); // Note the full endpoint address
@@ -18,30 +20,22 @@ app.controller("saddleAppCtrl", ["$scope", "Discipline", "Brand", "Product", "$h
   $scope.seatSizes = ["", "16", "16.5", "17", "17.5", "18", "18.5", "19"].reverse();
   $scope.treeWidths = ["", "Medium", "Medium Wide", "Wide"].reverse();
   $scope.conditions = ["", "Brand New", "Excellent", "Good", "Fair", "Poor"].reverse();
+  $scope.loading = true;
 
   $scope.saddleConfiguration = {
     seatSize: "",
     treeWidth: "",
     condition: "",
-    saddleType: "",
-    brand: {
-      originalObject: {
-        name: ""
-      }
-    },
-    product: {
-      originalObject: {
-        model: ""
-      }
-    }
+    saddleType: ""
   };
 
   $scope.showSubmitButton = function () {
+    console.log($scope.saddleConfiguration);
     return $scope.saddleConfiguration.treeWidth && 
     $scope.saddleConfiguration.seatSize && 
     $scope.saddleConfiguration.condition && 
-    $scope.saddleConfiguration.brand && 
-    $scope.saddleConfiguration.product;
+    ($scope.saddleConfiguration.brand || $scope.brandSearchText.length > 0 )&& 
+    ($scope.saddleConfiguration.product || $scope.productSearchText.length > 0);
   }
   $scope.estimateData = {};
   $scope.slidesElement = document.getElementById("slides");
@@ -78,24 +72,16 @@ app.controller("saddleAppCtrl", ["$scope", "Discipline", "Brand", "Product", "$h
   }
 
   $scope.reset = function() {
-    document.getElementById("productModel_value").value = "";
-    document.getElementById("brandName_value").value = "";
     $scope.saddleConfiguration = {
       seatSize: "",
       treeWidth: "",
       condition: "",
       saddleType: "",
-      brand: {
-        originalObject: {
-          name: ""
-        }
-      },
-      product: {
-        originalObject: {
-          model: ""
-        }
-      }
+      product: "",
+      brand: ""
     };
+    $scope.brandSearchText = "";
+    $scope.productSearchText = "";
     $scope.currentSlide = -1;
     $scope.nextStep();
   };
@@ -108,27 +94,40 @@ app.controller("saddleAppCtrl", ["$scope", "Discipline", "Brand", "Product", "$h
 
 
   $scope.persistAnyNewConfigurations = function() {
-    var newBrand = new Brand()
-    newBrand.name = document.getElementById("brandName_value").value
+    var newBrand = new Brand();
+    newBrand.name = $scope.brandSearchText
     newBrand.$save(function(response){
       console.log(response);
-      $scope.saddleConfiguration.brand.originalObject = response
+      $scope.saddleConfiguration.brand = response
       var newProduct = new Product()
       newProduct.brand_id = response.id
-      newProduct.model = document.getElementById("productModel_value").value
+      newProduct.model = $scope.productSearchText;
       newProduct.$save(function(response){
-        $scope.saddleConfiguration.product.originalObject = response
+        $scope.saddleConfiguration.product = response
         $scope.getSaddleWorth();
         $scope.nextStep();            
       });   
     });
   }
 
+  $scope.brandSearchTextChange = function (searchText) {
+    return Brand.query({q: searchText}).$promise;
+  }
+
+  $scope.productSearchTextChange = function (searchText) {
+    var query = {q: searchText};
+    if($scope.saddleConfiguration.brand && $scope.saddleConfiguration.brand.id){
+      query["brand_id"] = $scope.saddleConfiguration.brand.id
+    }
+    return Product.query(query).$promise;
+  }
+
   $scope.getSaddleWorth = function(){
     console.log($scope.saddleConfiguration)
     $http.get("/products/get_estimate", {
-      params: {brand: $scope.saddleConfiguration.brand.originalObject.name, model: $scope.saddleConfiguration.product.originalObject.model}
+      params: {brand: $scope.saddleConfiguration.brand.name, model: $scope.saddleConfiguration.product.model}
     }).success(function(response){
+      $scope.loading = false
       $scope.estimateData = response;
     })
   };

@@ -4,6 +4,7 @@
 
 .slide-wrapper{"ng-app": "saddleApp", "ng-controller": "saddleAppCtrl"}
   #slides
+
     .slide
       .row.center
         %h1
@@ -38,74 +39,82 @@
       .row
         .col-6{style: "float: none; margin:auto;"}
           .row
-            %label
-              Brand
-            %angucomplete{id: "brandName",
-              placeholder: "Brand",
-              url: "/brands?q=",
-              pause: "100",
-              selectedobject: "saddleConfiguration.brand",
-              localdata: "brandQuery",
-              searchfields: "name",
-              titlefield: "name",
-              minlength: "2",
-              inputclass: "form-control form-control-small"}
+            %md-autocomplete{"placeholder": "What Brand is it?", 
+            "md-delay": 300,
+            "md-no-cache": true,
+            "md-selected-item": "saddleConfiguration.brand", 
+            "md-items": "item in brandSearchTextChange(brandSearchText)", 
+            "md-search-text": "brandSearchText",
+            "md-item-text": "item.name",
+            "md-floating-label": "What brand is it?",
+            "md-match-case-insensitive": true}
+              %md-item-template
+                %span.item-title
+                  %span{"ng-bind": "item.name"}
+              %md-not-found
+                Brand not found, We can give it a shot though!
           .row
-            %label
-              Model
-            %angucomplete{id: "productModel",
-              placeholder: "Model",
-              url: "/products?brand_id={{saddleConfiguration.brand.originalObject.id}}&q=",
-              pause: "100",
-              selectedobject: "saddleConfiguration.product",
-              localdata: "productQuery",
-              searchfields: "model",
-              titlefield: "model",
-              minlength: "2",
-              inputclass: "form-control form-control-small"}
-          .row
-            .col-4
+            %md-autocomplete{"placeholder": "What Model is it?", 
+            "md-delay": 300,
+            "md-no-cache": true,
+            "md-selected-item": "saddleConfiguration.product", 
+            "md-items": "item in productSearchTextChange(productSearchText)", 
+            "md-search-text": "productSearchText",
+            "md-item-text": "item.model",
+            "md-floating-label": "What model is it?",
+            "md-match-case-insensitive": true}
+              %md-item-template
+                %span.item-title
+                  %span{"ng-bind": "item.model"}
+              %md-not-found
+                Model not found, We can give it a shot though!
+
+          %div{"layout-gt-sm": "row", "layout-padding": ""}
+            %md-input-container{flex: ""}
               %label
                 Seat Size
-              %select{"ng-model": "saddleConfiguration.seatSize"}
-                %option{"ng-repeat": "option in seatSizes","ng-bind": "option", value: "{{option}}"}
-            .col-4
+              %md-select{"ng-model": "saddleConfiguration.seatSize"}
+                %md-option{"ng-repeat": "option in seatSizes","ng-bind": "option", value: "{{option}}"}
+            %md-input-container{flex: ""}
               %label
                 Tree Width
-              %select{"ng-model": "saddleConfiguration.treeWidth"}
-                %option{"ng-repeat": "option in treeWidths","ng-bind": "option", value: "{{option}}"}
-            .col-4
+              %md-select{"ng-model": "saddleConfiguration.treeWidth"}
+                %md-option{"ng-repeat": "option in treeWidths","ng-bind": "option", value: "{{option}}"}
+            %md-input-container{flex: ""}
               %label
                 Condition
-              %select{"ng-model": "saddleConfiguration.condition"}
-                %option{"ng-repeat": "option in conditions","ng-bind": "option", value: "{{option}}"}
+              %md-select{"ng-model": "saddleConfiguration.condition"}
+                %md-option{"ng-repeat": "option in conditions","ng-bind": "option", value: "{{option}}"}
           .row.clearfix
             %button{style: "float: left; background: #FF0033;", "ng-click": "previousStep()"}
               Back
             %button{"ng-disabled": "!showSubmitButton()", style: "float:right;", "ng-click": "persistAnyNewConfigurations()"}
               Continue
     .slide
-      .row.center
-        .col-4.center{style: "margin: auto; float: none;"}
-          %h3
-            Based on {{estimateData.sampleSize}} saddles like yours, people usually asked for:
-      .row.center
-        .col-4.center{style: "margin: auto; float: none;"}        
-          %h1{"ng-bind": "estimateData.averageAskingPrice | currency", style: "color: #00a26c; font-size: 3rem;"}
-      .row.center
-        .col-4.center{style: "margin: auto; float: none;"}     
-          %h3
-            These saddles actaully sold for an average of:
-      .row.center
-        .col-4.center{style: "margin: auto; float: none;"}       
-          %h1{"ng-bind": "estimateData.averageSellingPrice | currency", style: "color: #364156; font-size: 3rem;"}             
-      .row.center
-        .col-4.center{style: "margin: auto; float: none;"} 
-          = link_to "Help me Sell It!", new_listing_path, class: "button", style: "width: 100%;"
-      .row.center
-        .col-4.center{style: "margin: auto; float: none;"} 
-          %button{style: "width: 100%; background: #FF0033;", "ng-click": "reset()"}
-            Restart      
+      %div{"ng-show": "loading", "layout": "row", "layout-align": "center center"}
+        %md-progress-circular{"md-mode": "indeterminate", "md-diameter": "90"}
+      %div{"ng-hide": "loading"}
+        .row.center
+          .col-4.center{style: "margin: auto; float: none;"}
+            %h3
+              Based on {{estimateData.sampleSize}} saddles like yours, people usually asked for:
+        .row.center
+          .col-4.center{style: "margin: auto; float: none;"}        
+            %h1{"ng-bind": "estimateData.averageAskingPrice | currency", style: "color: #00a26c; font-size: 3rem;"}
+        .row.center
+          .col-4.center{style: "margin: auto; float: none;"}     
+            %h3
+              These saddles actaully sold for an average of:
+        .row.center
+          .col-4.center{style: "margin: auto; float: none;"}       
+            %h1{"ng-bind": "estimateData.averageSellingPrice | currency", style: "color: #364156; font-size: 3rem;"}             
+        .row.center
+          .col-4.center{style: "margin: auto; float: none;"} 
+            = link_to "Help me Sell It!", new_listing_path, class: "button", style: "width: 100%;"
+        .row.center
+          .col-4.center{style: "margin: auto; float: none;"} 
+            %button{style: "width: 100%; background: #FF0033;", "ng-click": "reset()"}
+              Restart      
       / .row.center{style: "width: 50%; margin: auto;"}
       /   .col-6.center
       /     %div{style: "margin: 10px; margin-right: 0; padding: 10px; background: #18AF7D; border-radius: 4px;"}

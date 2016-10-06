@@ -52,6 +52,7 @@ class ProductsController < ApplicationController
   def get_estimate
     keywords = "#{params[:brand]}"
     keywords += " #{params[:model]}" if params[:model]
+    keywords += " Saddle"
     RestClient.get("http://svcs.ebay.com/services/search/FindingService/v1",
       {
         params: {
