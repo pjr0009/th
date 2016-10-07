@@ -12,6 +12,10 @@
   overflow:hidden; /* So the sliding bit doesn't stick out. */
   margin:0 auto;
 }
+
+md-tabs-wrapper {
+  display: none;
+}
 button:disabled {
     background: #ddd;
 }
