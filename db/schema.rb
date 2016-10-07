@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161002183059) do
+ActiveRecord::Schema.define(version: 20161007155535) do
 
   create_table "auth_tokens", force: :cascade do |t|
     t.string   "token",            limit: 255
@@ -620,6 +620,7 @@ ActiveRecord::Schema.define(version: 20161002183059) do
     t.integer  "brand_id",                        limit: 4
     t.integer  "discipiline_id",                  limit: 4
     t.integer  "product_id",                      limit: 4
+    t.integer  "original_price_cents",            limit: 4
   end
 
   add_index "listings", ["brand_id"], name: "index_listings_on_brand_id", using: :btree
@@ -1018,6 +1019,25 @@ ActiveRecord::Schema.define(version: 20161002183059) do
     t.datetime "created_at",             null: false
     t.datetime "updated_at",             null: false
   end
+
+  create_table "sales", force: :cascade do |t|
+    t.integer  "brand_id",              limit: 4
+    t.integer  "product_id",            limit: 4
+    t.integer  "transactions_id",       limit: 4
+    t.string   "external_source",       limit: 255
+    t.string   "external_location",     limit: 255
+    t.datetime "created_at",                                    null: false
+    t.datetime "updated_at",                                    null: false
+    t.integer  "asking_price_cents",    limit: 4,   default: 0
+    t.string   "asking_price_currency", limit: 255
+    t.integer  "sold_price_cents",      limit: 4,   default: 0
+    t.string   "sold_price_currency",   limit: 255
+  end
+
+  add_index "sales", ["brand_id", "product_id", "external_location"], name: "index_sales_on_brand_id_and_product_id_and_external_location", unique: true, using: :btree
+  add_index "sales", ["brand_id"], name: "index_sales_on_brand_id", using: :btree
+  add_index "sales", ["product_id"], name: "index_sales_on_product_id", using: :btree
+  add_index "sales", ["transactions_id"], name: "index_sales_on_transactions_id", using: :btree
 
   create_table "sessions", force: :cascade do |t|
     t.string   "session_id", limit: 255,   null: false

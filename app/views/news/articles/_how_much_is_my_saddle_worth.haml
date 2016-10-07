@@ -108,14 +108,14 @@
               Based on {{estimateData.sampleSize}} saddles like yours, people usually asked for:
         .row.center
           .col-4.center{style: "margin: auto; float: none;"}        
-            %h1{"ng-bind": "estimateData.averageAskingPrice | currency", style: "color: #00a26c; font-size: 3rem;"}
+            %h1{"ng-bind": "estimateData.averageAskingPrice", style: "color: #00a26c; font-size: 3rem;"}
         .row.center
           .col-4.center{style: "margin: auto; float: none;"}     
             %h3
               These saddles actaully sold for an average of:
         .row.center
           .col-4.center{style: "margin: auto; float: none;"}       
-            %h1{"ng-bind": "estimateData.averageSellingPrice | currency", style: "color: #364156; font-size: 3rem;"}             
+            %h1{"ng-bind": "estimateData.averageSellingPrice", style: "color: #364156; font-size: 3rem;"}             
         .row.center
           .col-4.center{style: "margin: auto; float: none;"} 
             = link_to "Help me Sell It!", new_listing_path, class: "button", style: "width: 100%;"

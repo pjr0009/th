@@ -48,6 +48,7 @@
 #  brand_id                        :integer
 #  discipiline_id                  :integer
 #  product_id                      :integer
+#  original_price_cents            :integer
 #
 # Indexes
 #

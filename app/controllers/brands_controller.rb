@@ -30,9 +30,9 @@ class BrandsController < ApplicationController
 
   # POST /brands
   def create
-    @brand = Brand.new(brand_params)
+    @brand = Brand.find_or_initialize_by(brand_params)
 
-    if @brand.save
+    if @brand.save && @brand.new_record? 
       render json: @brand, status: :created, location: @brand
     else
       render json: @brand, status: :ok

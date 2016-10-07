@@ -8,7 +8,7 @@ class ProductsController < ApplicationController
       if params[:brand_id]
         @products = Product.limit(10).where("brand_id = ? AND model LIKE ?", params[:brand_id], "#{params[:q]}%")
       else
-        @products = Product.limit(10).where("model LIKE ?", "#{params[:q]}%")
+        render json: [] and return
       end
     else
       @products = Product.limit(10)
@@ -31,12 +31,12 @@ class ProductsController < ApplicationController
 
   # POST /products
   def create
-    @product = Product.new(product_params)
+    @product = Product.find_or_initialize_by(product_params)
 
-    if @product.save
+    if @product.save && @product.new_record?
       render json: @product, status: :created, location: @product
     else
-      render json: @brand, status: :ok
+      render json: @product, status: :ok
     end
   end
 
@@ -49,67 +49,7 @@ class ProductsController < ApplicationController
     end
   end
 
-  def get_estimate
-    keywords = "#{params[:brand]}"
-    keywords += " #{params[:model]}" if params[:model]
-    keywords += " Saddle"
-    RestClient.get("http://svcs.ebay.com/services/search/FindingService/v1",
-      {
-        params: {
-          "SECURITY-APPNAME": "PhilliRo-TackHunt-PRD-12f5817e2-c6b274bd", 
-          "OPERATION-NAME": "findCompletedItems", 
-          "SERVICE-VERSION": "1.0.0", 
-          "RESPONSE-DATA-FORMAT": "json", 
-          "keywords": keywords, 
-          "itemFilter(0).name": "Condition", 
-          "itemFilter(0).value": "3000"
-        }, 
-        headers: {
-          "X-EBAY-SOA-SECURITY-APPNAME": "PhilliRo-TackHunt-PRD-12f5817e2-c6b274bd"
-        }
-      }
-    ) {|response| 
-        body = JSON.parse(response.body)["findCompletedItemsResponse"].first["searchResult"].first
-        render json: quantify_estimate_results(body) and return
-      }
 
-  end
-
-  def quantify_estimate_results(body)
-    totalSaleValue = 0
-    totalSales = 0
-    totalOveralSaleValue = 0
-    totalOveralSaleValueCount = 0
-
-    formattedResponse = {}
-
-    formattedResponse["sampleSize"] = 0
-    formattedResponse["sellability"] = 0
-    formattedResponse["averageSellingPrice"] = 0
-    formattedResponse["averageAskingPrice"] = 0
-    formattedResponse["supply"] = 0
-    if body && body["item"]
-      body["item"].each do |item|
-        if item["sellingStatus"].first["currentPrice"].first["@currencyId"] == "USD"
- 
-          unless item["sellingStatus"].first["sellingState"].first == "EndedWithoutSales"
-            totalSaleValue += item["sellingStatus"].first["currentPrice"].first["__value__"].to_i
-            totalSales += 1
-          end
-          totalOveralSaleValue += item["sellingStatus"].first["currentPrice"].first["__value__"].to_i
-          totalOveralSaleValueCount += 1
-          formattedResponse["sampleSize"] += 1
-        end
-      end
-      if totalSales > 0 && totalSaleValue > 0
-        formattedResponse["averageSellingPrice"] = totalSaleValue/totalSales
-      end
-      if totalOveralSaleValue > 0 && totalOveralSaleValueCount > 0
-        formattedResponse["averageAskingPrice"] = totalOveralSaleValue/totalOveralSaleValueCount
-      end
-    end
-    return formattedResponse
-  end
 
   # DELETE /products/1
   def destroy

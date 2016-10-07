@@ -14,6 +14,9 @@ Kassi::Application.routes.draw do
   get "/about/payments_and_fees" => "about#payments_and_fees", as: "payments_and_fees_about"
 
   resources :news
+  namespace :api do
+    resources :sales
+  end
 
   namespace :mercury do
     resources :images

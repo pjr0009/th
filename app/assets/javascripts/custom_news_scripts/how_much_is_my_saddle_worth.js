@@ -15,8 +15,16 @@ app.factory('Brand', ["$resource", function($resource) {
 app.factory('Product', ["$resource", function($resource) {
   return $resource('/products/:id'); // Note the full endpoint address
 }]);
+app.factory('Sale', ["$resource", function($resource) {
+  return $resource('/api/sales/:id', null, {
+    query: {
+      method: 'GET',
+      isArray: false
+    }
+  });
+}]);
 
-app.controller("saddleAppCtrl", ["$scope", "Discipline", "Brand", "Product", "$http", function($scope, Discipline, Brand, Product, $http){
+app.controller("saddleAppCtrl", ["$scope", "Discipline", "Brand", "Product", "Sale", "$http", function($scope, Discipline, Brand, Product, Sale, $http){
   $scope.englishSeatSizes = ["", "16", "16.5", "17", "17.5", "18", "18.5", "19"].reverse();
   $scope.westernSeatSizes = ["", "13", "13.5", "14", "14.5", "15", "15.5", "16", "16.5", "17"].reverse();
   $scope.englishTreeWidths = ["", "Medium", "Medium Wide", "Wide"].reverse();
@@ -104,7 +112,7 @@ app.controller("saddleAppCtrl", ["$scope", "Discipline", "Brand", "Product", "$h
       newProduct.model = $scope.productSearchText;
       newProduct.$save(function(response){
         $scope.saddleConfiguration.product = response
-        $scope.getSaddleWorth();
+        $scope.getSaddleWorth(response.brand_id, response.id);
         $scope.nextStep();            
       });   
     });
@@ -122,12 +130,12 @@ app.controller("saddleAppCtrl", ["$scope", "Discipline", "Brand", "Product", "$h
     return Product.query(query).$promise;
   }
 
-  $scope.getSaddleWorth = function(){
+  $scope.getSaddleWorth = function(brand_id, product_id){
     console.log($scope.saddleConfiguration)
-    $http.get("/products/get_estimate", {
-      params: {brand: $scope.saddleConfiguration.brand.name, model: $scope.saddleConfiguration.product.model}
-    }).success(function(response){
-      $scope.loading = false
+    Sale.query({brand_id: brand_id, product_id: product_id, sync_external: true}, function(response) {
+      console.log(response);
+      console.log(response.data);
+      $scope.loading = false;
       $scope.estimateData = response;
     })
   };
