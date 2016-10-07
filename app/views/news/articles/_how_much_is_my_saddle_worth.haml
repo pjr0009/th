@@ -3,9 +3,8 @@
 
 
 .slide-wrapper{"ng-app": "saddleApp", "ng-controller": "saddleAppCtrl"}
-  #slides
-
-    .slide
+  %md-tabs{"md-dynamic-height": "", "md-border-bottom": "", "md-stretch-tabs": "always", "md-selected": "currentSlide"}
+    %md-tab{label: "start"}
       .row.center
         %h1
           How Much Is My Saddle Worth?
@@ -19,7 +18,7 @@
         %button{style: "margin: auto;", "ng-click": "nextStep()"}
           Let's Get Started
 
-    .slide
+    %md-tab{label: "discipline"}
       .row.center
         %h1
           What discipline is this saddle for?
@@ -32,8 +31,7 @@
             %button{"ng-click": "setDiscipline(discipline.name)"}
               Select
 
-
-    .slide
+    %md-tab{label: "details"}          
       .row.center
         %h1{"ng-bind": "letsFindText()"}
       .row
@@ -100,7 +98,7 @@
               Back
             %button{"ng-disabled": "!showSubmitButton()", style: "float:right;", "ng-click": "persistAnyNewConfigurations()"}
               Continue
-    .slide
+    %md-tab{label: "results"}
       %div{"ng-show": "loading", "layout": "row", "layout-align": "center center"}
         %md-progress-circular{"md-mode": "indeterminate", "md-diameter": "90"}
       %div{"ng-hide": "loading"}
