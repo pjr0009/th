@@ -6,6 +6,13 @@
 @import "compass/css3/box-shadow";
 @import "mixins/all";
 
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+  display: none !important;
+  @include media(tablet) {
+    display: block !important;
+  }
+}
+
 /**
   This file is deprecated: Put your SCSS to views/ and partials/
   and include them in application.scss.erb
@@ -38,6 +45,64 @@ body {
   @include media(tiny-mobile) {
     // Zooms out on tiny screens
     font-size: em(13);
+  }
+}
+
+md-toolbar {
+  .icon-envelope {
+    color: white;
+  }
+  background: $toolbar;
+  .md-button, md-button {
+    text-transform: capitalize;
+    color: white;
+  }
+  .md-input-has-placeholder {
+    input {
+      color: white;
+    }
+    md-icon {
+      color: $button;
+    }
+    background: lighten($toolbar, 2%);
+  }
+  &.md-hue-1 {
+    background: #B09E99;
+  }
+  &.secondary-toolbar, .secondary-toolbar {
+    min-height: 30px;
+    height: 30px;
+  }
+  md-tabs.secondary-toolbar {
+    md-tabs-wrapper {
+      md-pagination-wrapper {
+        height: 30px;
+      }
+      md-next-button, md-prev-button {
+        md-icon {
+          svg {
+            color: whitesmoke;
+          }
+        }
+      }
+      min-height: 30px;
+      height: 30px;
+      md-ink-bar {
+        color: $button;
+        background-color: $button;
+      }
+      md-tab-item {
+        padding: 6px 24px;
+        height: 30px;
+        min-height: 30px;
+        font-size: 12px;
+        line-height: 18px;
+        a {
+          text-transform: none;
+          color: white;
+        }
+      }
+    }
   }
 }
 
@@ -83,6 +148,8 @@ body {
   //border: solid darken($highlight, 9%);
   //border-width: 0 0 lines(1);
 }
+
+
 
 ul {
   padding-left: lines(1);
@@ -2028,7 +2095,6 @@ figure.fluidratio {
   }
 
   .title-container {
-    position: absolute;
     top: 0;
     left: 0;
     right: 0;
@@ -2209,14 +2275,27 @@ figure.fluidratio {
 }
 
 .hero {
-  position: relative;
-  top: 0;
+  padding: 0 !important;
   display: block;
   width: 100%;
   height: 380px;
   h1, a, h2, h3, h4, p {
     color: white;
 
+  }
+  .hero-title {
+    h1 {
+      font-family: Georgia;
+      font-weight: bolder;
+      font-size: 3rem;
+      line-height: initial;    
+    }
+    a:hover {
+      color: white;
+    }
+  }
+  .hero-cta, .hero-title, .hero-brand, .hero-subtitle, .hero-footer {
+    z-index: 3;
   }
 
   .hero-navigation {
@@ -2245,6 +2324,7 @@ figure.fluidratio {
     position: absolute;
     top: 0;
     bottom: 0;
+    height: 380px;
     width: 100%;
   }
   .hero-feature-image {
@@ -2315,11 +2395,7 @@ figure.fluidratio {
         color: $button
       }
     }
-    .hero-feature-title {
-      font-family: Georgia;
-      font-weight: bolder;
-      font-size: 3rem;
-    }
+
     max-width: 63em;
     margin: 0 auto;
     position: relative;

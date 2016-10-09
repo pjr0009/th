@@ -1,96 +1,96 @@
-= render :partial => 'layouts/head'
+!!! 5
+%html{lang: "en", "ng-app": "TackHunter", "ng-controller": "TackHunterCtrl", "xmlns:ng": "http://angularjs.org"}
+  = render :partial => 'layouts/head'
+  %body.layout-column
+    = render partial: 'layouts/global_header', locals: header_props()
+    .layout-row.flex
+      - if content_for?(:sidenav_left)
+        %md-sidenav.ng-cloak.layout-column.layout-padding.bg-body.md-sidenav-left.md-locked-open{"md-is-locked-open": "$mdMedia('gt-sm')", "md-component-id": "left"}
+          = yield :sidenav_left
+      %md-content.layout-padding.layout-column.layout-fill.flex.bg-body
+        -# Render railsContext here before any react component gets rendered
+        = prepend_render_rails_context("")
 
-%body
 
-  -# Render railsContext here before any react component gets rendered
-  = prepend_render_rails_context("")
+        - if display_onboarding_topbar?
+          - props = onboarding_topbar_props
+          - unless props[:next_step] == :all_done
+            - react_component_cache(name: "onboarding_topbar", props: props) do
+              = react_component("OnboardingTopBar", props: props, prerender: true)
 
-  %noscript
-    .noscript-padding
-      -# Noscript content will be positioned here
+        - if content_for?(:hero)
+          %header.hero
+            = yield :hero
+          
+        - if display_expiration_notice?
+          = render partial: "layouts/expiration_notice",
+              :locals => {external_plan_service_login_url: admin_plan_path}
+        - if params[:controller] == "homepage" && params[:action] == "index"
+          %section.marketplace-lander.hidden-tablet
+            .title-container
+              .title-header-wrapper
+                .marketplace-title-header
+                  = yield :title_header
+        - elsif content_for?(:title_header)
+          %section.marketplace-lander.visible-tablet
+            .title-container
+              .title-header-wrapper
+                .marketplace-title-header
+                  = yield :title_header
+        - elsif content_for?(:benefits_banner)
+          = yield :benefits_banner
 
-  - if display_onboarding_topbar?
-    - props = onboarding_topbar_props
-    - unless props[:next_step] == :all_done
-      - react_component_cache(name: "onboarding_topbar", props: props) do
-        = react_component("OnboardingTopBar", props: props, prerender: true)
+        = render :partial => "layouts/notifications"
+        = yield
 
-  = render partial: 'layouts/global_header', locals: header_props()
-  - if content_for?(:hero)
-    %header.hero
-      = yield :hero
-    
-  - if display_expiration_notice?
-    = render partial: "layouts/expiration_notice",
-        :locals => {external_plan_service_login_url: admin_plan_path}
-  - if params[:controller] == "homepage" && params[:action] == "index"
-    %section.marketplace-lander.hidden-tablet
-      .title-container
-        .title-header-wrapper
-          .marketplace-title-header
-            = yield :title_header
-  - elsif content_for?(:title_header)
-    %section.marketplace-lander.visible-tablet
-      .title-container
-        .title-header-wrapper
-          .marketplace-title-header
-            = yield :title_header
-  - elsif content_for?(:benefits_banner)
-    = yield :benefits_banner
+        
+        -# Most of the JavaScript should be for performance reasons at the end of the body
 
-  %article.page-content
-    .wrapper
-      = render :partial => "layouts/notifications"
-      = yield
+        -# load Facebook SDK for the whole page
+        = render :partial => "layouts/facebook_sdk"
 
-  
-  -# Most of the JavaScript should be for performance reasons at the end of the body
+        -# Initialize global I18n variable and load translations there
+        :javascript
+          window.I18n = {};
 
-  -# load Facebook SDK for the whole page
-  = render :partial => "layouts/facebook_sdk"
+        = javascript_include_tag "i18n/#{I18n.locale}"
 
-  -# Initialize global I18n variable and load translations there
-  :javascript
-    window.I18n = {};
+        = javascript_include_tag 'application'
 
-  = javascript_include_tag "i18n/#{I18n.locale}"
+        :javascript
+          window.ST.jsonTranslations = #{JSONTranslations.get(I18n.locale)}
 
-  = javascript_include_tag 'application'
+        - if @analytics_event
+          :javascript
+            report_analytics_event.apply(null, #{@analytics_event});
+        - if @gtm_datalayer
+          :javascript
+            if(window.ST != null && typeof window.ST.gtmPush === 'function') {
+              window.ST.gtmPush(#{@gtm_datalayer.to_json});
+            }
 
-  :javascript
-    window.ST.jsonTranslations = #{JSONTranslations.get(I18n.locale)}
+        :javascript
+          $(function() {
+            if ('touchAction' in document.body.style) {
+              document.body.style.touchAction = 'manipulation';
+            } else {
+              window.FastClick.attach(document.body, { excludeNode: '^pac-'} );
+            }
+          });
 
-  - if @analytics_event
-    :javascript
-      report_analytics_event.apply(null, #{@analytics_event});
-  - if @gtm_datalayer
-    :javascript
-      if(window.ST != null && typeof window.ST.gtmPush === 'function') {
-        window.ST.gtmPush(#{@gtm_datalayer.to_json});
-      }
+        -# Disable animations on tests
+        - if Rails.env.test?
+          :javascript
+            $(function() {
+              $.transit.enabled = false;
+            });
 
-  :javascript
-    $(function() {
-      if ('touchAction' in document.body.style) {
-        document.body.style.touchAction = 'manipulation';
-      } else {
-        window.FastClick.attach(document.body, { excludeNode: '^pac-'} );
-      }
-    });
+        = content_for :extra_javascript
 
-  -# Disable animations on tests
-  - if Rails.env.test?
-    :javascript
-      $(function() {
-        $.transit.enabled = false;
-      });
+        :javascript
+          $(document).ready(function() { initialize_defaults("#{I18n.locale}"); #{yield :javascript} });
 
-  = content_for :extra_javascript
-
-  :javascript
-    $(document).ready(function() { initialize_defaults("#{I18n.locale}"); #{yield :javascript} });
-
-  = render :partial => "layouts/noscript"
-= render partial: "layouts/footer"
+        = render :partial => "layouts/noscript"
+    = render partial: "layouts/footer"
 
 

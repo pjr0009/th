@@ -47,7 +47,6 @@
 }
 
 .listing-image-navi-clickarea {
-  position: absolute;
   top: 0;
   height: 100%;
 
@@ -92,21 +91,14 @@
 // Image frame with 3/2 aspect ratio
 .listing-image-frame {
   @include block-with-aspect-ratio(3/2);
+  padding-bottom: 0;
   background-color: $body;
-  position: absolute;
-  top: 0px;
-  left: 0px;
 }
 
 // The content for 3/2 aspect ratio container
 // - This works also as a container for vertically
 //   centered image
 .listing-image-frame-content {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  top: 0;
 
   // In Google Chrome, there was a 1px empty space on top of the image. This is probably due to the 3/2 padding,
   // which results in not a whole number 66.6666667%. -1px from top seems to fix it and not cause problems in other

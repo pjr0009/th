@@ -1,8 +1,9 @@
 = stylesheet_link_tag "custom_news_styles/how_much_is_my_saddle_worth"
-= javascript_include_tag "custom_news_scripts/how_much_is_my_saddle_worth"
+- content_for :extra_javascript do 
+  = javascript_include_tag "custom_news_scripts/how_much_is_my_saddle_worth"
 
 
-.slide-wrapper{"ng-app": "saddleApp", "ng-controller": "saddleAppCtrl"}
+.slide-wrapper{"ng-controller": "saddleAppCtrl"}
   %md-tabs{"md-dynamic-height": "", "md-border-bottom": "", "md-stretch-tabs": "always", "md-selected": "currentSlide"}
     %md-tab{label: "start"}
       .row.center

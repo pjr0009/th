@@ -209,13 +209,12 @@ $elementSpacing: lines(0.5);
 
 .header-wide-logo-text {
   @include ellipsis;
-  width: rem(150);
-  height: rem(40);
+  width: 155px;
+  height: 40px;
 }
 
 .header-square-logo-text {
-  width: rem(40);
-  height: rem(40);
+  width: 40px;
 }
 
 .header-wide-logo {
@@ -224,14 +223,12 @@ $elementSpacing: lines(0.5);
   @include highres {
     background-image: url(image-path($wide-logo-highres-url));
   }
-
-  width: em(168);
-  height: em(40);
+  width: em(135);
+  height: em(30);
 
   // Highres image
   background-repeat: no-repeat;
-  @include background-size(em(168) auto);
-
+  background-size: contain;
   display: inline-block;
 }
 
@@ -242,12 +239,12 @@ $elementSpacing: lines(0.5);
     background-image: url(image-path($square-logo-highres-url));
   }
 
-  width: em(40);
-  height: em(40);
+  width: em(30);
+  height: em(30);
 
   // Highres image
   background-repeat: no-repeat;
-  @include background-size(em(40) auto);
+  background-size: contain;
 
   display: inline-block;
 }

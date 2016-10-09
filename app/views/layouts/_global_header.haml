@@ -1,54 +1,37 @@
 -# Hide header in map view if mobile
-%header.header
-  .header-wrapper
-    
-    .header-right.visible-tablet
- 
-    - if logged_in
-      .header-right
-        = render :partial => "layouts/header_anchors", locals: {avatar_url: avatar_url, current_user_name: current_user_name, icons: icons}
-        = render :partial => "layouts/header_user_menu", locals: {unread_count: unread_count, inbox_path: inbox_path, profile_path: profile_path, manage_listings_path: manage_listings_path, settings_path: settings_path, logout_path: logout_path, icons: icons}
+%header
+  %md-toolbar
+    .md-toolbar-tools.flex.layout-row
+      .flex-25.hide-sm.hide-xs
+        = link_to search_path do
+          %i.header-wide-logo
+      .flex.hide-gt-sm.layout-row
+        %md-button.md-icon-button.md-button.md-ink-ripple{"ng-click": "toggleLeftNav()"}
+          %i.icon-align-justify
+        .flex-50
+          = link_to search_path do
+            %i.header-square-logo
+      %form.flex.layout-align-center-center.layout-row.hide-sm.hide-xs{method: "get", action: "/", id: "homepage-filters"}
+        %md-input-container.md-icon-right.flex-75.md-accent.layout-fill.md-input-has-placeholder{"md-no-float": "", style: "height: 36px; "}
+          %input.md-icon-right.md-input.flex#q{name: "q", placeholder: "Search for tack", style: "padding: 4px 10px; height: 36px;"}
+          %md-icon
+            %i.icon-search
+      .flex-25.layout-row.layout-align-center-center
+        = link_to "Sell", new_listing_path, :class => "md-button hide-xs new-listing-link"
+        = link_to "News", news_index_path, :class => "md-button hide-xs"  
+        - if logged_in
+          = render :partial => "layouts/header_anchors", locals: {avatar_url: avatar_url, current_user_name: current_user_name, icons: icons}
+          = render :partial => "layouts/header_user_menu", locals: {unread_count: unread_count, inbox_path: inbox_path, profile_path: profile_path, manage_listings_path: manage_listings_path, settings_path: settings_path, logout_path: logout_path, icons: icons}
 
-      = render :partial => "layouts/header_right_visible_tablet", locals: {unread_count: unread_count, inbox_path: inbox_path, icons: icons}
+          = render :partial => "layouts/header_right_visible_tablet", locals: {unread_count: unread_count, inbox_path: inbox_path, icons: icons}
+        - unless logged_in
+          = link_to login_path, class: "header-text-link header-hover md-button", id: "header-login-link" do
+            = t("header.login")
+  %md-toolbar.md-hue-1.secondary-toolbar
+    %md-tabs.md-hue-1.secondary-toolbar.md-no-tab-content
+      %md-tab
+        = link_to "All Disciplines", search_path
+      - Discipline.find_each do |d| 
+        %md-tab
+          = link_to d.name, disciplines_path(d)
 
-    - unless logged_in
-      .header-right
-        = link_to login_path, class: "header-text-link header-hover", id: "header-login-link" do
-          = t("header.login")
-      .header-right
-        = link_to sign_up_path, class: "header-text-link header-hover" do
-          = t("header.signup")
-    .header-right.header-padding.visible-tablet
-      = link_to "Sell", new_listing_path, :class => "new-listing-link", :id => "new-listing-link"
-    .header-right
-      = link_to "News", news_index_path, :class => "header-text-link header-hover"  
-
-  
-
-    .header-left.hidden-tablet
-      .header-menu-container.toggle.hidden{data: {toggle: '#header-menu-toggle-menu', 'toggle-position' => 'absolute'}}
-        #header-menu-mobile-anchor.header-menu-toggle-container.toggle-header-container
-          %i.icon-reorder
-          %span.visible-tablet-inline
-            = t("header.menu")
-
-    = render :partial => "layouts/header_menu", locals: { return_after_locale_change: return_after_locale_change, available_locales: available_locales, icons: icons}
-
-    -#
-      If necessary, the buttons will overlap with the logo. Buttons should be on top, that's
-      keep the logo here after buttons
-    .header-left.header-logo-container
-      = link_to search_path, :class => "header-logo", :id => "header-logo" do
-        %i.header-square-logo.hidden-tablet
-          -# Logo is here, it's a CSS background
-     
-        %i.header-wide-logo.visible-tablet
-          -# Logo is here, it's a CSS background
-    .header-left.header-search.cf-clearfix.visible-tablet
-      %form{method: "get", id: "homepage-filters", action: "/"}
-        - params.except("action", "controller", "q", "lc", "ls", "view", "utf8", "boundingbox", "distance_max").each do |param, value|
-          - unless param.match(/^filter_option/) || param.match(/^checkbox_filter_option/) || param.match(/^nf_/) || param.match(/^price_/)
-            = hidden_field_tag param, value
-        = text_field_tag "q", params[:q], :placeholder => "Search for tack..."
-        %button{:type => "submit"}
-          = icon_tag("search", ["icon-part"])

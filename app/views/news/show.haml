@@ -40,35 +40,33 @@
 - content_for :meta_image_width, "1200"
   
 = content_for :hero do
-  .hero-feature-post
-    .row
-      .col-12
-        %h1.hero-feature-title
-          = @news_post.title.capitalize
+  .layout-column.layout-padding.layout-align-end-start.layout-fill.flex-offset-gt-xs-5
+    .flex.hero-title
+      %h1
+        = @news_post.title.capitalize
+    .flex
+    .flex.hero-footer
+      .row
+        .col-8.clearfix
+          .hero-author-avatar
+            .col-1
+            - avatar_url = @news_post.person.image.present? ? @news_post.person.image.url(:thumb) : image_path("profile_image/thumb/missing.png")
+            = image_tag avatar_url, alt: '', class: 'header-user-avatar'
+            .col-4
+          .hero-author-details
+            %small
+              %div
+                %a{href: "#"}
+                  = @news_post.person.username
+              %div
+                Published on 
+                = @news_post.created_at.strftime('%B %e at %l:%M %p')
+        .col-4.visible-tablet
+          .clearfix.hero-social-links
+            %a.icon-twitter
+            %a.icon-facebook{href: "https://www.facebook.com/sharer/sharer.php?u=#{request.url}", target: "_blank"}
   .hero-feature-image{style: "background-image: url('#{@news_post.image(:feature)}')"}
 
-  .hero-footer
-    .row
-      .col-8.clearfix
-        .hero-author-avatar
-          .col-1
-          - avatar_url = @news_post.person.image.present? ? @news_post.person.image.url(:thumb) : image_path("profile_image/thumb/missing.png")
-          = image_tag avatar_url, alt: '', class: 'header-user-avatar'
-          .col-4
-        .hero-author-details
-          %small
-            %div
-              %a{href: "#"}
-                = @news_post.person.username
-            %div
-              Published on 
-              = @news_post.created_at.strftime('%B %e at %l:%M %p')
-      .col-4.visible-tablet
-        .clearfix.hero-social-links
-          %a.icon-twitter
-          %a.icon-facebook{href: "https://www.facebook.com/sharer/sharer.php?u=#{request.url}", target: "_blank"}
 
-.row.news-post  
-  .col-12
-    .news-post-content
-      = render "/news/articles/#{@news_post.partial}"
+.news-post-content
+  = render "/news/articles/#{@news_post.partial}"

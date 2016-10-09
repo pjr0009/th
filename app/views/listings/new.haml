@@ -10,48 +10,50 @@
 
 - content_for :title_header do
   %h1= t("listings.new.post_a_new_listing")
-#new_listing_form.new-listing-form.centered-section
+.row
+  .col-12
+    #new_listing_form.new-listing-form.centered-section
 
-  #selected-groups
+      #selected-groups
 
-    - if categories.size > 1
-      .selected-group{:name => "category"}
-        - categories.each do |value|
-          %a.select.selected.hidden{:data => {:id => value.id}}
-            .link-text= t(".selected_category", :category => value.display_name(I18n.locale))
+        - if categories.size > 1
+          .selected-group{:name => "category"}
+            - categories.each do |value|
+              %a.select.selected.hidden{:data => {:id => value.id}}
+                .link-text= t(".selected_category", :category => value.display_name(I18n.locale))
 
-    - if subcategories.size > 1
-      .selected-group{:name => "subcategory"}
-        - subcategories.each do |value|
-          %a.select.selected.hidden{:data => {:id => value.id}}
-            .link-text= t(".selected_subcategory", :subcategory => value.display_name(I18n.locale))
+        - if subcategories.size > 1
+          .selected-group{:name => "subcategory"}
+            - subcategories.each do |value|
+              %a.select.selected.hidden{:data => {:id => value.id}}
+                .link-text= t(".selected_subcategory", :subcategory => value.display_name(I18n.locale))
 
-    - if shapes.size > 1
-      .selected-group{:name => "listing_shape"}
-        - shapes.each do |value|
-          %a.select.selected.hidden{:data => {:id => value[:id]}}
-            .link-text= t(".selected_transaction_type", :transaction_type => t(value[:name_tr_key]))
+        - if shapes.size > 1
+          .selected-group{:name => "listing_shape"}
+            - shapes.each do |value|
+              %a.select.selected.hidden{:data => {:id => value[:id]}}
+                .link-text= t(".selected_transaction_type", :transaction_type => t(value[:name_tr_key]))
 
-  %h2.listing-form-title{:id => "foo"}
+      %h2.listing-form-title{:id => "foo"}
 
-  #option-groups
+      #option-groups
 
-    - if categories.size > 1
-      .option-group{:name => "category"}
-        - categories.each do |value|
-          %a.select.option.hidden{:data => {:id => value.id}}
-            .link-text= value.display_name(I18n.locale)
+        - if categories.size > 1
+          .option-group{:name => "category"}
+            - categories.each do |value|
+              %a.select.option.hidden{:data => {:id => value.id}}
+                .link-text= value.display_name(I18n.locale)
 
-    - if subcategories.size > 1
-      .option-group{:name => "subcategory"}
-        - subcategories.each do |value|
-          %a.select.option.hidden{:data => {:id => value.id}}
-            .link-text= value.display_name(I18n.locale)
+        - if subcategories.size > 1
+          .option-group{:name => "subcategory"}
+            - subcategories.each do |value|
+              %a.select.option.hidden{:data => {:id => value.id}}
+                .link-text= value.display_name(I18n.locale)
 
-    - if shapes.size > 1
-      .option-group{:name => "listing_shape"}
-        - shapes.each do |value|
-          %a.select.option.hidden{:data => {:id => value[:id]}}
-            .link-text= t(value[:name_tr_key])
+        - if shapes.size > 1
+          .option-group{:name => "listing_shape"}
+            - shapes.each do |value|
+              %a.select.option.hidden{:data => {:id => value[:id]}}
+                .link-text= t(value[:name_tr_key])
 
-  .js-form-fields.hidden
+      .js-form-fields.hidden

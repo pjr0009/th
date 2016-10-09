@@ -36,6 +36,7 @@ $notification-hue: 80;
 $error-hue: 0;
 
 $background:  #F1F7EE;
+$toolbar: #064f2f;
 $highlight:   #ddd;
 $menu-background: #727072;
 //$highlight: #6CA6C1;
@@ -77,3 +78,8 @@ $lander-content-top-mobile: -14;
 
 //expiration lightbox
 $sharetribe-color: #F35937;
+
+
+.bg-body {
+  background: $background !important;
+}

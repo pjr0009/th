@@ -35,8 +35,14 @@
 //= require jquery.fileupload-validate
 //= require jquery.fileupload-image
 
+//= require angular
+//= require angular-resource
+//= require angular-animate
+//= require angular-aria
+//= require angular-material
+//= require tackhunter
+
 //= require selectize-standalone.js
-//= require datepicker/bootstrap-datepicker.js
 
 // Allow IE8-9 to post cross domain XHR (required for image upload)
 //= require jquery.iframe-transport.js
@@ -60,7 +66,6 @@
 //= require homepage
 //= require order_manager
 //= require ajax_status
-//= require admin/expiration_notice
 //= require admin/custom_fields
 //= require admin/categories
 //= require admin/manage_members

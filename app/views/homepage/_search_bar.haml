@@ -1,4 +1,4 @@
-%form{method: "get", id: "homepage-filters"}
+%form{method: "get", action: "/", id: "homepage-filters"}
   - params.except("action", "controller", "q", "lc", "ls", "view", "utf8", "boundingbox", "distance_max").each do |param, value|
     - unless param.match(/^filter_option/) || param.match(/^checkbox_filter_option/) || param.match(/^nf_/) || param.match(/^price_/)
       = hidden_field_tag param, value
@@ -6,5 +6,5 @@
   .search-form-input.search-form-text-field
     = text_field_tag "q", params[:q], :placeholder => (@community_customization && @community_customization.search_placeholder) || "Search for tack..."
   .search-form-input
-    %button.action-button#search-button{type: 'submit'}
+    %button.action-button.button{type: 'submit', style: "background-color: #00a26c;"}
       = icon_tag("search", ["icon-part"])
