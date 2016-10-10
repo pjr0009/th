@@ -2,6 +2,8 @@
 app = angular.module('TackHunter', [
   'ngMaterial'
   'ngResource'
+  'rzModule'
+  'toggle-switch'
 ]).config(["$mdThemingProvider", ($mdThemingProvider) ->
   $mdThemingProvider.definePalette 'tackhunterPalette',
     '50': 'fff'

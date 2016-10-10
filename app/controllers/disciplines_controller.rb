@@ -1,4 +1,5 @@
 class DisciplinesController < ApplicationController
+  include Searchable
   before_action :set_discipline, only: [:show, :edit, :update, :destroy]
 
   # GET /disciplines
@@ -9,6 +10,23 @@ class DisciplinesController < ApplicationController
 
   # GET /disciplines/1
   def show
+    set_categories
+    params[:page] ||= 1
+    search_result = find_listings(params[:q], nil, @discipline.id, params[:page])
+    search_result.on_success { |listings|
+        @listings = listings
+        render "homepage/index", locals: {
+          show_price_filter: false
+        }
+      }.on_error { |e|
+        flash[:error] = t("homepage.errors.search_engine_not_responding")
+        @listings = Listing.none.paginate(:per_page => 1, :page => 1)
+        render "homepage/index", status: 500, locals: {
+          show_price_filter: false
+        }
+      }
+
+
   end
 
   # GET /disciplines/new

@@ -586,6 +586,7 @@ class ListingsController < ApplicationController
 
   def form_content
     @listing.category = @current_community.categories.find(params[:subcategory].blank? ? params[:category] : params[:subcategory])
+    @listing.discipline = Discipline.find(params[:discipline])
     @custom_field_questions = @listing.category.custom_fields
     @numeric_field_ids = numeric_field_ids(@custom_field_questions)
 

@@ -12,7 +12,7 @@ module ListingIndexService::Search
       location: :location
     }
 
-    def search(community_id:, search:, includes:)
+    def search(search:, includes:)
       included_models = includes.map { |m| INCLUDE_MAP[m] }
 
       # rename listing_shape_ids to singular so that Sphinx understands it
@@ -26,14 +26,12 @@ module ListingIndexService::Search
         if search_out_of_bounds?(search[:per_page], search[:page])
           DatabaseSearchHelper.success_result(0, [], includes)
         else
-          search_with_sphinx(community_id: community_id,
-                             search: search,
+          search_with_sphinx(search: search,
                              included_models: included_models,
                              includes: includes)
         end
       else
-        DatabaseSearchHelper.fetch_from_db(community_id: community_id,
-                                           search: search,
+        DatabaseSearchHelper.fetch_from_db(search: search,
                                            included_models: included_models,
                                            includes: includes)
       end
@@ -41,7 +39,7 @@ module ListingIndexService::Search
 
     private
 
-    def search_with_sphinx(community_id:, search:, included_models:, includes:)
+    def search_with_sphinx(search:, included_models:, includes:)
       numeric_search_fields = search[:fields].select { |f| f[:type] == :numeric_range }
       perform_numeric_search = numeric_search_fields.present?
 
@@ -63,10 +61,10 @@ module ListingIndexService::Search
 
         with = HashUtils.compact(
           {
-            community_id: community_id,
             category_id: search[:categories], # array of accepted ids
             listing_shape_id: search[:listing_shape_id],
             price_cents: search[:price_cents],
+            discipline_id: search[:discipline_id],
             listing_id: numeric_search_match_listing_ids,
           })
 

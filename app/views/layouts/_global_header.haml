@@ -13,7 +13,7 @@
             %i.header-square-logo
       %form.flex.layout-align-center-center.layout-row.hide-sm.hide-xs{method: "get", action: "/", id: "homepage-filters"}
         %md-input-container.md-icon-right.flex-75.md-accent.layout-fill.md-input-has-placeholder{"md-no-float": "", style: "height: 36px; "}
-          %input.md-icon-right.md-input.flex#q{name: "q", placeholder: "Search for tack", style: "padding: 4px 10px; height: 36px;"}
+          %input.md-icon-right.md-input.flex#q{name: "q", placeholder: "Search for tack", style: "padding: 4px 10px; height: 36px;", value: "#{params[:q]}"}
           %md-icon
             %i.icon-search
       .flex-25.layout-row.layout-align-center-center
@@ -27,11 +27,12 @@
         - unless logged_in
           = link_to login_path, class: "header-text-link header-hover md-button", id: "header-login-link" do
             = t("header.login")
+      
   %md-toolbar.md-hue-1.secondary-toolbar
     %md-tabs.md-hue-1.secondary-toolbar.md-no-tab-content
       %md-tab
         = link_to "All Disciplines", search_path
       - Discipline.find_each do |d| 
         %md-tab
-          = link_to d.name, disciplines_path(d)
+          = link_to d.name, discipline_path(d)
 

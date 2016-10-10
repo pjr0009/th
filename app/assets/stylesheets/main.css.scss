@@ -2341,53 +2341,7 @@ figure.fluidratio {
     background: linear-gradient(90deg,rgba(33,33,33,.5) 0,rgba(33,33,33,0));
     background-blend-mode: multiply;
   }
-  .hero-footer{
-    width: 100%;
-    position: absolute;
-    bottom: 0;
-    h1.hero-footer-title {
-      line-height: initial;
-      color: #1d1d1d;
-      font-size: 2rem;
-      font-family: Georgia;
-      font-weight: lighter;
-      margin: 0;
-    }
-    .hero-social-links {
-      padding: 0.625em 0.625em 0.625em 0;
-      float: right;
-      a {
-        color: $button;
-        font-size: 1.5rem;
-        float: right;
-        margin-left: 0.5em;
-      }
-    }
-  
-    .row {
-      padding-top: 0.75em;
-      @include clear-wrapper;
-      background: #fff;
-      max-width: 63em;
-      border: 1px solid #ddd;
-      border-bottom: 0;
-    }
-  }
-  .hero-author-avatar, .hero-author-details {
-    float: left;
-  }
-  .hero-author-avatar {
-    width: 60px;
-    img {
-      height: 3em;
-    }
-  }
-  .hero-author-details {
-    a {
-      color: #1091e7;
-    }
-    margin-top: 0.75em;
-  }
+
   .hero-feature-post {
     line-height: initial;
     a.hero-feature-title {

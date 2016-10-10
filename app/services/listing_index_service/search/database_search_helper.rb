@@ -7,10 +7,9 @@ module ListingIndexService::Search::DatabaseSearchHelper
       {count: count, listings: listings.map { |l| ListingIndexService::Search::Converters.listing_hash(l, includes) }})
   end
 
-  def fetch_from_db(community_id:, search:, included_models:, includes:)
+  def fetch_from_db(search:, included_models:, includes:)
     where_opts = HashUtils.compact(
       {
-        community_id: community_id,
         author_id: search[:author_id],
         deleted: 0,
         listing_shape_id: Maybe(search[:listing_shape_ids]).or_else(nil)
@@ -43,6 +42,7 @@ module ListingIndexService::Search::DatabaseSearchHelper
       :keywords,
       :latitude,
       :longitude,
+      :discipline_id,
       :distance_max,
       :sort,
       :listing_shape_id,

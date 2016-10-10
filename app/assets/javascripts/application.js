@@ -40,7 +40,10 @@
 //= require angular-animate
 //= require angular-aria
 //= require angular-material
+//= require angular-toggle-switch.min.js
+//= require rzslider.min.js
 //= require tackhunter
+
 
 //= require selectize-standalone.js
 

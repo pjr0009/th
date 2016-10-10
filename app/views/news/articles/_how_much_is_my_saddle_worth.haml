@@ -6,7 +6,7 @@
 .slide-wrapper{"ng-controller": "saddleAppCtrl"}
   %md-tabs{"md-dynamic-height": "", "md-border-bottom": "", "md-stretch-tabs": "always", "md-selected": "currentSlide"}
     %md-tab{label: "start"}
-      .row.center
+      .layout-row.layout-align-center-center
         %h1
           How Much Is My Saddle Worth?
       .row
@@ -20,7 +20,7 @@
           Let's Get Started
 
     %md-tab{label: "discipline"}
-      .row.center
+      .layout-row.layout-align-center-center
         %h1
           What discipline is this saddle for?
       .row.saddle-types
@@ -33,7 +33,7 @@
               Select
 
     %md-tab{label: "details"}          
-      .row.center
+      .layout-row.layout-align-center-center
         %h1{"ng-bind": "letsFindText()"}
       .row
         .col-6{style: "float: none; margin:auto;"}
@@ -103,7 +103,7 @@
       %div{"ng-show": "loading", "layout": "row", "layout-align": "center center"}
         %md-progress-circular{"md-mode": "indeterminate", "md-diameter": "90"}
       %div{"ng-hide": "loading"}
-        .row.center
+        .layout-row.layout-align-center-center
           .col-4.center{style: "margin: auto; float: none;"}
             %h3
               Based on {{estimateData.sampleSize}} saddles like yours, people usually asked for:

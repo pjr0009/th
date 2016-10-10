@@ -38,22 +38,24 @@
 - content_for :meta_image, @news_post.image(:feature)
 - content_for :meta_image_height, "630"
 - content_for :meta_image_width, "1200"
-  
 = content_for :hero do
-  .layout-column.layout-padding.layout-align-end-start.layout-fill.flex-offset-gt-xs-5
-    .flex.hero-title
+  .layout-row.flex.layout-align-center-center
+    .layout-column.layout-fill.flex-gt-sm-66.hero-title
       %h1
         = @news_post.title.capitalize
-    .flex
-    .flex.hero-footer
+  .hero-feature-image{style: "background-image: url('#{@news_post.image(:feature)}')"}
+
+.news-post.layout-row.flex.layout-align-center-center
+  .layout-column.layout-fill.flex-gt-sm-66.layout-padding.md-whiteframe-z1.news-body
+    .news-header
       .row
         .col-8.clearfix
-          .hero-author-avatar
+          .news-header-author-avatar
             .col-1
             - avatar_url = @news_post.person.image.present? ? @news_post.person.image.url(:thumb) : image_path("profile_image/thumb/missing.png")
             = image_tag avatar_url, alt: '', class: 'header-user-avatar'
             .col-4
-          .hero-author-details
+          .news-header-author-details
             %small
               %div
                 %a{href: "#"}
@@ -62,11 +64,7 @@
                 Published on 
                 = @news_post.created_at.strftime('%B %e at %l:%M %p')
         .col-4.visible-tablet
-          .clearfix.hero-social-links
+          .clearfix.news-header-social-links
             %a.icon-twitter
             %a.icon-facebook{href: "https://www.facebook.com/sharer/sharer.php?u=#{request.url}", target: "_blank"}
-  .hero-feature-image{style: "background-image: url('#{@news_post.image(:feature)}')"}
-
-
-.news-post-content
-  = render "/news/articles/#{@news_post.partial}"
+    = render "/news/articles/#{@news_post.partial}"

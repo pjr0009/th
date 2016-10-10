@@ -11,6 +11,7 @@
 #  illustration_content_type :string(255)
 #  illustration_file_size    :integer
 #  illustration_updated_at   :datetime
+#  slug                      :string(255)
 #
 
 require 'rails_helper'

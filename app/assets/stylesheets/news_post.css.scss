@@ -1,4 +1,9 @@
+@import "mixins/all";
+
 .news-post {
+  .news-body {
+    background: #fff;
+  }
   font-family: Georgia;
   .news-post-content {
     padding-top: 2em;
@@ -16,6 +21,49 @@
       }
     }
   }
+}
+
+.news-header{
+  width: 100%;
+  h1.news-header-footer-title {
+    line-height: initial;
+    color: #1d1d1d;
+    font-size: 2rem;
+    font-family: Georgia;
+    font-weight: lighter;
+    margin: 0;
+  }
+  .news-header-social-links {
+    padding: 0.625em 0.625em 0.625em 0;
+    float: right;
+    a {
+      color: $button;
+      font-size: 1.5rem;
+      float: right;
+      margin-left: 0.5em;
+    }
+  }
+
+  .row {
+    background: #fff;
+    max-width: 63em;
+    border-bottom: 0;
+  }
+}
+.news-header-author-avatar, .news-header-author-details {
+  float: left;
+}
+.news-header-author-avatar {
+  width: 60px;
+  img {
+    height: 3em;
+  }
+}
+.news-header-author-details {
+  a {
+    color: #1091e7;
+  }
+  margin-top: 0.75em;
 }
 
 md-content {

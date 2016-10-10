@@ -15,7 +15,7 @@ $home-thumbnail-grid-author: $home-thumbnail-grid-avatar + ($home-thumbnail-grid
 }
 
 .home-fluid-thumbnail-grid-narrow {
-  @include create-fluid-thumbnail-grid(home, 1, 1, 2, 3, 3, 3, 3, 3);
+  @include create-fluid-thumbnail-grid(home, 1, 1, 2, 3, 4, 4, 4, 4);
 }
 
 .home-fluid-thumbnail-grid-wide {

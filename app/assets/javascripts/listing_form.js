@@ -23,7 +23,10 @@ window.ST = window.ST || {};
     // Display correct attribute menus and their titles
     var title = "";
     var shouldLoadForm = false;
-    if (should_show_menu_for("category", selected_attributes, attribute_array)) {
+    if (should_show_menu_for("discipline", selected_attributes, attribute_array)) {
+      title = listing_form_menu_titles["discipline"];
+      display_option_group("discipline", selected_attributes, attribute_array);
+    } else if (should_show_menu_for("category", selected_attributes, attribute_array)) {
       title = listing_form_menu_titles["category"];
       display_option_group("category", selected_attributes, attribute_array);
     } else if (should_show_menu_for("subcategory", selected_attributes, attribute_array)) {
@@ -98,8 +101,13 @@ window.ST = window.ST || {};
   function should_show_menu_for(attribute, selected_attributes, attribute_array) {
     if (attribute_selected(attribute, selected_attributes)) {
       return false;
+    } else if (attribute == "discipline") {
+      return true;
+
     } else if (attribute == "category") {
-      if (attribute_array.length < 2) {
+      if (should_show_menu_for("discipline", selected_attributes, attribute_array)) {
+        return false;
+      } else if (attribute_array.length < 2) {
         // If there is exactly 1 category, it should be marked automatically as selected,
         // without showing the form.
         if (attribute_array.length == 1) {
@@ -184,8 +192,11 @@ window.ST = window.ST || {};
 
   // Displays the given menu where category or listing shape can be selected
   function display_option_group(group_type, selected_attributes, attribute_array) {
+    console.log(group_type, selected_attributes, attribute_array);
     $('.option-group[name=' + group_type + ']').children().each(function() {
-      if (group_type == "category") {
+      if (group_type == "discipline") {
+        $(this).removeClass('hidden');
+      } else if (group_type == "category") {
         $(this).removeClass('hidden');
       } else if (group_type == "subcategory") {
         if (has_subcategory(selected_attributes["category"], $(this).attr('data-id'), attribute_array)) {
@@ -379,6 +390,7 @@ window.ST = window.ST || {};
     share_type_message,
     date_message,
     listing_id,
+    discipline_id,
     price_required,
     price_message,
     minimum_price,

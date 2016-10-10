@@ -46,7 +46,7 @@
 #  shipping_price_cents            :integer
 #  shipping_price_additional_cents :integer
 #  brand_id                        :integer
-#  discipiline_id                  :integer
+#  discipline_id                   :integer
 #  product_id                      :integer
 #  original_price_cents            :integer
 #
@@ -57,7 +57,7 @@
 #  index_listings_on_brand_id          (brand_id)
 #  index_listings_on_category_id       (old_category_id)
 #  index_listings_on_community_id      (community_id)
-#  index_listings_on_discipiline_id    (discipiline_id)
+#  index_listings_on_discipline_id     (discipline_id)
 #  index_listings_on_listing_shape_id  (listing_shape_id)
 #  index_listings_on_new_category_id   (category_id)
 #  index_listings_on_open              (open)

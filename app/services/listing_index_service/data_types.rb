@@ -22,6 +22,7 @@ module ListingIndexService::DataTypes
     [:sort, :symbol, :optional],
     [:distance_unit, :symbol, :optional],
     [:categories, :array, :optional],
+    [:discipline_id, :to_integer, :optional],
     [:listing_shape_ids, :array, :optional],
     [:price_cents, :range, :optional],
     [:fields, :array, default: []],

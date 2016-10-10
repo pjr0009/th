@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161007155535) do
+ActiveRecord::Schema.define(version: 20161010172202) do
 
   create_table "auth_tokens", force: :cascade do |t|
     t.string   "token",            limit: 255
@@ -409,6 +409,7 @@ ActiveRecord::Schema.define(version: 20161007155535) do
     t.string   "illustration_content_type", limit: 255
     t.integer  "illustration_file_size",    limit: 4
     t.datetime "illustration_updated_at"
+    t.string   "slug",                      limit: 255
   end
 
   create_table "disciplines_brands", id: false, force: :cascade do |t|
@@ -618,7 +619,7 @@ ActiveRecord::Schema.define(version: 20161007155535) do
     t.integer  "shipping_price_cents",            limit: 4
     t.integer  "shipping_price_additional_cents", limit: 4
     t.integer  "brand_id",                        limit: 4
-    t.integer  "discipiline_id",                  limit: 4
+    t.integer  "discipline_id",                   limit: 4
     t.integer  "product_id",                      limit: 4
     t.integer  "original_price_cents",            limit: 4
   end
@@ -630,7 +631,7 @@ ActiveRecord::Schema.define(version: 20161007155535) do
   add_index "listings", ["community_id", "open", "updates_email_at"], name: "updates_email_listings", using: :btree
   add_index "listings", ["community_id", "open", "valid_until", "sort_date", "deleted"], name: "homepage_query_valid_until", using: :btree
   add_index "listings", ["community_id"], name: "index_listings_on_community_id", using: :btree
-  add_index "listings", ["discipiline_id"], name: "index_listings_on_discipiline_id", using: :btree
+  add_index "listings", ["discipline_id"], name: "index_listings_on_discipline_id", using: :btree
   add_index "listings", ["listing_shape_id"], name: "index_listings_on_listing_shape_id", using: :btree
   add_index "listings", ["old_category_id"], name: "index_listings_on_category_id", using: :btree
   add_index "listings", ["open"], name: "index_listings_on_open", using: :btree

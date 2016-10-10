@@ -1,9 +1,4 @@
-//= require angular
-//= require angular-resource
-//= require angular-animate
-//= require angular-aria
-//= require angular-material
-var app = angular.module("saddleApp", ['ngResource', 'ngMaterial'])
+var app = angular.module("TackHunter")
 
 app.factory('Discipline', ["$resource", function($resource) {
   return $resource('/disciplines/:id'); // Note the full endpoint address
@@ -40,7 +35,6 @@ app.controller("saddleAppCtrl", ["$scope", "Discipline", "Brand", "Product", "Sa
   };
 
   $scope.showSubmitButton = function () {
-    console.log($scope.saddleConfiguration);
     return $scope.saddleConfiguration.treeWidth && 
     $scope.saddleConfiguration.seatSize && 
     $scope.saddleConfiguration.condition && 
@@ -95,7 +89,6 @@ app.controller("saddleAppCtrl", ["$scope", "Discipline", "Brand", "Product", "Sa
 
   $scope.setDiscipline = function(typeName){
     $scope.saddleConfiguration.discipline = typeName;
-    console.log(typeName)
     $scope.nextStep();
 
   }
@@ -105,7 +98,6 @@ app.controller("saddleAppCtrl", ["$scope", "Discipline", "Brand", "Product", "Sa
     var newBrand = new Brand();
     newBrand.name = $scope.brandSearchText
     newBrand.$save(function(response){
-      console.log(response);
       $scope.saddleConfiguration.brand = response
       var newProduct = new Product()
       newProduct.brand_id = response.id
@@ -131,10 +123,7 @@ app.controller("saddleAppCtrl", ["$scope", "Discipline", "Brand", "Product", "Sa
   }
 
   $scope.getSaddleWorth = function(brand_id, product_id){
-    console.log($scope.saddleConfiguration)
     Sale.query({brand_id: brand_id, product_id: product_id, sync_external: true}, function(response) {
-      console.log(response);
-      console.log(response.data);
       $scope.loading = false;
       $scope.estimateData = response;
     })

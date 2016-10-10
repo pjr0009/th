@@ -11,9 +11,13 @@
 #  illustration_content_type :string(255)
 #  illustration_file_size    :integer
 #  illustration_updated_at   :datetime
+#  slug                      :string(255)
 #
 
 class Discipline < ActiveRecord::Base
+  extend FriendlyId
+  friendly_id :name, use: [:slugged, :finders]
+
   has_and_belongs_to_many :brands
   has_attached_file :image, :styles => {
         :small_3x2 => "240x160#",
