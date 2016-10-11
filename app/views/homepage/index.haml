@@ -25,14 +25,16 @@
 
 
 - content_for :sidenav_left do
+
   .row
     .col-12
       %md-list
         - @main_categories.each do |category|
+          - selected_category_class = (@selected_category && @selected_category.id == category.id) ? 'font-weight: 700' : ''
           - show_subcategories = show_subcategory_list(category, Maybe(@selected_category).id.to_i.or_else(nil))
           %md-list-item.layout-column{role: "listItem", style: "margin: 0; padding: 0; min-height: 36px;"}
             = link_to marketplace_category_path({category: category}), :data => {category: category.id}, class: "md-no-style md-button md-ink-ripple", style: "padding: 0; margin: 0;" do
-              .md-list-item-inner{style: "font-size: 14px; margin: 0; padding: 0 24px; min-height: 36px; #{@selected_category.id == category.id ? 'font-weight: 700' : ''}"}
+              .md-list-item-inner{style: "font-size: 14px; margin: 0; padding: 0 24px; min-height: 36px; #{selected_category_class}"}
                 = category.display_name(I18n.locale)
 
             - if category.children

@@ -15,7 +15,10 @@
 #new_listing_form.new-listing-form.centered-section
 
   #selected-groups
-
+    .selected-group{:name => "discipline"}
+      - Discipline.find_each do |value|
+        %a.select.selected.hidden{:data => {:id => value.id}}
+          .link-text= t("listings.new.selected_discipline", :category => value.name)
     - if categories.size > 1
       .selected-group{:name => "category"}
         - categories.each do |value|
@@ -37,7 +40,10 @@
   %h2.listing-form-title{:id => "foo"}
 
   #option-groups
-
+    .option-group{:name => "discipline"}
+      - Discipline.find_each do |value|
+        %a.select.option.hidden{:data => {:id => value.id}}
+          .link-text= value.name
     - if categories.size > 1
       .option-group{:name => "category"}
         - categories.each do |value|
