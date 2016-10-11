@@ -70,11 +70,11 @@ md-toolbar {
     background: #B09E99;
   }
   &.secondary-toolbar, .secondary-toolbar {
+    z-index: 1;
     min-height: 30px;
     height: 30px;
   }
   md-tabs.secondary-toolbar {
-    z-index: 2;
     md-tabs-wrapper {
       md-pagination-wrapper {
         height: 30px;

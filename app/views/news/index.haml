@@ -11,7 +11,7 @@
     .flex.hero-title
       %h1
         = link_to @featured_news_post.title.capitalize, news_path(@featured_news_post), class: "hero-feature-title"
-    .flex.show-xs.show-sm
+    .flex.show-xs.show-sm.hide-gt-sm
     .flex.hero-subtitle
       %h2
         By
@@ -22,21 +22,22 @@
         .col-12
           = link_to "Read Now", news_path(@featured_news_post), class: "button"
   .hero-feature-image{style: "background-image: url('#{@featured_news_post.image(:feature)}')"}
-.row.news-posts
-  - @news_posts.each do |news_post|
-    .col-3
-      .news-card
-        = link_to news_path(news_post) do
-          .news-card-image{style: "background-image: url(#{news_post.image(:medium)})"}
-          .news-card-title
-            %h4
-              = news_post.title.capitalize
-            / Author
-          .news-card-summary 
-            %small
-              = news_post.summary
+.layout-row.layout-align-center-center
+  .row.news-posts.flex-gt-md-66
+    - @news_posts.each do |news_post|
+      .col-3
+        .news-card
+          = link_to news_path(news_post) do
+            .news-card-image{style: "background-image: url(#{news_post.image(:medium)})"}
+            .news-card-title
+              %h4
+                = news_post.title.capitalize
+              / Author
+            .news-card-summary 
+              %small
+                = news_post.summary
 
-          .news-card-footer
-            %small
-              By
-              = news_post.person.username
+            .news-card-footer
+              %small
+                By
+                = news_post.person.username
