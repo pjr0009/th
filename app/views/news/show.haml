@@ -39,14 +39,14 @@
 - content_for :meta_image_height, "630"
 - content_for :meta_image_width, "1200"
 = content_for :hero do
-  .layout-row.flex.layout-padding.layout-fill.layout-align-center-end
+  .layout-row.flex.layout-padding.layout-fill.layout-align-center-center
     .layout-column.flex-gt-sm-66.hero-title.layout-align-end-start
       %h1
         = @news_post.title.capitalize
   .hero-feature-image{style: "background-image: url('#{@news_post.image(:feature)}')"}
 
 .news-post.layout-row.flex.layout-align-center-center
-  .layout-column.layout-fill.flex-gt-sm-66.layout-padding.md-whiteframe-z1.news-body
+  .layout-column.layout-fill.flex-gt-sm-66.layout-padding.md-whiteframe-z1.news-body{style: "margin-top: -60px; z-index: 9999;"}
     .news-header
       .row
         .col-8.clearfix
