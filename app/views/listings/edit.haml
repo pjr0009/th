@@ -18,7 +18,7 @@
     .selected-group{:name => "discipline"}
       - Discipline.find_each do |value|
         %a.select.selected.hidden{:data => {:id => value.id}}
-          .link-text= t("listings.new.selected_discipline", :category => value.name)
+          .link-text= "Discipline: #{value.name}"
     - if categories.size > 1
       .selected-group{:name => "category"}
         - categories.each do |value|

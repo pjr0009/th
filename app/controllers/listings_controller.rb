@@ -430,6 +430,7 @@ class ListingsController < ApplicationController
              subcategories: @current_community.subcategories,
              shapes: get_shapes,
              category_id: category_id,
+             discipline_id: @listing.discipline_id,
              subcategory_id: subcategory_id,
              shape_id: @listing.listing_shape_id,
              form_content: form_locals(shape)
@@ -467,6 +468,7 @@ class ListingsController < ApplicationController
       action_button_tr_key: shape[:action_button_tr_key],
       last_modified: DateTime.now
     ).merge(open_params).merge(unit_to_listing_opts(m_unit)).except(:unit)
+    raise listing_params.to_json
 
     update_successful = @listing.update_fields(listing_params)
 
