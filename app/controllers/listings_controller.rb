@@ -468,7 +468,6 @@ class ListingsController < ApplicationController
       action_button_tr_key: shape[:action_button_tr_key],
       last_modified: DateTime.now
     ).merge(open_params).merge(unit_to_listing_opts(m_unit)).except(:unit)
-    raise listing_params.to_json
 
     update_successful = @listing.update_fields(listing_params)
 

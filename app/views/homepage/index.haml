@@ -39,7 +39,7 @@
 
             - if category.children
               - if show_subcategories
-                %md-list.layout-fill.layout-padding
+                %md-list.flex.layout-fill.layout-padding
                   - category.children.each do |child|
                     - is_selected = @selected_category == child
                     %md-list-item.layout-column{role: "listItem", style: "margin: 0; padding: 0; min-height: 36px;"}
