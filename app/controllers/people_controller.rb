@@ -43,7 +43,6 @@ class PeopleController < Devise::RegistrationsController
       ListingIndexService::API::Api
       .listings
       .search(
-        community_id: @current_community.id,
         search: search,
         engine: search_engine,
         raise_errors: raise_errors,
