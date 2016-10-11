@@ -28,6 +28,7 @@ gem 'jquery-rails', '3.1.3'
 
 # gem 'heroku' install the Heroku toolbelt (https://toolbelt.heroku.com/) instead (as gem had some problems)
 gem "passenger", "~> 5.0.18"
+gem 'turbolinks', '~> 5.0.0'
 
 
 gem "mysql2", "~> 0.3.14"

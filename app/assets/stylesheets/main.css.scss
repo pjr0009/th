@@ -74,6 +74,7 @@ md-toolbar {
     height: 30px;
   }
   md-tabs.secondary-toolbar {
+    z-index: 2;
     md-tabs-wrapper {
       md-pagination-wrapper {
         height: 30px;
@@ -92,12 +93,13 @@ md-toolbar {
         background-color: $button;
       }
       md-tab-item {
-        padding: 6px 24px;
+        padding: 0;
         height: 30px;
         min-height: 30px;
         font-size: 12px;
-        line-height: 18px;
         a {
+          line-height: 30px;
+          padding: 6px 24px;
           text-transform: none;
           color: white;
         }

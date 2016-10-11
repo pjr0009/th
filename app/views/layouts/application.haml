@@ -58,12 +58,9 @@
         :javascript
           window.I18n = {};
 
-        = javascript_include_tag "i18n/#{I18n.locale}"
 
         = javascript_include_tag 'application'
 
-        :javascript
-          window.ST.jsonTranslations = #{JSONTranslations.get(I18n.locale)}
 
         - if @analytics_event
           :javascript
@@ -95,7 +92,6 @@
         :javascript
           $(document).ready(function() { initialize_defaults("#{I18n.locale}"); #{yield :javascript} });
 
-        = render :partial => "layouts/noscript"
   = render partial: "layouts/footer"
 
 

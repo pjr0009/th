@@ -19,6 +19,16 @@
 // It's not advisable to add code directly here, but if you do, it'll appear at the bottom of the
 // the compiled file.
 //
+
+//= require angular
+//= require angular-resource
+//= require angular-animate
+//= require angular-aria
+//= require angular-material
+//= require angular-toggle-switch.min.js
+//= require rzslider.min.js
+//= require tackhunter
+
 //= require jquery
 //= require jquery-ui-1.9.2.custom
 //= require jquery_ujs
@@ -34,15 +44,6 @@
 //= require jquery.fileupload-process
 //= require jquery.fileupload-validate
 //= require jquery.fileupload-image
-
-//= require angular
-//= require angular-resource
-//= require angular-animate
-//= require angular-aria
-//= require angular-material
-//= require angular-toggle-switch.min.js
-//= require rzslider.min.js
-//= require tackhunter
 
 
 //= require selectize-standalone.js
