@@ -14,7 +14,7 @@ class HomepageController < ApplicationController
     set_categories
     params[:page] ||= 1
 
-    search_result = find_listings(params[:q], nil, nil, params[:page])
+    search_result = find_listings(params[:q], params[:category], nil, params[:page])
 
     if request.xhr? # checks if AJAX request
       search_result.on_success { |listings|

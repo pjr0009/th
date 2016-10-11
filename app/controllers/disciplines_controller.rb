@@ -12,7 +12,7 @@ class DisciplinesController < ApplicationController
   def show
     set_categories
     params[:page] ||= 1
-    search_result = find_listings(params[:q], nil, @discipline.id, params[:page])
+    search_result = find_listings(params[:q], params[:category], @discipline.id, params[:page])
     search_result.on_success { |listings|
         @listings = listings
         render "homepage/index", locals: {

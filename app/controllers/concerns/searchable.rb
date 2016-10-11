@@ -6,9 +6,9 @@
     @main_categories = @categories.select { |c| c.parent_id == nil }
   end
 
-  def find_listings(query="", category_id=nil, discipline_id=nil, page=1)
+  def find_listings(query="", category_url=nil, discipline_id=nil, page=1)
     categories = []
-    Maybe(Category.where(:id => category_id)).each do |category|
+    Category.where(:url => category_url).each do |category|
       categories = category.own_and_subcategory_ids
       @selected_category = category
     end
