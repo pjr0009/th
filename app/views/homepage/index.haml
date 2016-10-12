@@ -37,15 +37,14 @@
               .md-list-item-inner{style: "font-size: 14px; margin: 0; padding: 0 24px; min-height: 36px; #{selected_category_class}"}
                 = category.display_name(I18n.locale)
 
-            - if category.children
-              - if show_subcategories
-                %md-list.flex.layout-fill.layout-padding
-                  - category.children.each do |child|
-                    - is_selected = @selected_category == child
-                    %md-list-item.layout-column{role: "listItem", style: "margin: 0; padding: 0; min-height: 36px;"}
-                      = link_to marketplace_category_path({category: child}), :data => {:"sub-category" =>child.id}, class: "md-no-style md-button md-ink-ripple", style: "padding: 0; margin: 0;" do
-                        .md-list-item-inner{style: "font-size: 14px; margin: 0; padding: 0 24px; min-height: 36px;"}
-                          = child.display_name(I18n.locale)                
+            - unless category.children.blank? || !show_subcategories
+              %md-list.flex.layout-fill.layout-padding
+                - category.children.each do |child|
+                  - is_selected = @selected_category == child
+                  %md-list-item.layout-column{role: "listItem", style: "margin: 0; padding: 0; min-height: 36px;"}
+                    = link_to marketplace_category_path({category: child}), :data => {:"sub-category" =>child.id}, class: "md-no-style md-button md-ink-ripple", style: "padding: 0; margin: 0;" do
+                      .md-list-item-inner{style: "font-size: 14px; margin: 0; padding: 0 24px; min-height: 36px;"}
+                        = child.display_name(I18n.locale)                
 .row
   - if @listings.total_entries > 0
     %div{class: "home-fluid-thumbnail-grid-narrow"}
