@@ -284,8 +284,8 @@ window.ST = window.ST || {};
   };
 
   // Initialize the listing type & category selection part of the form
-  module.initialize_new_listing_form_selectors = function(locale, attribute_array, listing_form_menu_titles) {
-    var ordered_attributes = ["category", "subcategory", "listing_shape"];
+  module.initialize_new_listing_form_selectors = function(locale, attribute_array, disciplines, listing_form_menu_titles) {
+    var ordered_attributes = ["discipline", "category", "subcategory", "listing_shape"];
     var selected_attributes = selectedAttributesFromQueryParams(window.location.search);
 
     // Reset the view to initial state
@@ -324,7 +324,7 @@ window.ST = window.ST || {};
     );
   };
 
-  module.initialize_edit_listing_form_selectors = function(locale, attribute_array, listing_form_menu_titles, category, subcategory, listing_shape, discipline, id) {
+  module.initialize_edit_listing_form_selectors = function(locale, attribute_array, listing_form_menu_titles, category, subcategory, discipline, listing_shape, id) {
     var ordered_attributes = ["discipline", "category", "subcategory", "listing_shape"];
 
     // Selected values (string or null required)
@@ -391,7 +391,6 @@ window.ST = window.ST || {};
     share_type_message,
     date_message,
     listing_id,
-    discipline_id,
     price_required,
     price_message,
     minimum_price,
