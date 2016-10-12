@@ -4,7 +4,10 @@ Kassi::Application.routes.draw do
       get "get_estimate", to: "products#get_estimate"
     end
   end
-  resources :disciplines
+  Discipline.all.each do |discipline|
+    get discipline.slug => 'disciplines#show', :defaults => { :id => discipline.name }
+  end
+  resources :disciplines, except: [:show]
   resources :brands
   root to: "homepage#index"
   
