@@ -293,6 +293,7 @@ class ListingsController < ApplicationController
     render :new, locals: {
              categories: @current_community.top_level_categories,
              subcategories: @current_community.subcategories,
+             disciplines: Discipline.all,
              shapes: get_shapes,
              category_tree: category_tree
            }
@@ -428,6 +429,7 @@ class ListingsController < ApplicationController
              category_tree: category_tree,
              categories: @current_community.top_level_categories,
              subcategories: @current_community.subcategories,
+             disciplines: Discipline.all,
              shapes: get_shapes,
              category_id: category_id,
              discipline_id: @listing.discipline_id,

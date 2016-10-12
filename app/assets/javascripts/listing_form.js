@@ -324,15 +324,16 @@ window.ST = window.ST || {};
     );
   };
 
-  module.initialize_edit_listing_form_selectors = function(locale, attribute_array, listing_form_menu_titles, category, subcategory, listing_shape, id) {
-    var ordered_attributes = ["category", "subcategory", "listing_shape"];
+  module.initialize_edit_listing_form_selectors = function(locale, attribute_array, listing_form_menu_titles, category, subcategory, listing_shape, discipline, id) {
+    var ordered_attributes = ["discipline", "category", "subcategory", "listing_shape"];
 
     // Selected values (string or null required)
     category = category ? "" + category : null;
     subcategory = subcategory ? "" + subcategory : null;
     listing_shape = listing_shape ? "" + listing_shape : null;
+    discipline = discipline ? "" + discipline : null;
 
-    var selected_attributes = {"category": category, "subcategory": subcategory, "listing_shape": listing_shape};
+    var selected_attributes = {"category": category, "subcategory": subcategory, "listing_shape": listing_shape, "discipline": discipline};
     var originalSelection = _.clone(selected_attributes);
     var current_attributes = _.clone(selected_attributes);
 
