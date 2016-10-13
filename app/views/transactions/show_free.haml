@@ -1,18 +1,42 @@
 = render :partial => "conversations/conversation_header", locals: {other_party: conversation_other_party}
-.row
-  .col-8
-    = render :partial => "conversations/messages_and_form", locals: {role: role, message_form: message_form, message_form_action: message_form_action, messages: messages}
+.layout-gt-xs-row.layout-col
+  .flex
+    = render :partial => "conversations/messages_and_form", locals: {role: role, message_form: message_form, message_form_action: message_form_action, messages: messages, other_party: conversation_other_party, free: true}
 
-  .col-4
-    - if conversation_other_party[:id] != @current_user.id
-      .row{style: "background: #fff; border: 1px solid #ddd; border-radius: 4px;"}
-        = image_tag listing_image_big, :style => "width: 100%;"
-        %h2{style: "padding: 0 1rem; margin: 0;"}
-          = link_to_unless listing[:deleted], listing[:title], listing_path(id: listing[:id])
-        %p{style: "padding: 0 1rem;"}
-          = truncate(listing[:description], length: 100)
-        %div{style: "padding: 0 1em;"}
-          = link_to new_transaction_path({listing_id: listing[:id]}), :class => "book-button" do
-            .content{style: "margin-top: .75em"}
-              %i.icon-lock
-              Complete purchase
+  .flex-gt-md-25.flex-sm-50
+    - unless conversation_other_party[:id] == @current_user.id
+      %md-card.md-default-theme{style: "background: #fff;"}
+        %md-card-header
+          %md-card-header-text
+            = link_to_unless listing[:deleted], listing[:title], listing_path(id: listing[:id]), :class => "md-title"
+        %img.md-card-image{:alt => "#{listing[:title]}", "src" => "#{listing_image_big}"}/
+        %md-card-title
+          %md-card-title-text
+            = link_to edit_listing_path({id: listing[:id]}) do
+              %span.md-headline
+                = Money.new(listing[:price_cents], "USD").format
+        %md-card-content
+          %p
+            = truncate(listing[:description], length: 100)
+        %md-card-actions.layout-align-start-stretch.layout-column
+          = link_to new_transaction_path({listing_id: listing[:id]}), class: "md-button", style: "background: #00a26c; color: #fff" do
+            %i.icon-lock
+            Complete Purchase
+
+    - else
+      %md-card.md-default-theme{style: "background: #fff;"}
+        %md-card-header
+          %md-card-header-text
+            = link_to_unless listing[:deleted], listing[:title], listing_path(id: listing[:id]), :class => "md-title"
+        %img.md-card-image{:alt => "#{listing[:title]}", "src" => "#{listing_image_big}"}/
+        %md-card-title
+          %md-card-title-text
+            = link_to edit_listing_path({id: listing[:id]}) do
+              %span.md-headline
+                = Money.new(listing[:price_cents], "USD").format
+              %span.md-title{style: "color: #0000EE"}
+                change price
+        %md-card-content
+          %p
+            = truncate(listing[:description], length: 100)
+        
