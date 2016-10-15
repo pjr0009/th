@@ -1,4 +1,4 @@
-- free ||= false
+- listing ||= nil
 #messages
   = render :partial => "conversations/message", :collection => messages, as: :message_or_action
 
@@ -10,8 +10,8 @@
     = form_for message_form, :url => message_form_action do |f|
       = f.label :content, t("conversations.show.write_a_reply")
       = f.text_area :content, :class => "reply_form_text_area"
-      - if free 
-        - unless other_party[:id] == @current_user.id
+      - unless listing
+        - unless listing[:author_id] == @current_user.id
           %small 
             %i.icon-warning-sign
             For your safety it is important to complete purchases directly through Tack Hunter. Be cautious of any sellers attempting to move transactions off site (unless you're picking up the item in person). If you've negotiated a special price, the buyer may easily edit the listing to a lower price. If something seems suspicicious, let us know. We're here to help 24/7: support@tackhunter.com

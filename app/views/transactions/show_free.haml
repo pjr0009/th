@@ -1,10 +1,10 @@
 = render :partial => "conversations/conversation_header", locals: {other_party: conversation_other_party}
 .layout-gt-xs-row.layout-col
   .flex
-    = render :partial => "conversations/messages_and_form", locals: {role: role, message_form: message_form, message_form_action: message_form_action, messages: messages, other_party: conversation_other_party, free: true}
+    = render :partial => "conversations/messages_and_form", locals: {role: role, message_form: message_form, message_form_action: message_form_action, messages: messages, other_party: conversation_other_party, listing: listing}
 
   .flex-gt-md-25.flex-sm-50
-    - unless conversation_other_party[:id] == @current_user.id
+    - unless listing[:author_id] == @current_user.id
       %md-card.md-default-theme{style: "background: #fff;"}
         %md-card-header
           %md-card-header-text
