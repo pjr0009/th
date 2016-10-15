@@ -10,7 +10,7 @@
     = form_for message_form, :url => message_form_action do |f|
       = f.label :content, t("conversations.show.write_a_reply")
       = f.text_area :content, :class => "reply_form_text_area"
-      - unless listing
+      - unless listing.nil?
         - unless listing[:author_id] == @current_user.id
           %small 
             %i.icon-warning-sign
