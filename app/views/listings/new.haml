@@ -1,65 +1,77 @@
-- content_for :extra_javascript do
-  :javascript
-    $(document).ready(function() {
-      window.ST.initialize_new_listing_form_selectors("#{I18n.locale}", #{category_tree.to_json}, #{Discipline.all.to_json}, #{listing_form_menu_titles().to_json});
-    });
+- content_for :extra_javascript do 
+  = javascript_include_tag "listings/new/new_listing_controller"
 
-- content_for :extra_javascript do
-  - maps_key = @current_community.google_maps_key
-  = javascript_include_tag "https://maps.googleapis.com/maps/api/js?key=AIzaSyBD0dCxEL8qLH4TLaRb5Hq76WR4V1ymtlI"
 
-- content_for :title_header do
-  %h1= t("listings.new.post_a_new_listing")
-.row
-  .col-12
-    #new_listing_form.new-listing-form.centered-section
+.layout-row.layout-align-center-center{"ng-controller": "newListingCtrl"}
+  .layout-column.flex-lt-sm-100.flex-gt-sm-66
+    %md-tabs.md-whiteframe-z1{"md-dynamic-height": "true", style: "background: #fff;"}
+      %md-tab{label: "Payments"}
+        %md-content.md-padding
+          %h2.md-headline 
+            How can we pay you?
+            %span.md-caption
+              (You only have to do this once)
+          - content_for :javascript do
+            ST.initializeNewPaypalAccountHandler("ask_paypal_permissions", "#{order_permission_action}", ".js-paypal-redirect-order-permission");
+          - create_paypal_link = link_to(t("paypal_accounts.create_paypal_account_link_text"),
+                                         create_url, target: "_blank")
+          - paypal_redirect_link = "<a href='#' id='ask_paypal_permissions_redirect'>#{t("paypal_accounts.redirect_link_text")}</a>"
+          %p
+            You're almost ready to start selling! We need to set up how you'll get paid when users buy your items. Tack Hunter is seamlessly integrated with PayPal for security and simplicity. Once your account is connected you'll be able to list as many items as you want.
+          .row
+            .col-12.payment-checklist
+              %div
+                %i.icon-check
+                You'll receive your payments instantly
+              %div
+                %i.icon-check
+                Your private Paypal informantion is never shared with Tack Hunter
+              %div
+                %i.icon-check
+                We'll never debit your account, and our 3% fee is automatically subtracted from the buyers payment before it's sent to you. 
+              %div
+                %i.icon-check
+                Saddle trial didn't work out? You can easily issue refunds from Tack Hunter.
 
-      #selected-groups
-        .selected-group{:name => "discipline"}
-          - Discipline.find_each do |value|
-            %a.select.selected.hidden{:data => {:id => value.id}}
-              .link-text= "Discipline: #{value.name}"
-        - if categories.size > 1
-          .selected-group{:name => "category"}
-            - categories.each do |value|
-              %a.select.selected.hidden{:data => {:id => value.id}}
-                .link-text= t(".selected_category", :category => value.display_name(I18n.locale))
+          .row.send-button-wrapper
+            .col-12
+              %button#ask_paypal_permissions
+                %i.icon-lock
+                Securely connect your Paypal account
+            .row.js-paypal-redirect-order-permission.hidden
+              .col-12
+                .paypal-redirect-message
+                  = t("paypal_accounts.redirect_message", redirect_link: paypal_redirect_link).html_safe
 
-        - if subcategories.size > 1
-          .selected-group{:name => "subcategory"}
-            - subcategories.each do |value|
-              %a.select.selected.hidden{:data => {:id => value.id}}
-                .link-text= t(".selected_subcategory", :subcategory => value.display_name(I18n.locale))
+       
+      %md-tab{label: "Category"}
+        %md-content.md-padding
+          %h2.md-headline 
+            What are you selling?
+          %form
+            .layout-row-gt-sm
+              %md-input-container.flex
+                %label
+                  Discipline
+                %md-select{"ng-model": "listing.discipline_id"}
+                  %md-option{"ng-repeat": "option in disciplines","ng-bind": "option.name", value: "{{option.id}}"}
+            .layout-row-gt-sm
+              %md-autocomplete.flex-25{"placeholder": "Discipline", 
+              "md-delay": 400,
+              "md-no-cache": true,
+              "md-selected-item": "saddleConfiguration.brand", 
+              "md-items": "item in brandSearchTextChange(brandSearchText)", 
+              "md-search-text": "brandSearchText",
+              "md-item-text": "item.name",
+              "md-floating-label": "Discipline",
+              "md-match-case-insensitive": true}
+                %md-item-template
+                  %span.item-title
+                    %span{"ng-bind": "item.name"}
+                %md-not-found
+                  Brand not found, We can give it a shot though!
 
-        - if shapes.size > 1
-          .selected-group{:name => "listing_shape"}
-            - shapes.each do |value|
-              %a.select.selected.hidden{:data => {:id => value[:id]}}
-                .link-text= t(".selected_transaction_type", :transaction_type => t(value[:name_tr_key]))
+      %md-tab{label: "Info"}
+      %md-tab{label: "Pictures"}
 
-      %h2.listing-form-title{:id => "foo"}
-
-      #option-groups
-        .option-group{:name => "discipline"}
-          - Discipline.find_each do |value|
-            %a.select.option.hidden{:data => {:id => value.id}}
-              .link-text= value.name
-        - if categories.size > 1
-          .option-group{:name => "category"}
-            - categories.each do |value|
-              %a.select.option.hidden{:data => {:id => value.id}}
-                .link-text= value.display_name(I18n.locale)
-
-        - if subcategories.size > 1
-          .option-group{:name => "subcategory"}
-            - subcategories.each do |value|
-              %a.select.option.hidden{:data => {:id => value.id}}
-                .link-text= value.display_name(I18n.locale)
-
-        - if shapes.size > 1
-          .option-group{:name => "listing_shape"}
-            - shapes.each do |value|
-              %a.select.option.hidden{:data => {:id => value[:id]}}
-                .link-text= t(value[:name_tr_key])
-
-      .js-form-fields.hidden
+      %md-tab{label: "Preview"}

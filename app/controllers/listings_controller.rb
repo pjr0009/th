@@ -28,7 +28,6 @@ class ListingsController < ApplicationController
 
   before_filter :is_authorized_to_post, :only => [ :new, :create ]
 
-  before_filter :redirect_if_payment_info_incomplete, :only => [:new, :create]
 
   def index
     @selected_tribe_navi_tab = "home"
@@ -218,23 +217,7 @@ class ListingsController < ApplicationController
     render(locals: onboarding_popup_locals.merge(view_locals))
   end
 
-  def payment_info
 
-    community_currency = @current_community.default_currency
-    payment_settings = payment_settings_api.get_active(community_id: @current_community.id).maybe.get
-    community_country_code = LocalizationUtils.valid_country_code(@current_community.country)
-
-    render(locals: {
-      order_permission_action: ask_order_permission_listings_path,
-      commission_from_seller: t("paypal_accounts.commission", commission: payment_settings[:commission_from_seller]),
-      minimum_commission: Money.new(payment_settings[:minimum_transaction_fee_cents], community_currency),
-      commission_type: payment_settings[:commission_type],
-      currency: community_currency,
-      paypal_fees_url: PaypalCountryHelper.fee_link(community_country_code),
-      create_url: PaypalCountryHelper.create_paypal_account_url,
-      receive_funds_info_label_tr_key: PaypalCountryHelper.receive_funds_info_label_tr_key(community_country_code)
-    })
-  end
 
 
     def ask_order_permission
@@ -285,18 +268,30 @@ class ListingsController < ApplicationController
 
 
   def new
+    community_currency = @current_community.default_currency
+    payment_settings = payment_settings_api.get_active(community_id: @current_community.id).maybe.get
+    community_country_code = LocalizationUtils.valid_country_code(@current_community.country)
+
     category_tree = CategoryViewUtils.category_tree(
       categories: ListingService::API::Api.categories.get_all(community_id: @current_community.id)[:data],
       shapes: get_shapes
     )
 
     render :new, locals: {
-             categories: @current_community.top_level_categories,
-             subcategories: @current_community.subcategories,
-             disciplines: Discipline.all,
-             shapes: get_shapes,
-             category_tree: category_tree
-           }
+      categories: @current_community.top_level_categories,
+      subcategories: @current_community.subcategories,
+      disciplines: Discipline.all,
+      shapes: get_shapes,
+      category_tree: category_tree,
+      order_permission_action: ask_order_permission_listings_path,
+      commission_from_seller: t("paypal_accounts.commission", commission: payment_settings[:commission_from_seller]),
+      minimum_commission: Money.new(payment_settings[:minimum_transaction_fee_cents], community_currency),
+      commission_type: payment_settings[:commission_type],
+      currency: community_currency,
+      paypal_fees_url: PaypalCountryHelper.fee_link(community_country_code),
+      create_url: PaypalCountryHelper.create_paypal_account_url,
+      receive_funds_info_label_tr_key: PaypalCountryHelper.receive_funds_info_label_tr_key(community_country_code)
+    }
   end
 
   def new_form_content
