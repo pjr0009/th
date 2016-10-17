@@ -18,18 +18,21 @@
   .row
 
 
-    .col-6
-      .preauthorize-section
-        %h2.preauthorize-details-title
-          = t("listing_conversations.preauthorize.details")
+    .col-4
+      %md-card.md-default-theme.preauthorize-section{style: "background: #fff;"}
+        %md-card-header
+          %md-card-header-text
+            Order Details for:
+            = link_to_unless listing[:deleted], listing[:title], listing_path(id: listing[:id]), :class => "md-title"
+        %md-card-content
+          %ul.no-bullets
+            %li
+              %div
+                %strong Seller
+                = author_link
 
-        %ul.no-bullets
-          %li
-            %div
-              = t("listing_conversations.preauthorize.by", listing: link_to("#{listing[:title]}", listing_path(listing[:id])), author: author_link).html_safe
-
-          %li
-            = render partial: "transactions/price_break_down", locals: price_break_down_locals
+            %li
+              = render partial: "transactions/price_break_down", locals: price_break_down_locals
     .col-6
       = form_for preauthorize_form,
         :url => form_action,
