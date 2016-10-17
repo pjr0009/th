@@ -40,7 +40,10 @@ window.ST.transaction = window.ST.transaction || {};
   function toggleSpinner($spinner, show) {
     if (show === true) {
       $spinner.show();
+      $(".paypal-button-wrapper").parent().append("<div class='row'> Redirecting you to PayPal, one moment... </div>")
+      $(".checkout-with-paypal-button").addClass("disabled")
     } else {
+      $(".checkout-with-paypal-button").removeClass("disabled")
       $spinner.hide();
     }
   }

@@ -42,20 +42,20 @@
                 Where's it headed?  
             .row
               .col-12   
-                = form.label :name   
-                = form.text_field :name
+                = form.label :name
+                = form.text_field :name, :required => true
                 = form.label :street1, "Street Address"
-                = form.text_field :street1
+                = form.text_field :street1, :required => true
                 = form.label :street1, "Street Address 2"
                 = form.text_field :street2
                 = form.label :city
-                = form.text_field :city 
+                = form.text_field :city, :required => true
                 = form.label :state_or_province, "State"
-                = form.select :state_or_province, options_for_select(us_states),{}, class: 'form-control'
+                = form.select :state_or_province, options_for_select(us_states),{}, class: 'form-control', :required => true
                 = form.label :postal_code, "Zip"
-                = form.text_field :postal_code
+                = form.text_field :postal_code, :required => true
                 = form.label :phone, "Phone"
-                = form.text_field :phone
+                = form.text_field :phone, :required => true
 
       
           .row
