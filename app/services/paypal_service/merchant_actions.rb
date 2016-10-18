@@ -314,7 +314,6 @@ module PaypalService
               } 
             }],
             :displayOptions => {
-                :emailHeaderImageUrl => "https://s3.amazonaws.com/tackhunter/www/logo-black.png", 
                 :headerImageUrl => "https://s3.amazonaws.com/tackhunter/www/logo-black.png",
                 :businessName => "Tack Hunter LLC"
               }
