@@ -26,6 +26,7 @@
 //= require angular-aria
 //= require angular-material
 //= require angular-toggle-switch.min.js
+//= require angularjs-file-upload
 //= require rzslider.min.js
 //= require tackhunter
 

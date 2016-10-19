@@ -1,5 +1,5 @@
 - content_for :extra_javascript do 
-  = javascript_include_tag "listings/new/new_listing_controller"
+  = javascript_include_tag "listings/new_listing/manifest"
 
 
 .layout-row.layout-align-center-center{"ng-controller": "newListingCtrl"}
@@ -50,11 +50,14 @@
             What are you selling?
           %form
             .layout-row-gt-sm
-              %md-input-container.flex
-                %label
-                  Discipline
-                %md-select{"ng-model": "listing.discipline_id"}
-                  %md-option{"ng-repeat": "option in disciplines","ng-bind": "option.name", value: "{{option.id}}"}
+              %md-input-container.flex-25
+                %md-radio-group{"ng-model": "listing.discipline_id"}
+                  %md-radio-button{"ng-repeat": "option in disciplines", value: "{{option.name}}"}
+                    {{option.name}}
+              %md-input-container.flex-25
+                %md-radio-group{"ng-model": "listing.category_id", "ng-show": "listing.discipline_id"}
+                  %md-radio-button{"ng-repeat": "category in categories", value: "{{category.name}}"}
+                    {{category.name}}
             .layout-row-gt-sm
               %md-autocomplete.flex-25{"placeholder": "Discipline", 
               "md-delay": 400,
