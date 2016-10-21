@@ -1,17 +1,9 @@
 app = angular.module("TackHunter")
-app.controller("newListingCtrl", ["$scope", ($scope) ->
+app.controller("newListingCtrl", ["$scope", "$http", ($scope, $http) ->
   $scope.listing = {}
-  $scope.disciplines = [{name: "Dressage"}, {name: "Hunter-Jumper"}, {name: "Western"}]
-  $scope.categories = [
-    {
-      name: "Saddles"
-    },
-    {
-      name: "Riding Boots"
-    },
-    {
-      name: "Horse Blankets"
-    }
-  ]
-
+  $scope.disciplines = [{name: "Dressage", slug: "dressage"}, {name: "Hunter-Jumper", slug: "hunter-jumper"}, {name: "Western"}]
+  $scope.fetchCategories = () ->
+    if $scope.listing.discipline_id
+      $http.get("/" + $scope.listing.discipline_id + "/categories").success (data) ->
+        $scope.categories = data
 ])

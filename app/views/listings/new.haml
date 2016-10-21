@@ -3,9 +3,9 @@
 
 
 .layout-row.layout-align-center-center{"ng-controller": "newListingCtrl"}
-  .layout-column.flex-lt-sm-100.flex-gt-sm-66
+  .layout-column.flex.flex-gt-sm-66
     %md-tabs.md-whiteframe-z1{"md-dynamic-height": "true", style: "background: #fff;"}
-      %md-tab{label: "Payments"}
+      %md-tab{"ng-if": "false", style: "display:none;", label: "Payments"}
         %md-content.md-padding
           %h2.md-headline 
             How can we pay you?
@@ -46,34 +46,63 @@
        
       %md-tab{label: "Category"}
         %md-content.md-padding
-          %h2.md-headline 
+          %h2.md-subheader
             What are you selling?
           %form
-            .layout-row-gt-sm
+            .layout-row-gt-sm.layout-padding{"ng-show": "false"}
               %md-input-container.flex-25
                 %md-radio-group{"ng-model": "listing.discipline_id"}
                   %md-radio-button{"ng-repeat": "option in disciplines", value: "{{option.name}}"}
                     {{option.name}}
-              %md-input-container.flex-25
-                %md-radio-group{"ng-model": "listing.category_id", "ng-show": "listing.discipline_id"}
-                  %md-radio-button{"ng-repeat": "category in categories", value: "{{category.name}}"}
-                    {{category.name}}
-            .layout-row-gt-sm
-              %md-autocomplete.flex-25{"placeholder": "Discipline", 
-              "md-delay": 400,
-              "md-no-cache": true,
-              "md-selected-item": "saddleConfiguration.brand", 
-              "md-items": "item in brandSearchTextChange(brandSearchText)", 
-              "md-search-text": "brandSearchText",
-              "md-item-text": "item.name",
-              "md-floating-label": "Discipline",
-              "md-match-case-insensitive": true}
+
+            .layout-column.layout-gt-sm-row.layout-padding
+              %md-input-container.flex
+                %label
+                  Listing Title
+                %input
+            .layout-row.layout-sm-column.layout-xs-column.layout-padding
+              %md-autocomplete.flex{"placeholder": "Discipline", 
+                "md-delay": 400,
+                "md-no-cache": true,
+                "md-selected-item": "saddleConfiguration.brand", 
+                "md-items": "item in brandSearchTextChange(brandSearchText)", 
+                "md-search-text": "brandSearchText",
+                "md-item-text": "item.name",
+                "md-floating-label": "Brand",
+                "md-match-case-insensitive": true}
                 %md-item-template
                   %span.item-title
                     %span{"ng-bind": "item.name"}
                 %md-not-found
                   Brand not found, We can give it a shot though!
-
+              %md-input-container.flex
+                %label
+                  Model
+                %input
+            .layout-row.layout-padding
+              %md-input-container.flex-50.flex-gt-sm-25
+                %label
+                  Price
+                %input
+              %md-input-container.flex-50.flex-gt-sm-25
+                %label
+                  Condition
+                %md-select{"ng-model": "listing.condition"}
+            .layout-row.layout-padding
+              .flex
+                %h2.md-subheader
+                  What discipline do you ride?
+                %md-input-container
+                  %md-radio-group{"ng-model": "listing.discipline_id", "ng-change": "fetchCategories()"}
+                    %md-radio-button{"ng-repeat": "option in disciplines", value: "{{option.slug}}"}
+                      {{option.name}}
+              .flex
+                %h2.md-subheader
+                  Pick a main category
+                %md-input-container.flex
+                  %md-radio-group{"ng-show": "categories", "ng-model": "listing.discipline_id"}
+                    %md-radio-button{"ng-repeat": "option in categories", value: "{{option.url}}"}
+                      {{option.url}}
       %md-tab{label: "Info"}
       %md-tab{label: "Pictures"}
 

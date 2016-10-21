@@ -1,6 +1,6 @@
 class DisciplinesController < ApplicationController
   include Searchable
-  before_action :set_discipline, only: [:show, :edit, :update, :destroy]
+  before_action :set_discipline, only: [:show, :edit, :update, :destroy, :categories]
 
   # GET /disciplines
   def index
@@ -27,6 +27,11 @@ class DisciplinesController < ApplicationController
       }
 
 
+  end
+
+  def categories
+    categories = @discipline.categories.where(:parent_id => nil)
+    render json: categories
   end
 
   # GET /disciplines/new

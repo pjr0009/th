@@ -12,7 +12,7 @@
         %md-sidenav.ng-cloak.layout-column.bg-body.md-sidenav-left.md-locked-open{"md-is-locked-open": "$mdMedia('gt-sm')", "md-component-id": "left"}
           = yield :sidenav_left
       - else
-      %md-content.layout-padding.layout-column.layout-fill.flex.bg-body
+      %md-content.layout-column.layout-fill.flex.bg-body
         -# Render railsContext here before any react component gets rendered
         = prepend_render_rails_context("")
 

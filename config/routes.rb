@@ -6,6 +6,7 @@ Kassi::Application.routes.draw do
   end
   Discipline.all.each do |discipline|
     get discipline.slug => 'disciplines#show', :defaults => { :id => discipline.name }
+    get discipline.slug + "/categories" => 'disciplines#categories', :defaults => { :id => discipline.name }
     get discipline.slug + "/:category" => 'disciplines#show', :defaults => { :id => discipline.name }
     get discipline.slug + "/brands/:brand" => 'brands#show', :defaults => { :id => discipline.name }
   end
