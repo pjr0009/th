@@ -2,7 +2,7 @@
   extend ActiveSupport::Concern
 
   def set_categories
-    @categories = Category.all.includes(:children)
+    @categories = @discipline.categories.all.includes(:children)
     @main_categories = @categories.select { |c| c.parent_id == nil }
   end
 

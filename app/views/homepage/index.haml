@@ -25,26 +25,41 @@
 
 
 - content_for :sidenav_left do
-
   .row
     .col-12
       %md-list
+        .md-subheader.bg-body
+          .md-subheader-content
+            .md-subheader-inner
+              Categories
+        %md-divider
         - @main_categories.each do |category|
           - selected_category_class = (@selected_category && @selected_category.id == category.id) ? 'font-weight: 700' : ''
-          - show_subcategories = show_subcategory_list(category, Maybe(@selected_category).id.to_i.or_else(nil))
           %md-list-item.layout-column{role: "listItem", style: "margin: 0; padding: 0; min-height: 36px;"}
-            = link_to marketplace_category_path({category: category}), :data => {category: category.id}, class: "md-no-style md-button md-ink-ripple", style: "padding: 0; margin: 0;" do
+            %a.md-no-style.md-ink-ripple.md-button{href: "/#{@discipline.slug}/#{category.url}", style: "padding: 0; margin: 0;"} 
               .md-list-item-inner{style: "font-size: 14px; margin: 0; padding: 0 24px; min-height: 36px; #{selected_category_class}"}
                 = category.display_name(I18n.locale)
-
-            - unless category.children.blank? || !show_subcategories
+            - if (@selected_category && @selected_category.id == category.id) && !@discipline.categories.where(:parent_id => category.id).blank?
               %md-list.flex.layout-fill.layout-padding
-                - category.children.each do |child|
+                - @discipline.categories.where(:parent_id => category.id).each do |child|
                   - is_selected = @selected_category == child
                   %md-list-item.layout-column{role: "listItem", style: "margin: 0; padding: 0; min-height: 36px;"}
-                    = link_to marketplace_category_path({category: child}), :data => {:"sub-category" =>child.id}, class: "md-no-style md-button md-ink-ripple", style: "padding: 0; margin: 0;" do
+                    %a.md-no-style.md-ink-ripple.md-button{href: "/#{@discipline.slug}/#{child.url}", style: "padding: 0; margin: 0;"} 
                       .md-list-item-inner{style: "font-size: 14px; margin: 0; padding: 0 24px; min-height: 36px;"}
-                        = child.display_name(I18n.locale)                
+                        = child.display_name(I18n.locale)
+      - if false
+        %md-list
+          .md-subheader.bg-body
+            .md-subheader-content
+              .md-subheader-inner
+                Brands
+          %md-divider
+            - Brand.limit(10).in_groups_of(2).each do |brands|
+              .layout-row{style: "transform: scale(0.9); -webkit-transform: scale(0.9);"}
+                - brands.each do |brand|
+                  %md-checkbox.flex
+                    = brand.name
+
 .row
   - if @listings.total_entries > 0
     %div{class: "home-fluid-thumbnail-grid-narrow"}

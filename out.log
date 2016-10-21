@@ -1,0 +1,4 @@
+DEBUG   [1m[36mDiscipline Load (1.2ms)[0m  [1mSELECT `disciplines`.* FROM `disciplines`[0m
+DEBUG ** [Airbrake] Notice was not sent due to configuration:         
+  Environment Monitored? false         
+  API key set? false
