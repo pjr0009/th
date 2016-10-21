@@ -26,7 +26,8 @@ class Category < ActiveRecord::Base
     :translation_attributes,
     :sort_priority,
     :url,
-    :basename
+    :basename,
+    :discipline_ids
   )
 
   attr_accessor :basename
@@ -37,6 +38,9 @@ class Category < ActiveRecord::Base
   belongs_to :parent, :class_name => "Category"
   has_many :listings
   has_many :translations, :class_name => "CategoryTranslation", :dependent => :destroy
+
+  has_many :discipline_categories
+  has_many :disciplines, :through => :discipline_categories
 
   has_and_belongs_to_many :listing_shapes, -> { order("sort_priority") }, join_table: "category_listing_shapes"
 
@@ -81,14 +85,17 @@ class Category < ActiveRecord::Base
       base_url = current_url
       categories = Category.where(community_id: community_id)
 
-      i = 1
-      while blacklist.include?(current_url) || categories.find { |c| c.url == current_url && c.id != id }.present? do
-        current_url = "#{base_url}#{i}"
-        i += 1
-      end
       self.url = current_url
     end
 
+  end
+
+  def name_with_disciplines
+    unless disciplines.blank?
+      "#{disciplines.map(&:name).join(',')} > #{display_name('EN')}"
+    else
+      display_name('EN')
+    end
   end
 
   def display_name(locale)

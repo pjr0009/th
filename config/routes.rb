@@ -6,10 +6,13 @@ Kassi::Application.routes.draw do
   end
   Discipline.all.each do |discipline|
     get discipline.slug => 'disciplines#show', :defaults => { :id => discipline.name }
+    get discipline.slug + "/:category" => 'disciplines#show', :defaults => { :id => discipline.name }
+    get discipline.slug + "/brands/:brand" => 'brands#show', :defaults => { :id => discipline.name }
   end
   resources :disciplines, except: [:show]
+  resources :brands, except: [:update, :create, :edit]
   resources :brands
-  root to: "homepage#index"
+  root to: "disciplines#show", :defaults => {:id => "hunter-jumper"}
   
   get "/about/privacy" => "about#privacy", as: "privacy_about"
   get "/about/terms" => "about#terms", as: "terms_about"

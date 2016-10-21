@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161010172202) do
+ActiveRecord::Schema.define(version: 20161020204549) do
 
   create_table "auth_tokens", force: :cascade do |t|
     t.string   "token",            limit: 255
@@ -400,6 +400,13 @@ ActiveRecord::Schema.define(version: 20161010172202) do
   add_index "delayed_jobs", ["locked_at", "created_at"], name: "index_delayed_jobs_on_locked_created", using: :btree
   add_index "delayed_jobs", ["priority", "run_at"], name: "delayed_jobs_priority", using: :btree
 
+  create_table "discipline_categories", force: :cascade do |t|
+    t.integer  "discipline_id", limit: 4
+    t.integer  "category_id",   limit: 4
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
+  end
+
   create_table "disciplines", force: :cascade do |t|
     t.text     "summary",                   limit: 65535
     t.string   "name",                      limit: 255
@@ -439,13 +446,14 @@ ActiveRecord::Schema.define(version: 20161010172202) do
 
   create_table "feature_flags", force: :cascade do |t|
     t.integer  "community_id", limit: 4,                  null: false
+    t.string   "person_id",    limit: 255
     t.string   "feature",      limit: 255,                null: false
     t.boolean  "enabled",                  default: true, null: false
     t.datetime "created_at",                              null: false
     t.datetime "updated_at",                              null: false
   end
 
-  add_index "feature_flags", ["community_id"], name: "index_feature_flags_on_community_id", using: :btree
+  add_index "feature_flags", ["community_id", "person_id"], name: "index_feature_flags_on_community_id_and_person_id", using: :btree
 
   create_table "feedbacks", force: :cascade do |t|
     t.text     "content",      limit: 65535
@@ -655,13 +663,11 @@ ActiveRecord::Schema.define(version: 20161010172202) do
   add_index "locations", ["person_id"], name: "index_locations_on_person_id", using: :btree
 
   create_table "marketplace_configurations", force: :cascade do |t|
-    t.integer  "community_id",          limit: 4,                       null: false
-    t.string   "main_search",           limit: 255, default: "keyword", null: false
-    t.string   "distance_unit",         limit: 255, default: "metric",  null: false
-    t.integer  "limit_priority_links",  limit: 4
-    t.datetime "created_at",                                            null: false
-    t.datetime "updated_at",                                            null: false
-    t.boolean  "limit_search_distance",             default: true,      null: false
+    t.integer  "community_id",  limit: 4,                       null: false
+    t.string   "main_search",   limit: 255, default: "keyword", null: false
+    t.string   "distance_unit", limit: 255, default: "metric",  null: false
+    t.datetime "created_at",                                    null: false
+    t.datetime "updated_at",                                    null: false
   end
 
   add_index "marketplace_configurations", ["community_id"], name: "index_marketplace_configurations_on_community_id", using: :btree
@@ -990,6 +996,7 @@ ActiveRecord::Schema.define(version: 20161010172202) do
     t.string   "organization_name",                  limit: 255
     t.boolean  "deleted",                                          default: false
     t.string   "cloned_from",                        limit: 22
+    t.string   "website",                            limit: 255
   end
 
   add_index "people", ["authentication_token"], name: "index_people_on_authentication_token", using: :btree

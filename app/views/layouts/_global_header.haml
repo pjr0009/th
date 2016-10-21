@@ -2,7 +2,7 @@
 %header
   %md-toolbar
     .md-toolbar-tools.flex.layout-row
-      .flex-25.hide-sm.hide-xs
+      .flex-25.hide-sm.hide-xs.layout-row.layout-align-start-center
         = link_to search_path do
           %i.header-wide-logo
       .flex.hide-gt-sm.layout-row
@@ -30,8 +30,6 @@
       
   %md-toolbar.md-hue-1.secondary-toolbar
     %md-tabs.md-hue-1.secondary-toolbar.md-no-tab-content
-      %md-tab
-        = link_to "All Disciplines", search_path
       %md-tab
         %a{href: "/hunter-jumper"}
           Hunter-Jumper

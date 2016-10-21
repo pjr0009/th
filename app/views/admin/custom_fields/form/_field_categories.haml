@@ -13,8 +13,8 @@
     .col-12
       .custom-field-categories-container.clearfix#custom-field-categories-container
         - @current_community.leaf_categories.each do |category|
-          .custom-field-categories-checkbox-container
+          %div
             = check_box_tag "custom_field[category_attributes][][category_id]", "#{category.id}", @custom_field.categories.include?(category), :id => "#{category.id}_checkbox", :class => "custom-field-category-checkbox"
-            = label_tag "#{category.id}_checkbox", category.display_name(I18n.locale), :class => "custom-field-category-checkbox-label"
+            = label_tag "#{category.id}_checkbox", category.name_with_disciplines, :class => "custom-field-category-checkbox-label"
 - else
   = hidden_field_tag "custom_field[category_attributes][][category_id]", @current_community.categories.first.id
