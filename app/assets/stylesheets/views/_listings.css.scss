@@ -271,3 +271,42 @@ $listing-author-avatar-height: 108;
     color: $aside;
   }
 }
+
+
+
+
+
+
+
+#new-listing {
+  .md-button.progress-button {
+    bottom: 10;
+    color: #fff;
+  }
+  md-tabs {
+    md-ink-bar {
+      background: $button;
+    }
+    md-tabs-wrapper {
+      background: #BAC1B8;
+    }
+    md-tab-item {
+      color: #fff;
+    }
+    background: $background !important;
+    md-content {
+      background: $background !important;
+    }
+    .md-whiteframe-z1 {
+      .md-button {
+        i {
+          color: #ddd;
+        }
+      }
+      background: #fff;
+    }
+    img{
+      width: 50%;
+    }
+  }
+}

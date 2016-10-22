@@ -6,4 +6,6 @@ app.controller("newListingCtrl", ["$scope", "$http", ($scope, $http) ->
     if $scope.listing.discipline_id
       $http.get("/" + $scope.listing.discipline_id + "/categories").success (data) ->
         $scope.categories = data
+
+  $scope.conditions = ["New", "Excellent", "Good", "Fair", "Poor/Non-Functioning"]
 ])

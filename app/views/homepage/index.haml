@@ -32,7 +32,6 @@
           .md-subheader-content
             .md-subheader-inner
               Categories
-        %md-divider
         - @main_categories.each do |category|
           - selected_category_class = (@selected_category && @selected_category.id == category.id) ? 'font-weight: 700' : ''
           %md-list-item.layout-column{role: "listItem", style: "margin: 0; padding: 0; min-height: 36px;"}

@@ -27,21 +27,4 @@
         - unless logged_in
           = link_to login_path, class: "header-text-link header-hover md-button", id: "header-login-link" do
             = t("header.login")
-      
-  %md-toolbar.md-hue-1.secondary-toolbar
-    %md-tabs.md-hue-1.secondary-toolbar.md-no-tab-content
-      %md-tab
-        %a{href: "/hunter-jumper"}
-          Hunter-Jumper
-      %md-tab
-        %a{href: "/dressage"}
-          Dressage
-      %md-tab
-        %a{href: "/western"}
-          Western
-      %md-tab
-        %a{href: "/eventing"}
-          Eventing
-      %md-tab
-        %a{href: "/endurance"}
-          Endurance
+
