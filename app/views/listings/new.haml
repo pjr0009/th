@@ -1,78 +1,86 @@
 - content_for :extra_javascript do 
   = javascript_include_tag "listings/new_listing/manifest"
 #new-listing.flex{"ng-controller": "newListingCtrl"}
-  %md-tabs.md-hue-1{"md-center-tabs": true, "md-dynamic-height": "true", style: "background: #fff;"}
-    %md-tab{"ng-if": "false", style: "display:none;", label: "Payments"}
-      %md-content.md-padding
-        %h2.md-headline 
-          How can we pay you?
-          %span.md-caption
-            (You only have to do this once)
-        - content_for :javascript do
-          ST.initializeNewPaypalAccountHandler("ask_paypal_permissions", "#{order_permission_action}", ".js-paypal-redirect-order-permission");
-        - create_paypal_link = link_to(t("paypal_accounts.create_paypal_account_link_text"),
-                                       create_url, target: "_blank")
-        - paypal_redirect_link = "<a href='#' id='ask_paypal_permissions_redirect'>#{t("paypal_accounts.redirect_link_text")}</a>"
-        %p
-          You're almost ready to start selling! We need to set up how you'll get paid when users buy your items. Tack Hunter is seamlessly integrated with PayPal for security and simplicity. Once your account is connected you'll be able to list as many items as you want.
-        .row
-          .col-12.payment-checklist
-            %div
-              %i.icon-check
-              You'll receive your payments instantly
-            %div
-              %i.icon-check
-              Your private Paypal informantion is never shared with Tack Hunter
-            %div
-              %i.icon-check
-              We'll never debit your account, and our 3% fee is automatically subtracted from the buyers payment before it's sent to you. 
-            %div
-              %i.icon-check
-              Saddle trial didn't work out? You can easily issue refunds from Tack Hunter.
+  .layout-row.layout-align-center-center
+    .layout-column.flex-gt-sm-66
+      %md-tabs{"md-stretch-tabs": "always", "md-center-tabs": true, "md-dynamic-height": "true", style: "background: #fff;"}
+        %md-tab{"ng-if": "false", style: "display:none;", label: "Payments"}
+          %md-content.md-padding
+            %h2.md-headline 
+              How can we pay you?
+              %span.md-caption
+                (You only have to do this once)
+            - content_for :javascript do
+              ST.initializeNewPaypalAccountHandler("ask_paypal_permissions", "#{order_permission_action}", ".js-paypal-redirect-order-permission");
+            - create_paypal_link = link_to(t("paypal_accounts.create_paypal_account_link_text"),
+                                           create_url, target: "_blank")
+            - paypal_redirect_link = "<a href='#' id='ask_paypal_permissions_redirect'>#{t("paypal_accounts.redirect_link_text")}</a>"
+            %p
+              You're almost ready to start selling! We need to set up how you'll get paid when users buy your items. Tack Hunter is seamlessly integrated with PayPal for security and simplicity. Once your account is connected you'll be able to list as many items as you want.
+            .row
+              .col-12.payment-checklist
+                %div
+                  %i.icon-check
+                  You'll receive your payments instantly
+                %div
+                  %i.icon-check
+                  Your private Paypal informantion is never shared with Tack Hunter
+                %div
+                  %i.icon-check
+                  We'll never debit your account, and our 3% fee is automatically subtracted from the buyers payment before it's sent to you. 
+                %div
+                  %i.icon-check
+                  Saddle trial didn't work out? You can easily issue refunds from Tack Hunter.
 
-        .row.send-button-wrapper
-          .col-12
-            %button#ask_paypal_permissions
-              %i.icon-lock
-              Securely connect your Paypal account
-          .row.js-paypal-redirect-order-permission.hidden
-            .col-12
-              .paypal-redirect-message
-                = t("paypal_accounts.redirect_message", redirect_link: paypal_redirect_link).html_safe
-    %md-tab{label: "Info"}
-      %md-content.md-padding
-        .layout-row.layout-align-center-center
-          .layout-column.flex-gt-sm-66.layout-padding.layout-margin
-            .md-whiteframe-z1
+            .row.send-button-wrapper
+              .col-12
+                %button#ask_paypal_permissions
+                  %i.icon-lock
+                  Securely connect your Paypal account
+              .row.js-paypal-redirect-order-permission.hidden
+                .col-12
+                  .paypal-redirect-message
+                    = t("paypal_accounts.redirect_message", redirect_link: paypal_redirect_link).html_safe
+        %md-tab{label: "Info"}
+          %md-content.bg-body
+            .md-whiteframe-z1.benefits-hero
               .layout-row
                 .flex
                 %md-button.md-icon-button
                   %i.icon-remove.md-primary
-              .layout-row.layout-xs-column.layout-padding.layout-align-center-center
-                .flex.layout-column.layout-align-center-center{style: "text-align: center;"}
+              .icon-row.layout-row.layout-xs-column.layout-padding
+                .flex
                   %img{"src": "https://assets.tackhunter.com/marketing/sale.svg"}
+                .flex
+                  %img{"src": "https://assets.tackhunter.com/marketing/lock.svg"}
+                .flex
+                  %img{"src": "https://assets.tackhunter.com/marketing/lookout.svg"}
+              .layout-row.layout-xs-column.layout-padding.layout-align-center-center                
+                .flex.layout-column.layout-align-center-center{style: "text-align: center;"}
                   %h3.md-headline
                     3%, if it sells.
                   %p.md-caption
                     List as many items as you want for free. Only pay if your listing sells on Tack Hunter.
                 .flex.layout-column.layout-align-center-center{style: "text-align: center;"}
-                  %img{"src": "https://assets.tackhunter.com/marketing/lock.svg"}
                   %h3.md-headline
-                    Tack Hunter seller protection
+                    Seller protection
                   %p.md-caption
                     Our platform is the safest way to sell your tack online. 
 
                 .flex.layout-column.layout-align-center-center{style: "text-align: center;"}
-                  %img{"src": "https://assets.tackhunter.com/marketing/lookout.svg"}
                   %h3.md-headline
                     We're always here
                   %p.md-caption
                     Have a question? Email us at support@tackhunter.com, and we'll get back to you within the hour.
 
-            .md-whiteframe-z1.layout-padding
-              %h2.md-title
-                What are you selling?
-              %form
+            .md-whiteframe-z1
+              %md-toolbar.md-hue-1
+                .md-toolbar-tools.flex
+                  %h2
+                    %span
+                      What are you selling?
+              %md-content.layout-padding
+                %form
                 .layout-row-gt-sm.layout-padding{"ng-show": "false"}
                   %md-input-container.flex-25
                     %md-radio-group{"ng-model": "listing.discipline_id"}
@@ -115,25 +123,29 @@
                       %md-option{"ng-repeat": "condition in conditions", value: "condition", "ng-bind": "condition"}
 
 
-    %md-tab{label: "Category"}
-      .layout-row.layout-padding
-        .flex
-          %h2.md-subheader
-            What discipline do you ride?
-          %md-input-container
-            %md-radio-group{"ng-model": "listing.discipline_id", "ng-change": "fetchCategories()"}
-              %md-radio-button{"ng-repeat": "option in disciplines", value: "{{option.slug}}"}
-                {{option.name}}
-        .flex
-          %h2.md-subheader
-            Pick a main category
-          %md-input-container.flex
-            %md-radio-group{"ng-show": "categories", "ng-model": "listing.discipline_id"}
-              %md-radio-button{"ng-repeat": "option in categories", value: "{{option.url}}"}
-                {{option.url}}
-    %md-tab{label: "Pictures"}
+        %md-tab{label: "Category"}
+          %md-content.bg-body
+            .md-whiteframe-z1
+              %md-toolbar.md-hue-1
+                .md-toolbar-tools.flex
+                  %h2
+                    %span
+                      What discipline do you ride?
+              %md-content.layout-padding
+                %md-input-container
+                  %md-radio-group{"ng-model": "listing.discipline_id", "ng-change": "fetchCategories()"}
+                    %md-radio-button{"ng-repeat": "option in disciplines", value: "{{option.slug}}"}
+                      {{option.name}}
+                .flex
+                  %h2.md-subheader
+                    Pick a main category
+                  %md-input-container.flex
+                    %md-radio-group{"ng-show": "categories", "ng-model": "listing.discipline_id"}
+                      %md-radio-button{"ng-repeat": "option in categories", value: "{{option.url}}"}
+                        {{option.url}}
+        %md-tab{label: "Pictures"}
 
-    %md-tab{label: "Preview"}
+        %md-tab{label: "Preview"}
 
 %md-button.progress-button.md-button.md-fab.md-fab-bottom-right{style: "position: fixed;"}
   Next

@@ -284,20 +284,22 @@ $listing-author-avatar-height: 108;
     color: #fff;
   }
   md-tabs {
-    md-ink-bar {
-      background: $button;
-    }
     md-tabs-wrapper {
-      background: #BAC1B8;
+      margin-bottom: 16px;
     }
     md-tab-item {
-      color: #fff;
+      text-transform: none;
     }
     background: $background !important;
-    md-content {
-      background: $background !important;
-    }
     .md-whiteframe-z1 {
+      margin: 16px 0;
+      md-toolbar {
+        .md-toolbar-tools {
+          h2, i {
+            color: white;
+          }
+        }
+      }
       .md-button {
         i {
           color: #ddd;
@@ -305,8 +307,15 @@ $listing-author-avatar-height: 108;
       }
       background: #fff;
     }
-    img{
-      width: 50%;
+    .benefits-hero {
+      .icon-row > .flex {
+        text-align: center;
+      }
+      img{
+        margin: auto;
+        width: 50%;
+      }    
     }
+
   }
 }
