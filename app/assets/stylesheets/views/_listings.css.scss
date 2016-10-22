@@ -284,15 +284,17 @@ $listing-author-avatar-height: 108;
     color: #fff;
   }
   md-tabs {
+    md-ink-bar {
+      background: $button;
+    }
     md-tabs-wrapper {
-      margin-bottom: 16px;
+      background: #BAC1B8;
     }
     md-tab-item {
-      text-transform: none;
+      color: #fff;
     }
     background: $background !important;
     .md-whiteframe-z1 {
-      margin: 16px 0;
       md-toolbar {
         .md-toolbar-tools {
           h2, i {
