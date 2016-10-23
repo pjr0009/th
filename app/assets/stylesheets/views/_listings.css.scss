@@ -283,15 +283,9 @@ $listing-author-avatar-height: 108;
     bottom: 10;
     color: #fff;
   }
-  md-tabs {
+  md-steppers {
     md-ink-bar {
       background: $button;
-    }
-    md-tabs-wrapper {
-      background: #BAC1B8;
-    }
-    md-tab-item {
-      color: #fff;
     }
     background: $background !important;
     .md-whiteframe-z1 {
@@ -304,7 +298,7 @@ $listing-author-avatar-height: 108;
       }
       .md-button {
         i {
-          color: #ddd;
+          color: #767676;
         }
       }
       background: #fff;
@@ -312,6 +306,13 @@ $listing-author-avatar-height: 108;
     .benefits-hero {
       .icon-row > .flex {
         text-align: center;
+      }
+      .hero-caption {
+        height: 125px;
+        text-align: center;
+        p.md-caption {
+          color: #767676;
+        }
       }
       img{
         margin: auto;
