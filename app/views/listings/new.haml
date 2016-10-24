@@ -2,6 +2,140 @@
   = javascript_include_tag "listings/new_listing/manifest"
 #new-listing.flex{"ng-controller": "newListingCtrl"}
   %md-steppers{"md-dynamic-height": true, "md-stretch-steppers": "always", "md-selected": "selected"}
+
+    %md-step{label: "Start", "md-complete": "step[0].complete"}
+      %md-content.bg-body.md-padding
+        .layout-row.layout-align-center-center
+          .layout-column.flex-gt-sm-66.layout-margin
+            .md-whiteframe-z1.benefits-hero
+              .layout-row
+                .flex
+                %md-button.md-icon-button
+                  %i.icon-remove.md-primary
+              .layout-column.layout-padding.flex.layout-gt-sm-row        
+                .flex.layout-column.layout-align-center-center
+                  %img{"src": "https://assets.tackhunter.com/marketing/sale.svg"}
+                  .hero-caption
+                    %h3.md-headline
+                      3% if it sells
+                    %p.md-caption
+                      List as many items as you want for free. Only pay if your listing sells on Tack Hunter.
+                .flex.layout-column.layout-align-center-start
+                  %img{"src": "https://assets.tackhunter.com/marketing/lock.svg"}
+                  .hero-caption
+                    %h3.md-headline
+                      Safe
+                    %p.md-caption
+                      Our platform is the safest way to sell your tack online. We're riders just like you!
+
+                .flex.layout-column.layout-align-center-satart
+                  %img{"src": "https://assets.tackhunter.com/marketing/lookout.svg"}
+                  .hero-caption
+                    %h3.md-headline
+                      We're Always Here
+                    %p.md-caption
+                      Have a question? Email us at support@tackhunter.com, and we'll get back to you within the hour.
+
+            .md-whiteframe-z1
+              %md-toolbar.md-hue-1
+                .md-toolbar-tools.flex
+                  %h2
+                    %span
+                      What are you selling?
+              %md-content.layout-padding
+                %form{name: "infoForm"}
+                  .layout-column.layout-gt-sm-row.layout-padding
+                    %md-input-container.flex
+                      %label
+                        Listing Title
+                      %input{required: true, name: "title", "ng-model": "listing.title"}
+                      %div{"ng-messages": "infoForm.title.$error"}
+                        %div{"ng-message": "required"}
+                          This is required.
+                  .layout-row.layout-sm-column.layout-xs-column.layout-padding
+                    %md-autocomplete.flex{"placeholder": "Discipline", 
+                      "md-delay": 400,
+                      "md-no-cache": true,
+                      name: "brand",
+                      "md-selected-item": "listing.brand", 
+                      "md-items": "item in brandSearchTextChange(brandSearchText)", 
+                      "md-search-text": "brandSearchText",
+                      "md-item-text": "item.name",
+                      "md-floating-label": "Brand",
+                      "md-match-case-insensitive": true,
+                      required: true}
+                      %md-item-template
+                        %span.item-title
+                          %span{"ng-bind": "item.name"}
+                      %md-not-found
+                        Brand not found, We can give it a shot though!
+                      %div{"ng-messages": "infoForm.brand.$error"}
+                        %div{"ng-message": "required"}
+                          This is required.
+                    %md-input-container.flex
+                      %label
+                        Model
+                      %input{required: true}
+                  .layout-row.layout-padding
+                    %md-input-container.flex-50.flex-gt-sm-25
+                      %label
+                        Price
+                      %input{required: true}
+                    %md-input-container.flex-50.flex-gt-sm-25
+                      %label
+                        Condition
+                      %md-select{"ng-model": "listing.condition"}
+                        %md-option{"ng-repeat": "condition in conditions track by $index", "ng-bind": "condition"}
+                  .layout-column.flex
+                    %p
+                      Who would be interested in this item?
+                    %md-input-container.flex
+                      %md-radio-group.layout-row{"ng-model": "listing.discipline_id", "ng-change": "fetchCategories()", required: true}
+                        %md-radio-button{"ng-repeat": "option in disciplines", value: "{{option.slug}}"}
+                          {{option.name}}
+
+
+
+    %md-step{label: "About"}
+      %md-content.bg-body.md-padding
+        .layout-row.layout-align-center-center
+          .layout-column.flex-gt-sm-66.layout-margin
+            .md-whiteframe-z1
+              %md-toolbar.md-hue-1
+                .md-toolbar-tools.flex
+                  %h2
+                    %span
+                      Let's find a good spot for your listing
+              %md-content.layout-padding
+                %md-input-container.flex
+                  %md-radio-group{"ng-show": "categories", "ng-model": "listing.discipline_id"}
+                    %md-radio-button{"ng-repeat": "option in categories", value: "{{option.url}}"}
+                      {{option.url}}
+            .md-whiteframe-z1
+              %md-toolbar.md-hue-1
+                .md-toolbar-tools.flex
+                  %h2
+                    %span
+                      Add a few extra details
+              %md-content.layout-padding
+                %md-input-container.md-block
+                  %label Description
+                  %textarea{rows: "5"}
+    %md-step{label: "Photos"}
+      %md-content.bg-body.md-padding
+        .layout-row.layout-align-center-center
+          .layout-column.flex-gt-sm-66.layout-margin
+            .md-whiteframe-z1
+              %md-toolbar.md-hue-1
+                .md-toolbar-tools.flex
+                  %h2
+                    %span
+                      Pictures
+              %md-content
+                
+
+    %md-step{label: "Preview"}
+
     %md-step{"ng-if": "false", style: "display:none;", label: "Payments"}
       %md-content.md-padding
         %h2.md-headline 
@@ -39,114 +173,6 @@
             .col-12
               .paypal-redirect-message
                 = t("paypal_accounts.redirect_message", redirect_link: paypal_redirect_link).html_safe
-    %md-step{label: "Start", "md-complete": "step[0].complete"}
-      %md-content.bg-body.md-padding
-        .layout-row.layout-align-center-center
-          .layout-column.flex-gt-sm-66.layout-margin
-            .md-whiteframe-z1.benefits-hero
-              .layout-row
-                .flex
-                %md-button.md-icon-button
-                  %i.icon-remove.md-primary
-              .layout-column.layout-padding.flex.layout-gt-sm-row        
-                .flex.layout-column.layout-align-center-center
-                  %img{"src": "https://assets.tackhunter.com/marketing/sale.svg"}
-                  .hero-caption
-                    %h3.md-headline
-                      3%, if it sells.
-                    %p.md-caption
-                      List as many items as you want for free. Only pay if your listing sells on Tack Hunter.
-                .flex.layout-column.layout-align-center-start
-                  %img{"src": "https://assets.tackhunter.com/marketing/lock.svg"}
-                  .hero-caption
-                    %h3.md-headline
-                      Seller protection
-                    %p.md-caption
-                      Our platform is the safest way to sell your tack online. We're riders just like you!
-
-                .flex.layout-column.layout-align-center-satart
-                  %img{"src": "https://assets.tackhunter.com/marketing/lookout.svg"}
-                  .hero-caption
-                    %h3.md-headline
-                      We're always here
-                    %p.md-caption
-                      Have a question? Email us at support@tackhunter.com, and we'll get back to you within the hour.
-
-            .md-whiteframe-z1
-              %md-toolbar.md-hue-1
-                .md-toolbar-tools.flex
-                  %h2
-                    %span
-                      What are you selling?
-              %md-content.layout-padding
-                %form
-                .layout-row-gt-sm.layout-padding
-                  %md-input-container.flex
-                    %md-radio-group.layout-row{"ng-model": "listing.discipline_id"}
-                      %md-radio-button{"ng-repeat": "option in disciplines", value: "{{option.name}}"}
-                        {{option.name}}
-
-                .layout-column.layout-gt-sm-row.layout-padding
-                  %md-input-container.flex
-                    %label
-                      Listing Title
-                    %input
-                .layout-row.layout-sm-column.layout-xs-column.layout-padding
-                  %md-autocomplete.flex{"placeholder": "Discipline", 
-                    "md-delay": 400,
-                    "md-no-cache": true,
-                    "md-selected-item": "saddleConfiguration.brand", 
-                    "md-items": "item in brandSearchTextChange(brandSearchText)", 
-                    "md-search-text": "brandSearchText",
-                    "md-item-text": "item.name",
-                    "md-floating-label": "Brand",
-                    "md-match-case-insensitive": true}
-                    %md-item-template
-                      %span.item-title
-                        %span{"ng-bind": "item.name"}
-                    %md-not-found
-                      Brand not found, We can give it a shot though!
-                  %md-input-container.flex
-                    %label
-                      Model
-                    %input
-                .layout-row.layout-padding
-                  %md-input-container.flex-50.flex-gt-sm-25
-                    %label
-                      Price
-                    %input
-                  %md-input-container.flex-50.flex-gt-sm-25
-                    %label
-                      Condition
-                    %md-select{"ng-model": "listing.condition"}
-                      %md-option{"ng-repeat": "condition in conditions track by $index", "ng-bind": "condition"}
-
-
-    %md-step{label: "About"}
-      %md-content.bg-body.md-padding
-        .layout-row.layout-align-center-center
-          .layout-column.flex-gt-sm-66.layout-margin
-            .md-whiteframe-z1
-              %md-toolbar.md-hue-1
-                .md-toolbar-tools.flex
-                  %h2
-                    %span
-                      What discipline do you ride?
-              %md-content.layout-padding
-                %md-input-container
-                  %md-radio-group{"ng-model": "listing.discipline_id", "ng-change": "fetchCategories()"}
-                    %md-radio-button{"ng-repeat": "option in disciplines", value: "{{option.slug}}"}
-                      {{option.name}}
-                .flex
-                  %h2.md-subheader
-                    Pick a main category
-                  %md-input-container.flex
-                    %md-radio-group{"ng-show": "categories", "ng-model": "listing.discipline_id"}
-                      %md-radio-button{"ng-repeat": "option in categories", value: "{{option.url}}"}
-                        {{option.url}}
-    %md-step{label: "Photos"}
-
-    %md-step{label: "Preview"}
 
 %md-button.progress-button.md-button.md-fab.md-fab-bottom-right{style: "position: fixed;"}
   Next

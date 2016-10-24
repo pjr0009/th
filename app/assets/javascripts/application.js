@@ -23,6 +23,7 @@
 //= require angular
 //= require angular-resource
 //= require angular-animate
+//= require angular-messages
 //= require angular-aria
 //= require angular-material
 //= require angular-toggle-switch.min.js

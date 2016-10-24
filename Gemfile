@@ -12,7 +12,6 @@ gem 'compass-rails', '~> 2.0'
 
 gem 'foreman'
 gem 'angularjs-rails'
-gem 'rails-angular-material'
 gem 'angularjs-file-upload-rails', '~> 2.2.0'
 
 # Requiring 'compass' gem directly is not normally needed,
@@ -133,6 +132,10 @@ gem "i18n-js",
 
 # A store scoped to the request object for caching
 gem "request_store", "~> 1.3"
+
+gem "vanity"
+
+
 
 group :staging, :production do
   gem 'newrelic_rpm', '~> 3.9.1.236'

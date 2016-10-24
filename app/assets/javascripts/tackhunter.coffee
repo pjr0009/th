@@ -1,6 +1,7 @@
 'use strict'
 app = angular.module('TackHunter', [
   'ngMaterial'
+  'ngMessages'
   'ngResource'
   'rzModule'
   'toggle-switch'

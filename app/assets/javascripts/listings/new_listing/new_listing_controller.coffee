@@ -1,11 +1,11 @@
 app = angular.module("TackHunter")
 app.controller("newListingCtrl", ["$scope", "$http", ($scope, $http) ->
   $scope.listing = {}
-  $scope.selected = 1
+  $scope.selected = 0
   $scope.step = [
     {complete: true}
   ]
-  $scope.disciplines = [{name: "English", slug: "english"}, {name: "Western", slug: "western"}, {name: "Doesn't Matter"}]
+  $scope.disciplines = [{name: "English Riders", slug: "hunter-jumper"}, {name: "Western Riders", slug: "western"}, {name: "Both", slug:"hunter-jumper"}]
   $scope.fetchCategories = () ->
     if $scope.listing.discipline_id
       $http.get("/" + $scope.listing.discipline_id + "/categories").success (data) ->
