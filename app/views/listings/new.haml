@@ -1,9 +1,9 @@
 - content_for :extra_javascript do 
   = javascript_include_tag "listings/new_listing/manifest"
 #new-listing.flex{"ng-controller": "newListingCtrl"}
-  %md-steppers{"md-dynamic-height": true, "md-stretch-steppers": "always", "md-selected": "selected"}
+  %md-steppers{"md-dynamic-height": true, "md-stretch-steppers": "always", "md-selected": "selectedStep"}
 
-    %md-step{label: "Start", "md-complete": "step[0].complete"}
+    %md-step{label: "Start", "md-complete": "infoForm.$valid"}
       %md-content.bg-body.md-padding
         .layout-row.layout-align-center-center
           .layout-column.flex-gt-sm-66.layout-margin
@@ -75,25 +75,36 @@
                     %md-input-container.flex
                       %label
                         Model
-                      %input{required: true}
+                      %input{required: true, name: "model"}
+                      %div{"ng-messages": "infoForm.model.$error"}
+                        %div{"ng-message": "required"}
+                          This is required.
                   .layout-row.layout-padding
                     %md-input-container.flex-50.flex-gt-sm-25
                       %label
                         Price
-                      %input{required: true}
+                      %input{required: true, name: "price"}
+                      %div{"ng-messages": "infoForm.price.$error"}
+                        %div{"ng-message": "required"}
+                          This is required.
                     %md-input-container.flex-50.flex-gt-sm-25
                       %label
                         Condition
-                      %md-select{"ng-model": "listing.condition"}
-                        %md-option{"ng-repeat": "condition in conditions track by $index", "ng-bind": "condition"}
+                      %md-select{"ng-model": "listing.condition", name: "condition"}
+                        %md-option{"ng-repeat": "condition in conditions track by $index", "ng-bind": "condition", "ng-value": "condition"}
+                      %div{"ng-messages": "infoForm.condition.$error"}
+                        %div{"ng-message": "required"}
+                          This is required.
                   .layout-column.flex
                     %p
                       Who would be interested in this item?
                     %md-input-container.flex
-                      %md-radio-group.layout-row{"ng-model": "listing.discipline_id", "ng-change": "fetchCategories()", required: true}
+                      %md-radio-group.layout-row{"ng-model": "listing.discipline_id", "ng-change": "fetchCategories()", required: true, name: "disciplineId"}
                         %md-radio-button{"ng-repeat": "option in disciplines", value: "{{option.slug}}"}
                           {{option.name}}
-
+                      %div{"ng-messages": "infoForm.disciplineId.$error"}
+                        %div{"ng-message": "required"}
+                          This is required.
 
 
     %md-step{label: "About"}
@@ -124,14 +135,12 @@
     %md-step{label: "Photos"}
       %md-content.bg-body.md-padding
         .layout-row.layout-align-center-center
-          .layout-column.flex-gt-sm-66.layout-margin
-            .md-whiteframe-z1
-              %md-toolbar.md-hue-1
-                .md-toolbar-tools.flex
-                  %h2
-                    %span
-                      Pictures
-              %md-content
+          .layout-column.flex-gt-sm-66.layout-margin.layout-align-center-center.layout-fill
+            .flex
+              %md-button.md-hue-1.md-raised{"ngf-select": true, "ng-model": "picFile", accept: "image/*"}
+                Upload Pictures
+              %div{"ngf-drop": true, "ng-model": "picFile" }
+                %img-crop{"image": "picFile  | ngfDataUrl", "result-image": "croppedDataUrl", "ng-init": "croppedDataUrl=''"}
                 
 
     %md-step{label: "Preview"}
@@ -174,5 +183,5 @@
               .paypal-redirect-message
                 = t("paypal_accounts.redirect_message", redirect_link: paypal_redirect_link).html_safe
 
-%md-button.progress-button.md-button.md-fab.md-fab-bottom-right{style: "position: fixed;"}
-  Next
+  %md-button.progress-button.md-button.md-fab.md-fab-bottom-right{style: "position: fixed;", "ng-show": "infoForm.$valid || true", "ng-click": "nextStep()"}
+    Next

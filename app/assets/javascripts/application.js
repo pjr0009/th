@@ -27,7 +27,9 @@
 //= require angular-aria
 //= require angular-material
 //= require angular-toggle-switch.min.js
-//= require angularjs-file-upload
+//= require ng-file-upload
+//= require ng-file-upload-shim
+//= require ng-img-crop.js
 //= require material-steppers
 //= require rzslider.min.js
 //= require tackhunter

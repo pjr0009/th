@@ -12,7 +12,6 @@ gem 'compass-rails', '~> 2.0'
 
 gem 'foreman'
 gem 'angularjs-rails'
-gem 'angularjs-file-upload-rails', '~> 2.2.0'
 
 # Requiring 'compass' gem directly is not normally needed,
 # 'compass-rails' already does that.
