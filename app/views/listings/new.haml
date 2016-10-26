@@ -136,8 +136,8 @@
       %md-content.bg-body.md-padding
         .layout-row.layout-align-center-center
           .layout-column.flex-gt-sm-66.layout-margin.layout-align-center-center.layout-fill
-            %div{"ngf-drop": true, "ng-model": "picFile", style: "height: 350px; width: 500px; overflow:hidden; background: #ddd"}
-              %img-crop{"change-on-fly": true, "image": "picFile  | ngfDataUrl", "result-image": "croppedDataUrl", "ng-init": "croppedDataUrl=''"}
+            %div{"ngf-drop": true, "ng-model": "picFile", style: "min-height: 350px; width: auto; overflow:hidden; background: #ddd"}
+              %img-crop{"change-on-fly": true, "image": "picFile  | ngfDataUrl", "result-image": "croppedDataUrl", "ng-init": "croppedDataUrl=''", "area-type": "square"}
             .flex
               %md-button.md-hue-1.md-raised{"ngf-select": true, "ng-model": "picFile", accept: "image/*"}
                 Upload Picture
