@@ -86,7 +86,7 @@ class Listing < ActiveRecord::Base
   has_one :location, :dependent => :destroy
   has_one :origin_loc, -> { where('location_type = ?', 'origin_loc') }, :class_name => "Location", :dependent => :destroy
   has_one :destination_loc, -> { where('location_type = ?', 'destination_loc') }, :class_name => "Location", :dependent => :destroy
-  accepts_nested_attributes_for :origin_loc, :destination_loc
+  accepts_nested_attributes_for :origin_loc, :destination_loc, :listing_images
 
   has_and_belongs_to_many :followers, :class_name => "Person", :join_table => "listing_followers"
 

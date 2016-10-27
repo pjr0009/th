@@ -320,77 +320,77 @@ class ListingsController < ApplicationController
   end
 
   def create
-    params[:listing].delete("origin_loc_attributes") if params[:listing][:origin_loc_attributes][:address].blank?
+    # params[:listing].delete("origin_loc_attributes") if params[:listing][:origin_loc_attributes][:address].blank?
 
-    shape = get_shape(Maybe(params)[:listing][:listing_shape_id].to_i.or_else(nil))
+    # shape = get_shape(Maybe(params)[:listing][:listing_shape_id].to_i.or_else(nil))
 
-    listing_params = ListingFormViewUtils.filter(params[:listing], shape)
-    listing_unit = Maybe(params)[:listing][:unit].map { |u| ListingViewUtils::Unit.deserialize(u) }.or_else(nil)
-    listing_params = ListingFormViewUtils.filter_additional_shipping(listing_params, listing_unit)
-    validation_result = ListingFormViewUtils.validate(listing_params, shape, listing_unit)
+    # listing_params = ListingFormViewUtils.filter(params[:listing], shape)
+    # listing_unit = Maybe(params)[:listing][:unit].map { |u| ListingViewUtils::Unit.deserialize(u) }.or_else(nil)
+    # listing_params = ListingFormViewUtils.filter_additional_shipping(listing_params, listing_unit)
+    # validation_result = ListingFormViewUtils.validate(listing_params, shape, listing_unit)
 
-    unless validation_result.success
-      flash[:error] = t("listings.error.something_went_wrong", error_code: validation_result.data.join(', '))
-      return redirect_to new_listing_path
-    end
+    # unless validation_result.success
+    #   flash[:error] = t("listings.error.something_went_wrong", error_code: validation_result.data.join(', '))
+    #   return redirect_to new_listing_path
+    # end
 
-    listing_params = normalize_price_params(listing_params)
-    m_unit = select_unit(listing_unit, shape)
+    # listing_params = normalize_price_params(listing_params)
+    # m_unit = select_unit(listing_unit, shape)
 
-    listing_params = create_listing_params(listing_params).merge(
-        community_id: @current_community.id,
-        listing_shape_id: shape[:id],
-        transaction_process_id: shape[:transaction_process_id],
-        shape_name_tr_key: shape[:name_tr_key],
-        action_button_tr_key: shape[:action_button_tr_key]
-    ).merge(unit_to_listing_opts(m_unit)).except(:unit)
+    # listing_params = create_listing_params(listing_params).merge(
+    #     community_id: @current_community.id,
+    #     listing_shape_id: shape[:id],
+    #     transaction_process_id: shape[:transaction_process_id],
+    #     shape_name_tr_key: shape[:name_tr_key],
+    #     action_button_tr_key: shape[:action_button_tr_key]
+    # ).merge(unit_to_listing_opts(m_unit)).except(:unit)
 
     @listing = Listing.new(listing_params)
 
-    ActiveRecord::Base.transaction do
-      @listing.author = @current_user
+    # ActiveRecord::Base.transaction do
+    #   @listing.author = @current_user
 
-      if @listing.save
-        upsert_field_values!(@listing, params[:custom_fields])
+    #   if @listing.save
+    #     upsert_field_values!(@listing, params[:custom_fields])
 
-        listing_image_ids =
-          if params[:listing_images]
-            params[:listing_images].collect { |h| h[:id] }.select { |id| id.present? }
-          else
-            logger.error("Listing images array is missing", nil, {params: params})
-            []
-          end
+    #     listing_image_ids =
+    #       if params[:listing_images]
+    #         params[:listing_images].collect { |h| h[:id] }.select { |id| id.present? }
+    #       else
+    #         logger.error("Listing images array is missing", nil, {params: params})
+    #         []
+    #       end
 
-        ListingImage.where(id: listing_image_ids, author_id: @current_user.id).update_all(listing_id: @listing.id)
+    #     ListingImage.where(id: listing_image_ids, author_id: @current_user.id).update_all(listing_id: @listing.id)
 
-        if @current_community.follow_in_use?
-          Delayed::Job.enqueue(NotifyFollowersJob.new(@listing.id, @current_community.id), :run_at => NotifyFollowersJob::DELAY.from_now)
-        end
+    #     if @current_community.follow_in_use?
+    #       Delayed::Job.enqueue(NotifyFollowersJob.new(@listing.id, @current_community.id), :run_at => NotifyFollowersJob::DELAY.from_now)
+    #     end
 
-        flash[:notice] = t(
-          "layouts.notifications.listing_created_successfully",
-          :new_listing_link => view_context.link_to(t("layouts.notifications.create_new_listing"),new_listing_path)
-        ).html_safe
+    #     flash[:notice] = t(
+    #       "layouts.notifications.listing_created_successfully",
+    #       :new_listing_link => view_context.link_to(t("layouts.notifications.create_new_listing"),new_listing_path)
+    #     ).html_safe
 
-        # Onboarding wizard step recording
-        state_changed = Admin::OnboardingWizard.new(@current_community.id)
-          .update_from_event(:listing_created, @listing)
-        if state_changed
-          report_to_gtm({event: "km_record", km_event: "Onboarding listing created"})
+    #     # Onboarding wizard step recording
+    #     state_changed = Admin::OnboardingWizard.new(@current_community.id)
+    #       .update_from_event(:listing_created, @listing)
+    #     if state_changed
+    #       report_to_gtm({event: "km_record", km_event: "Onboarding listing created"})
 
-          flash[:show_onboarding_popup] = true
-        end
+    #       flash[:show_onboarding_popup] = true
+    #     end
 
-        redirect_to @listing, status: 303 and return
-      else
-        logger.error("Errors in creating listing: #{@listing.errors.full_messages.inspect}")
-        flash[:error] = t(
-          "layouts.notifications.listing_could_not_be_saved",
-          :contact_admin_link => view_context.link_to(t("layouts.notifications.contact_admin_link_text"), new_user_feedback_path, :class => "flash-error-link")
-        ).html_safe
-        redirect_to new_listing_path and return
-      end
-    end
+    #     redirect_to @listing, status: 303 and return
+    #   else
+    #     logger.error("Errors in creating listing: #{@listing.errors.full_messages.inspect}")
+    #     flash[:error] = t(
+    #       "layouts.notifications.listing_could_not_be_saved",
+    #       :contact_admin_link => view_context.link_to(t("layouts.notifications.contact_admin_link_text"), new_user_feedback_path, :class => "flash-error-link")
+    #     ).html_safe
+    #     redirect_to new_listing_path and return
+    #   end
+    # end
   end
 
   def edit
@@ -947,6 +947,9 @@ class ListingsController < ApplicationController
       redirect_to payment_info_listings_path and return
     end
   end
+
+  def listing_params
+    params.require(:listing).permit(:listing_images_attributes)
 
   def accounts_api
     PaypalService::API::Api.accounts_api

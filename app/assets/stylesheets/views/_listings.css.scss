@@ -279,6 +279,11 @@ $listing-author-avatar-height: 108;
 
 
 #new-listing {
+  .cropArea {
+    height: 350px; 
+    width: 500px;
+    overflow:hidden;
+  }
   .md-button.progress-button {
     bottom: 10;
     color: #fff;

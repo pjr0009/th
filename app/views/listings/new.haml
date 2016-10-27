@@ -136,34 +136,41 @@
       %md-content.bg-body.md-padding
         .layout-row.layout-align-center-center
           .layout-column.layout-fill.flex-gt-sm-66.layout-margin
-            .md-whiteframe-z1.benefits-hero.layout-column.layout-align-center-center.layout-padding
-              %div{"ng-show": "stagingPic", "ngf-drop": true, "ng-model": "stagingPic", style: "min-height: 350px; width: auto; overflow:hidden;"}
-                %img-crop{"change-on-fly": true, "image": "stagingPic | ngfDataUrl", "result-image": "croppedStagingUrl", "area-type": "square"}
-              .flex{"ng-show": "stagingPic"}
-                %md-button.md-fab{"ng-click": "destroyStagingPic()", style: "background: red;"}
-                  %i.icon-remove
-                %md-button.md-fab{"ng-click": "confirmStagingPic()", style: "background: #00a26c;"}
-                  %i.icon-ok
+            .md-whiteframe-z1.benefits-hero
+              %md-toolbar.md-hue-1
+                .md-toolbar-tools.flex
+                  %h2
+                    %span
+                      Pictures
+                      .md-caption
+                        Great Photos Sells Tack Faster
+              .layout-padding.layout-column.layout-align-center-center
+                .cropArea{"ng-show": "stagingPic", "ngf-drop": true, "ng-model": "stagingPic"}
+                  %img-crop{"change-on-fly": true, "image": "stagingPic | ngfDataUrl", "result-image": "croppedStagingUrl", "area-type": "square", "init-max-area": true}
+                .flex{"ng-show": "stagingPic"}
+                  %md-button.md-fab{"ng-click": "destroyStagingPic()", style: "background: red;"}
+                    %i.icon-remove
+                  %md-button.md-fab{"ng-click": "confirmStagingPic()", style: "background: #00a26c;"}
+                    %i.icon-ok
 
-              %div.layout-align-center-center.layout-column{"ng-hide": "stagingPic", "ngf-drop": true, "ng-model": "stagingPic", style: "min-height: 350px; width: auto; overflow:hidden;"}              
-                .md-button{"ngf-select": true, "ng-model": "stagingPic", accept: "image/*"}
-                  %i.icon-camera
-                  Click To Upload Photo
-              .layout-row.layout-padding
-                .flex-20.md-button.layout-column.layout-align-center-start{"ng-repeat": "image in listing_images", style: "border: 1px solid #ddd; border-radius: 4px; padding: 0;"}
-                  %img{"ng-src": "{{image}}", style: "width: 100%;"}
-                  .flex.layout-row
-                    .flex
-                      .md-button
-                        %i.icon-remove
-                .flex-20.md-button.layout-column.layout-align-center-center{style: "border: 1px solid #ddd; border-radius: 4px;", "ngf-select": true, "ng-model": "stagingPic", accept: "image/*"}
-                  %i.icon-camera{style: "font-size: 48px; color: #ddd"}
-                  %p.hide-sm.hide-xs
-                    %i.icon-plus-sign
-                    upload
-                  %p.hide-gt-sm
-                    %i.icon-plus-sign
-                
+                %div.layout-align-center-center.layout-column{"ng-hide": "stagingPic", "ngf-drop": true, "ng-model": "stagingPic", style: "min-height: 350px; width: 500px; overflow:hidden;"}              
+                  %md-button.md-button.md-hue-1.hide-sm.hide-xs{"ngf-select": true, "ng-model": "stagingPic", accept: "image/jpeg"}
+                    %i.icon-camera
+                    Click To Upload Photo
+                  %input.md-hue-1.hide-gt-sm{type: "file", "ngf-select": true, "ng-model": "stagingPic", accept: "image/jpeg"}
+                .layout-row.layout-fill.layout-wrap.flex.layout-margin
+                  .flex-20.layout-column.layout-align-center-start{"ng-repeat": "image in listing_images", style: "border: 1px solid #ddd; border-radius: 4px; padding: 0;"}
+                    %img{"ng-src": "{{image}}", style: "width: 100%;"}
+                    .layout-row.layout-fill.flex
+                      .flex-33
+                        .md-button{"ng-click": "sortListingImage($index,-1)", style: "margin: 0; padding: 0; min-width: 100%;"}
+                          %i.icon-caret-left
+                      .flex-33
+                        .md-button{"ng-click": "removeFromListingImages($index)", style: "margin: 0; padding: 0; min-width: 100%;"}
+                          %i.icon-trash  
+                      .flex-33              
+                        .md-button{"ng-click": "sortListingImage($index, 1)", style: "margin: 0; padding: 0; min-width: 100%;"}
+                          %i.icon-caret-right   
 
     %md-step{label: "Preview"}
 

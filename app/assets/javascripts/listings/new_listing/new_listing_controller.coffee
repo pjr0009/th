@@ -23,5 +23,19 @@ app.controller("newListingCtrl", ["$scope", "$http", ($scope, $http) ->
     delete $scope.stagingPic
     $scope.croppedStagingUrl = ""
 
+  $scope.destroyStagingPic = () ->
+    delete $scope.stagingPic
+    $scope.croppedStagingUrl = ""
+
+  $scope.removeFromListingImages = (index) ->
+    $scope.listing_images.splice(index, 1)
+
+  $scope.sortListingImage = (index, direction) ->
+    candidate = index+direction
+    if candidate < ($scope.listing_images.length) and candidate >= 0
+      tmp = $scope.listing_images[candidate]
+      $scope.listing_images[candidate] = $scope.listing_images[index]
+      $scope.listing_images[index] = tmp
+
   $scope.conditions = ["New", "Excellent", "Good", "Fair", "Poor/Non-Functioning"]
 ])
