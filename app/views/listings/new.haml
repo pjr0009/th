@@ -10,7 +10,7 @@
             .md-whiteframe-z1.benefits-hero
               .layout-row
                 .flex
-                %md-button.md-icon-button
+                %md-button.md-icon-button.close-button
                   %i.icon-remove.md-primary
               .layout-column.layout-padding.flex.layout-gt-sm-row        
                 .flex.layout-column.layout-align-center-center
@@ -135,13 +135,34 @@
     %md-step{label: "Photos"}
       %md-content.bg-body.md-padding
         .layout-row.layout-align-center-center
-          .layout-column.flex-gt-sm-66.layout-margin.layout-align-center-center.layout-fill
-            %div{"ngf-drop": true, "ng-model": "picFile", style: "min-height: 350px; width: auto; overflow:hidden; background: #ddd"}
-              %img-crop{"change-on-fly": true, "image": "picFile  | ngfDataUrl", "result-image": "croppedDataUrl", "ng-init": "croppedDataUrl=''", "area-type": "square"}
-            .flex
-              %md-button.md-hue-1.md-raised{"ngf-select": true, "ng-model": "picFile", accept: "image/*"}
-                Upload Picture
+          .layout-column.layout-fill.flex-gt-sm-66.layout-margin
+            .md-whiteframe-z1.benefits-hero.layout-column.layout-align-center-center.layout-padding
+              %div{"ng-show": "stagingPic", "ngf-drop": true, "ng-model": "stagingPic", style: "min-height: 350px; width: auto; overflow:hidden;"}
+                %img-crop{"change-on-fly": true, "image": "stagingPic | ngfDataUrl", "result-image": "croppedStagingUrl", "area-type": "square"}
+              .flex{"ng-show": "stagingPic"}
+                %md-button.md-fab{"ng-click": "destroyStagingPic()", style: "background: red;"}
+                  %i.icon-remove
+                %md-button.md-fab{"ng-click": "confirmStagingPic()", style: "background: #00a26c;"}
+                  %i.icon-ok
 
+              %div.layout-align-center-center.layout-column{"ng-hide": "stagingPic", "ngf-drop": true, "ng-model": "stagingPic", style: "min-height: 350px; width: auto; overflow:hidden;"}              
+                .md-button{"ngf-select": true, "ng-model": "stagingPic", accept: "image/*"}
+                  %i.icon-camera
+                  Click To Upload Photo
+              .layout-row.layout-padding
+                .flex-20.md-button.layout-column.layout-align-center-start{"ng-repeat": "image in listing_images", style: "border: 1px solid #ddd; border-radius: 4px; padding: 0;"}
+                  %img{"ng-src": "{{image}}", style: "width: 100%;"}
+                  .flex.layout-row
+                    .flex
+                      .md-button
+                        %i.icon-remove
+                .flex-20.md-button.layout-column.layout-align-center-center{style: "border: 1px solid #ddd; border-radius: 4px;", "ngf-select": true, "ng-model": "stagingPic", accept: "image/*"}
+                  %i.icon-camera{style: "font-size: 48px; color: #ddd"}
+                  %p.hide-sm.hide-xs
+                    %i.icon-plus-sign
+                    upload
+                  %p.hide-gt-sm
+                    %i.icon-plus-sign
                 
 
     %md-step{label: "Preview"}

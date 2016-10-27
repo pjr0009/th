@@ -1,7 +1,9 @@
 app = angular.module("TackHunter")
 app.controller("newListingCtrl", ["$scope", "$http", ($scope, $http) ->
   $scope.listing = {}
+  $scope.croppedStagingUrl = ""
   $scope.selectedStep = 0
+  $scope.listing_images = []
   $scope.step = [
     {complete: true}
   ]
@@ -15,6 +17,11 @@ app.controller("newListingCtrl", ["$scope", "$http", ($scope, $http) ->
 
   $scope.nextStep = () ->
     $scope.selectedStep += 1 if $scope.selectedStep < 4
+
+  $scope.confirmStagingPic = () ->
+    $scope.listing_images.unshift($scope.croppedStagingUrl)
+    delete $scope.stagingPic
+    $scope.croppedStagingUrl = ""
 
   $scope.conditions = ["New", "Excellent", "Good", "Fair", "Poor/Non-Functioning"]
 ])
