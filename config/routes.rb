@@ -20,7 +20,7 @@ Kassi::Application.routes.draw do
   resources :disciplines, except: [:show]
   resources :brands, except: [:update, :create, :edit]
   resources :brands
-  root to: "disciplines#show", :defaults => {:id => "hunter-jumper"}
+  root to: "disciplines#show", :defaults => {:id => "english"}
   
   get "/about/privacy" => "about#privacy", as: "privacy_about"
   get "/about/terms" => "about#terms", as: "terms_about"

@@ -18,7 +18,6 @@ class Brand < ActiveRecord::Base
   extend FriendlyId
   
   has_many :listings
-  has_and_belongs_to_many :disciplines
   has_many :products
   has_many :sales
   before_create :ensure_capitalized

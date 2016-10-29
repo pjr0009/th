@@ -125,6 +125,8 @@
                     %span
                       Let's find a good spot for your listing
               %md-content.layout-padding
+                %h2.md-subheader
+                  Category
                 %md-input-container.flex
                   %md-radio-group{"ng-show": "categories", "ng-model": "listing_resource.listing.category_id", "ng-change": "fetchCustomFields()"}
                     %md-radio-button{"ng-repeat": "option in categories", value: "{{option.id}}"}
