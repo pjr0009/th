@@ -30,8 +30,8 @@ class DisciplinesController < ApplicationController
   end
 
   def categories
-    categories = @discipline.categories.where(:parent_id => nil)
-    render json: categories
+    categories = @discipline.categories.where(:parent_id => nil).includes(:translations)
+    render json: categories.to_json(:include => :translations)
   end
 
   # GET /disciplines/new

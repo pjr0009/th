@@ -114,7 +114,7 @@
                           This is required.
 
 
-    %md-step{label: "About"}
+    %md-step{label: "Category"}
       %md-content.bg-body.md-padding
         .layout-row.layout-align-center-center
           .layout-column.flex-gt-sm-66.layout-margin
@@ -128,7 +128,12 @@
                 %md-input-container.flex
                   %md-radio-group{"ng-show": "categories", "ng-model": "listing_resource.listing.category_id", "ng-change": "fetchCustomFields()"}
                     %md-radio-button{"ng-repeat": "option in categories", value: "{{option.id}}"}
-                      {{option.url}}
+                      {{option.translations[0].name}}
+
+    %md-step{label: "Details"}
+      %md-content.bg-body.md-padding
+        .layout-row.layout-align-center-center
+          .layout-column.flex-gt-sm-66.layout-margin
             .md-whiteframe-z1
               %md-toolbar.md-hue-1
                 .md-toolbar-tools.flex
