@@ -1,6 +1,7 @@
 class Admin::CategoriesController < ApplicationController
 
   before_filter :ensure_is_admin
+  before_filter :set_category, :only => [:custom_fields]
 
   def index
     @selected_left_navi_link = "listing_categories"
@@ -13,6 +14,11 @@ class Admin::CategoriesController < ApplicationController
     shapes = get_shapes
     selected_shape_ids = shapes.map { |s| s[:id] } # all selected by defaults
     render locals: { shapes: shapes, selected_shape_ids: selected_shape_ids }
+  end
+
+
+  def custom_fields
+    render json: @category.custom_fields
   end
 
   def create
@@ -154,6 +160,10 @@ class Admin::CategoriesController < ApplicationController
     ListingService::API::Api.shapes.get(community_id: @current_community.id).maybe.or_else(nil).tap { |shapes|
       raise ArgumentError.new("Cannot find any shapes for community #{@current_community.id}") if shapes.nil?
     }
+  end
+  
+  def set_category
+    @category = Category.find(params[:id])
   end
 
 end

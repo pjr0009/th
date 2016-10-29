@@ -42,14 +42,14 @@ class ListingImagesController < ApplicationController
       render json: {:errors => "No image URL provided"}, status: 400, content_type: 'text/plain'
     end
 
-    add_image(params[:listing_id], {}, url)
+    new_image({}, url)
   end
 
   # Add new listing image to existing listing
   # Create image from uploaded file
   def add_from_file
     listing_image_params = params.require(:listing_image).permit(:image)
-    add_image(params[:listing_id], listing_image_params, nil)
+    new_image(listing_image_params)
   end
 
   # Return image status and thumbnail url
@@ -72,17 +72,8 @@ class ListingImagesController < ApplicationController
     path.sub("${filename}", escaped_filename)
   end
 
-  def add_image(listing_id, params, url)
-    listing_image_params = params.merge(
-      author_id: @current_user.id,
-      listing_id: listing_id
-    )
-
-    new_image(listing_image_params, url)
-  end
-
   # Create a new image object
-  def new_image(params, url)
+  def new_image(params, url=nil)
     listing_image = ListingImage.new(params)
 
     listing_image.image_downloaded = if url.present? then false else true end

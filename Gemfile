@@ -132,8 +132,6 @@ gem "i18n-js",
 # A store scoped to the request object for caching
 gem "request_store", "~> 1.3"
 
-gem "vanity"
-
 
 
 group :staging, :production do

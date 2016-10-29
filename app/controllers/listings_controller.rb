@@ -9,10 +9,6 @@ class ListingsController < ApplicationController
     controller.ensure_logged_in t("layouts.notifications.you_must_log_in_to_view_this_content")
   end
 
-  before_filter :only => [:create] do |controller|
-    controller.ensure_logged_in t("layouts.notifications.you_must_log_in_to_create_new_listing", :sign_up_link => view_context.link_to(t("layouts.notifications.create_one_here"), sign_up_path)).html_safe
-  end
-
   before_filter :save_current_path, :only => :show
   before_filter :ensure_authorized_to_view, :only => [ :show, :follow, :unfollow ]
 
@@ -25,8 +21,6 @@ class ListingsController < ApplicationController
   end
 
   before_filter :ensure_is_admin, :only => [ :move_to_top, :show_in_updates_email ]
-
-  before_filter :is_authorized_to_post, :only => [ :new, :create ]
 
 
   def index
@@ -320,6 +314,8 @@ class ListingsController < ApplicationController
   end
 
   def create
+    @listing = Listing.new(listing_params)
+
     # params[:listing].delete("origin_loc_attributes") if params[:listing][:origin_loc_attributes][:address].blank?
 
     # shape = get_shape(Maybe(params)[:listing][:listing_shape_id].to_i.or_else(nil))
@@ -345,9 +341,15 @@ class ListingsController < ApplicationController
     #     action_button_tr_key: shape[:action_button_tr_key]
     # ).merge(unit_to_listing_opts(m_unit)).except(:unit)
 
-    @listing = Listing.new(listing_params)
 
-    # ActiveRecord::Base.transaction do
+    ActiveRecord::Base.transaction do
+      if @listing.save
+        render json: @listing
+      else
+        render json: @listing.errors.to_json
+      end
+
+    end
     #   @listing.author = @current_user
 
     #   if @listing.save
@@ -381,7 +383,6 @@ class ListingsController < ApplicationController
     #       flash[:show_onboarding_popup] = true
     #     end
 
-    #     redirect_to @listing, status: 303 and return
     #   else
     #     logger.error("Errors in creating listing: #{@listing.errors.full_messages.inspect}")
     #     flash[:error] = t(
@@ -796,14 +797,6 @@ class ListingsController < ApplicationController
     end
   end
 
-  def is_authorized_to_post
-    if @current_community.require_verification_to_post_listings?
-      unless @current_user.has_admin_rights? || @current_community_membership.can_post_listings?
-        redirect_to verification_required_listings_path
-      end
-    end
-  end
-
   def numeric_field_ids(custom_fields)
     custom_fields.map do |custom_field|
       custom_field.with(:numeric) do
@@ -949,7 +942,8 @@ class ListingsController < ApplicationController
   end
 
   def listing_params
-    params.require(:listing).permit(:listing_images_attributes)
+    params.require(:listing).permit(:brand, :title, :discipline_id, :condition, :model, :listing_image_ids => [])
+  end
 
   def accounts_api
     PaypalService::API::Api.accounts_api

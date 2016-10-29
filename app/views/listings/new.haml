@@ -44,20 +44,12 @@
                       What are you selling?
               %md-content.layout-padding
                 %form{name: "infoForm"}
-                  .layout-column.layout-gt-sm-row.layout-padding
-                    %md-input-container.flex
-                      %label
-                        Listing Title
-                      %input{required: true, name: "title", "ng-model": "listing.title"}
-                      %div{"ng-messages": "infoForm.title.$error"}
-                        %div{"ng-message": "required"}
-                          This is required.
                   .layout-row.layout-sm-column.layout-xs-column.layout-padding
                     %md-autocomplete.flex{"placeholder": "Discipline", 
                       "md-delay": 400,
                       "md-no-cache": true,
                       name: "brand",
-                      "md-selected-item": "listing.brand", 
+                      "md-selected-item": "listing_resource.listing.brand", 
                       "md-items": "item in brandSearchTextChange(brandSearchText)", 
                       "md-search-text": "brandSearchText",
                       "md-item-text": "item.name",
@@ -79,7 +71,15 @@
                       %div{"ng-messages": "infoForm.model.$error"}
                         %div{"ng-message": "required"}
                           This is required.
-                  .layout-row.layout-padding
+                  .layout-column.layout-gt-sm-row.layout-padding
+                    %md-input-container.flex
+                      %label
+                        Listing Title
+                      %input{required: true, name: "title", "ng-model": "listing_resource.listing.title"}
+                      %div{"ng-messages": "infoForm.title.$error"}
+                        %div{"ng-message": "required"}
+                          This is required.                  
+                  .layout-row.layout-padding.layout-wrap
                     %md-input-container.flex-50.flex-gt-sm-25
                       %label
                         Price
@@ -89,8 +89,15 @@
                           This is required.
                     %md-input-container.flex-50.flex-gt-sm-25
                       %label
+                        Shipping Price
+                      %input{required: true, name: "shipping_price"}
+                      %div{"ng-messages": "infoForm.shipping_price.$error"}
+                        %div{"ng-message": "required"}
+                          This is required.
+                    %md-input-container.flex-50.flex-gt-sm-25
+                      %label
                         Condition
-                      %md-select{"ng-model": "listing.condition", name: "condition"}
+                      %md-select{"ng-model": "listing_resource.listing.condition", name: "condition"}
                         %md-option{"ng-repeat": "condition in conditions track by $index", "ng-bind": "condition", "ng-value": "condition"}
                       %div{"ng-messages": "infoForm.condition.$error"}
                         %div{"ng-message": "required"}
@@ -99,7 +106,7 @@
                     %p
                       Who would be interested in this item?
                     %md-input-container.flex
-                      %md-radio-group.layout-row{"ng-model": "listing.discipline_id", "ng-change": "fetchCategories()", required: true, name: "disciplineId"}
+                      %md-radio-group.layout-row{"ng-model": "listing_resource.listing.discipline_id", "ng-change": "fetchCategories()", required: true, name: "disciplineId"}
                         %md-radio-button{"ng-repeat": "option in disciplines", value: "{{option.slug}}"}
                           {{option.name}}
                       %div{"ng-messages": "infoForm.disciplineId.$error"}
@@ -119,8 +126,8 @@
                       Let's find a good spot for your listing
               %md-content.layout-padding
                 %md-input-container.flex
-                  %md-radio-group{"ng-show": "categories", "ng-model": "listing.discipline_id"}
-                    %md-radio-button{"ng-repeat": "option in categories", value: "{{option.url}}"}
+                  %md-radio-group{"ng-show": "categories", "ng-model": "listing_resource.listing.category_id", "ng-change": "fetchCustomFields()"}
+                    %md-radio-button{"ng-repeat": "option in categories", value: "{{option.id}}"}
                       {{option.url}}
             .md-whiteframe-z1
               %md-toolbar.md-hue-1
@@ -129,9 +136,17 @@
                     %span
                       Add a few extra details
               %md-content.layout-padding
-                %md-input-container.md-block
-                  %label Description
-                  %textarea{rows: "5"}
+                .layout-row.flex
+                  %md-input-container.md-block
+                    %label Description
+                    %textarea{rows: "5"}
+                .layout-row.flex
+                  .flex-50.flex-gt-sm-25.layout-wrap{"ng-repeat": "custom_field in custom_fields", "ng-switch": "custom_field.type"}
+                    %md-input-container{"ng-switch-when": "TextField"}
+                      %label
+                        {{custom_field.name.value}}
+                      %input{type: "text"}
+
     %md-step{label: "Photos"}
       %md-content.bg-body.md-padding
         .layout-row.layout-align-center-center
@@ -146,7 +161,7 @@
                         Great Photos Sells Tack Faster
               .layout-padding.layout-column.layout-align-center-center
                 .cropArea{"ng-show": "stagingPic", "ngf-drop": true, "ng-model": "stagingPic"}
-                  %img-crop{"change-on-fly": true, "image": "stagingPic | ngfDataUrl", "result-image": "croppedStagingUrl", "area-type": "square", "init-max-area": true}
+                  %img-crop{"image": "stagingPic | ngfDataUrl", "result-image": "croppedStagingUrl", "area-type": "rectangle", "init-max-area": "true", "result-image-size": "'max'", "aspect-ratio": "1.3"}
                 .flex{"ng-show": "stagingPic"}
                   %md-button.md-fab{"ng-click": "destroyStagingPic()", style: "background: red;"}
                     %i.icon-remove
@@ -212,5 +227,5 @@
               .paypal-redirect-message
                 = t("paypal_accounts.redirect_message", redirect_link: paypal_redirect_link).html_safe
 
-  %md-button.progress-button.md-button.md-fab.md-fab-bottom-right{style: "position: fixed;", "ng-show": "infoForm.$valid || true", "ng-click": "nextStep()"}
+  %md-button.progress-button.md-button.md-fab.md-fab-bottom-right{style: "position: fixed;", "ng-show": "infoForm.$valid || true", "ng-click": "submitListing()"}
     Next

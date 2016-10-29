@@ -17,7 +17,6 @@ Kassi::Application.routes.draw do
   end
   get "/sell", to: "listings#new", as: "sell_path"
 
-
   resources :disciplines, except: [:show]
   resources :brands, except: [:update, :create, :edit]
   resources :brands
@@ -31,6 +30,11 @@ Kassi::Application.routes.draw do
   resources :news
   namespace :api do
     resources :sales
+    resources :categories, only: [:index] do
+      member do
+        get "custom_fields"
+      end
+    end
   end
 
   namespace :mercury do
