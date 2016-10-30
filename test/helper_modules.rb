@@ -42,107 +42,7 @@ module TestHelpers
       "housing"
     ]
 
-    def self.load_test_categories_and_listing_shapes_to_db(community)
-      TestHelpers::CategoriesHelper.load_categories_and_listing_shapes_to_db(community, DEFAULT_LISTING_SHAPE_TEMPLATES_FOR_TESTS, DEFAULT_CATEGORIES_FOR_TESTS)
-    end
 
-    def self.load_categories_and_listing_shapes_to_db(community, listing_shape_templates, categories)
-      processes = [:none, :preauthorize, :postpay].inject({}) { |memo, process|
-        memo.tap { |m|
-          process_res = TransactionService::API::Api.processes.create(
-            community_id: community.id,
-            process: process,
-            author_is_seller: true
-          )
-
-          memo[process] = process_res.data[:id]
-        }
-      }
-
-      # Load listing shapes
-      listing_shape_templates.each do |type, translations|
-        defaults = TransactionTypeCreator::DEFAULTS[type.to_s]
-
-        name_group = {
-          translations: community.locales.map do |locale|
-            translation = translations[locale.to_sym]
-            {locale: locale, translation: translation[:name]} unless translation.blank?
-          end.compact
-        }
-        ab_group = {
-          translations: community.locales.map do |locale|
-            translation = translations[locale.to_sym]
-            {locale: locale, translation: translation[:action_button_label]} unless translation.blank?
-          end.compact
-        }
-        created_translations = TranslationService::API::Api.translations.create(community.id, [name_group, ab_group])
-        name_tr_key, action_button_tr_key = created_translations[:data].map { |translation| translation[:translation_key] }
-
-        translations = community.locales.map do |locale|
-          translation = translations[locale.to_sym]
-
-          if translation
-            {
-              locale: locale,
-              name: translation[:name],
-              action_button_label: translation[:action_button_label]
-            }
-          end
-        end.compact
-
-        basename = translations.find{ |t| t[:locale] == community.default_locale }[:name]
-
-        shape_opts = defaults.merge(
-          transaction_process_id: processes[:none],
-          translations: translations,
-          name_tr_key: name_tr_key,
-          action_button_tr_key: action_button_tr_key,
-          shipping_enabled: false,
-          basename: basename
-        )
-
-        shape_res = ListingService::API::Api.shapes.create(
-          community_id: community.id,
-          opts: shape_opts
-        )
-
-        raise ArgumentError.new("Could not create new shape: #{shape_opts}") unless shape_res.success
-      end
-
-      # Community has now new listing shapes, so we must reload it
-      community.reload
-
-      # Load categories
-      categories.each do |c|
-
-        # Categories that do not have subcategories
-        if c.is_a?(String)
-          category = Category.create!(:community_id => community.id)
-          TestHelpers::CategoriesHelper.add_listing_shapes_and_translations_to_category(category, c)
-
-        # Categories that have subcategories
-        elsif c.is_a?(Hash)
-          top_level_category = Category.create!(:community_id => community.id)
-          TestHelpers::CategoriesHelper.add_listing_shapes_and_translations_to_category(top_level_category, c.keys.first)
-          c.values.first.each do |sg|
-            subcategory = Category.create!(:community_id => community.id, :parent_id => top_level_category.id)
-            TestHelpers::CategoriesHelper.add_listing_shapes_and_translations_to_category(subcategory, sg)
-          end
-        end
-
-      end
-    end
-
-    def self.add_listing_shapes_and_translations_to_category(category, category_name)
-      ListingService::API::Api.shapes.get(community_id: category.community.id)[:data].each do |s|
-        CategoryListingShape.create!(category_id: category.id, listing_shape_id: s[:id])
-      end
-
-      category.community.locales.each do |locale|
-        cat_name = I18n.t!(category_name, :locale => locale, :scope => ["common", "categories"], :raise => true)
-        category.translations.create!(:locale => locale, :name => cat_name)
-      end
-    end
   end
 
   # http://pullmonkey.com/2008/01/06/convert-a-ruby-hash-into-a-class-object/
@@ -215,7 +115,6 @@ module TestHelpers
     community2 = FactoryGirl.create(:community, :ident => "test2", :consent => "KASSI_FI1.0", :settings => {"locales" => ["en"]}, :real_name_required => true, :allowed_emails => "@example.com")
     community3 = FactoryGirl.create(:community, :ident => "test3", :consent => "KASSI_FI1.0", :settings => {"locales" => ["en"]}, :real_name_required => true)
 
-    [community1, community2, community3].each { |c| TestHelpers::CategoriesHelper.load_test_categories_and_listing_shapes_to_db(c) }
   end
   module_function :load_default_test_data_to_db_before_suite
 
@@ -275,6 +174,8 @@ module TestHelpers
     :address => "kassi_testperson2@example.com",
     :send_notifications => true,
     :confirmed_at => "2012-05-04 18:17:04")
+
+    FactoryGirl.create(:discipline)
   end
   module_function :load_default_test_data_to_db_before_test
 

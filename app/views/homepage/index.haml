@@ -4,9 +4,9 @@
 - content_for :coverfade_class do
   = "without-text"
 - if @selected_category
-  - content_for :title, @selected_category.display_name(I18n.locale)
-  - content_for :keywords, @selected_category.children.map{|c| c.display_name(I18n.locale)}.join(", ")
-  - content_for :meta_description, "Find Great Deals On New And Used #{@selected_category.display_name(I18n.locale)}"
+  - content_for :title, @selected_category.name
+  - content_for :keywords, @selected_category.children.map{|c| c.name}.join(", ")
+  - content_for :meta_description, "Find Great Deals On New And Used #{@selected_category.name}"
 - #schema markup for homepage search in SERPS
 - content_for :extra_javascript do
   :plain
@@ -37,7 +37,7 @@
           %md-list-item.layout-column{role: "listItem", style: "margin: 0; padding: 0; min-height: 36px;"}
             %a.md-no-style.md-ink-ripple.md-button{href: "/#{@discipline.slug}/#{category.url}", style: "padding: 0; margin: 0;"} 
               .md-list-item-inner{style: "font-size: 14px; margin: 0; padding: 0 24px; min-height: 36px; #{selected_category_class}"}
-                = category.display_name(I18n.locale)
+                = category.name
             - if (@selected_category && @selected_category.id == category.id) && !@discipline.categories.where(:parent_id => category.id).blank?
               %md-list.flex.layout-fill.layout-padding
                 - @discipline.categories.where(:parent_id => category.id).each do |child|
@@ -45,7 +45,7 @@
                   %md-list-item.layout-column{role: "listItem", style: "margin: 0; padding: 0; min-height: 36px;"}
                     %a.md-no-style.md-ink-ripple.md-button{href: "/#{@discipline.slug}/#{child.url}", style: "padding: 0; margin: 0;"} 
                       .md-list-item-inner{style: "font-size: 14px; margin: 0; padding: 0 24px; min-height: 36px;"}
-                        = child.display_name(I18n.locale)
+                        = child.name
       - if false
         %md-list
           .md-subheader.bg-body

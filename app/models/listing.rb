@@ -50,6 +50,7 @@
 #  discipline_id                   :integer
 #  product_id                      :integer
 #  original_price_cents            :integer
+#  status                          :string(255)      default("start")
 #
 # Indexes
 #

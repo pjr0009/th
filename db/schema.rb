@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161020204549) do
+ActiveRecord::Schema.define(version: 20161030163552) do
 
   create_table "auth_tokens", force: :cascade do |t|
     t.string   "token",            limit: 255
@@ -86,6 +86,8 @@ ActiveRecord::Schema.define(version: 20161020204549) do
     t.integer  "community_id",  limit: 4
     t.integer  "sort_priority", limit: 4
     t.string   "url",           limit: 255
+    t.string   "name",          limit: 255, null: false
+    t.string   "slug",          limit: 255
   end
 
   add_index "categories", ["community_id"], name: "index_categories_on_community_id", using: :btree
@@ -630,6 +632,7 @@ ActiveRecord::Schema.define(version: 20161020204549) do
     t.integer  "discipline_id",                   limit: 4
     t.integer  "product_id",                      limit: 4
     t.integer  "original_price_cents",            limit: 4
+    t.string   "status",                          limit: 255,   default: "start"
   end
 
   add_index "listings", ["brand_id"], name: "index_listings_on_brand_id", using: :btree

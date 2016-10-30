@@ -98,6 +98,14 @@ FactoryGirl.define do
     end
   end
 
+  factory :discipline do
+    sequence :id
+    name "English"
+    after(:create) do |discipline, evaluator|
+      discipline.categories << FactoryGirl.create(:category, name: "TestCategory")
+    end
+  end
+
   factory :listing do
     community_id 999
     title "Sledgehammer"
@@ -224,6 +232,8 @@ FactoryGirl.define do
   end
 
   factory :category do
+    sequence :id
+    name "category"
     icon "item"
     build_association(:community)
   end

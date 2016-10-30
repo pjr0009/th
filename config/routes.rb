@@ -9,12 +9,12 @@ Kassi::Application.routes.draw do
 
 
   #hard coded routes, putting at beginning of file for first match
-  Discipline.all.each do |discipline|
-    get discipline.slug => 'disciplines#show', :defaults => { :id => discipline.name }
-    get discipline.slug + "/categories" => 'disciplines#categories', :defaults => { :id => discipline.name }
-    get discipline.slug + "/:category" => 'disciplines#show', :defaults => { :id => discipline.name }
-    get discipline.slug + "/brands/:brand" => 'brands#show', :defaults => { :id => discipline.name }
-  end
+  # Discipline.all.each do |discipline|
+  #   get discipline.slug => 'disciplines#show', :defaults => { :id => discipline.name }
+  #   get discipline.slug + "/categories" => 'disciplines#categories', :defaults => { :id => discipline.name }
+  #   get discipline.slug + "/:category" => 'disciplines#show', :defaults => { :id => discipline.name }
+  #   get discipline.slug + "/brands/:brand" => 'brands#show', :defaults => { :id => discipline.name }
+  # end
   get "/sell", to: "listings#new", as: "sell_path"
 
   resources :disciplines, except: [:show]

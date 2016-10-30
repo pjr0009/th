@@ -10,6 +10,8 @@
 #  community_id  :integer
 #  sort_priority :integer
 #  url           :string(255)
+#  name          :string(255)      not null
+#  slug          :string(255)
 #
 # Indexes
 #
@@ -19,9 +21,12 @@
 #
 
 class Category < ActiveRecord::Base
+  extend FriendlyId
+  
   attr_accessible(
     :community_id,
     :parent_id,
+    :name,
     :translations,
     :translation_attributes,
     :sort_priority,
@@ -31,6 +36,9 @@ class Category < ActiveRecord::Base
   )
 
   attr_accessor :basename
+
+  friendly_id :slug_candidates, use: [:slugged, :finders]
+
 
   has_many :subcategories, -> { order("sort_priority") }, :class_name => "Category", :foreign_key => "parent_id", :dependent => :destroy
   # children is a more generic alias for sub categories, used in classification.rb
@@ -49,57 +57,25 @@ class Category < ActiveRecord::Base
 
   belongs_to :community
 
-  before_save :uniq_url
   before_destroy :can_destroy?
 
-
-  def translation_attributes=(attributes)
-    build_attrs = attributes.map { |locale, values| { locale: locale, values: values } }
-    build_attrs.each do |translation|
-      if existing_translation = translations.find_by_locale(translation[:locale])
-        existing_translation.update_attributes(translation[:values])
-      else
-        translations.build(translation[:values].merge({:locale => translation[:locale]}))
-      end
-    end
+  def slug_candidates
+    [
+      :name,
+      ["western", :name],
+    ]
   end
 
-  def to_param
-    url
-  end
-
-  def url_source
-    basename || Maybe(default_translation_without_cache).name.or_else("category")
-  end
-
-  def default_translation_without_cache
-    (translations.find { |translation| translation.locale == community.default_locale } || translations.first)
-  end
-
-  # TODO this should be done on service layer
-  def uniq_url
-    current_url = Maybe(url_source).to_url.or_else("noname")
-
-    if new_record? || url != current_url
-      blacklist = ['new', 'all']
-      base_url = current_url
-      categories = Category.where(community_id: community_id)
-
-      self.url = current_url
-    end
-
+  def should_generate_new_friendly_id? #will change the slug if the name changed
+    name_changed? || discipline_categories.all.any?(&:changed?)
   end
 
   def name_with_disciplines
     unless disciplines.blank?
-      "#{disciplines.map(&:name).join(',')} > #{display_name('EN')}"
+      "#{disciplines.map(&:name).join(',')} > #{self.name}"
     else
-      display_name('EN')
+      self.name
     end
-  end
-
-  def display_name(locale)
-    TranslationCache.new(self, :translations).translate(locale, :name)
   end
 
   def has_own_or_subcategory_listings?
