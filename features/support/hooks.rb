@@ -1,7 +1,7 @@
 Before do
-  Capybara.default_host = 'lvh.me'
-  Capybara.server_port = 9887
-  Capybara.app_host = "http://lvh.me:9887"
+  # Capybara.default_host = 'localhost'
+  # Capybara.server_port = 9887
+  # Capybara.app_host = "http://localhost:9887"
   @current_community = Community.where(ident: "test").first
 end
 
