@@ -1,3 +1,4 @@
+
 Feature: User creates a new community
   In order to enable members of my community to share their assets with each other
   As a community admin

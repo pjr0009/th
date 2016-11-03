@@ -1,24 +1,5 @@
 var app = angular.module("TackHunter")
 
-app.factory('Discipline', ["$resource", function($resource) {
-  return $resource('/disciplines/:id'); // Note the full endpoint address
-}]);
-app.factory('Brand', ["$resource", function($resource) {
-  return $resource('/brands/:id'); // Note the full endpoint address
-}]);
-
-app.factory('Product', ["$resource", function($resource) {
-  return $resource('/products/:id'); // Note the full endpoint address
-}]);
-app.factory('Sale', ["$resource", function($resource) {
-  return $resource('/api/sales/:id', null, {
-    query: {
-      method: 'GET',
-      isArray: false
-    }
-  });
-}]);
-
 app.controller("saddleAppCtrl", ["$scope", "Discipline", "Brand", "Product", "Sale", "$http", function($scope, Discipline, Brand, Product, Sale, $http){
   $scope.englishSeatSizes = ["", "16", "16.5", "17", "17.5", "18", "18.5", "19"].reverse();
   $scope.westernSeatSizes = ["", "13", "13.5", "14", "14.5", "15", "15.5", "16", "16.5", "17"].reverse();

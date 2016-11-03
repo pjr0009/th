@@ -587,28 +587,6 @@ module ApplicationHelper
      community.facebook_connect_enabled?.or_else(false)
   end
 
-  def community_slogan
-    if @community_customization  && !@community_customization.slogan.blank?
-      @community_customization.slogan
-    else
-      if @current_community.slogan && !@current_community.slogan.blank?
-        @current_community.slogan
-      else
-        t("common.default_community_slogan")
-      end
-    end
-  end
-
-  def community_description(truncate=true)
-    if @community_customization && !@community_customization.description.blank?
-      truncate ? truncate_html(@community_customization.description, length: 140, omission: "...") : @community_customization.description
-    elsif @current_community.description && !@current_community.description.blank?
-      truncate ? truncate_html(@current_community.description, length: 140, omission: "...") : @current_community.description
-    else
-      truncate ? truncate_html(t("common.default_community_description"), length: 125, omission: "...") : t("common.default_community_description")
-    end
-  end
-
   def email_link_style
     "color:#d96e21; text-decoration: none;"
   end

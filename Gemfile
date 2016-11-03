@@ -52,7 +52,7 @@ gem 'ts-delayed-delta', "~>2.0.2",
   :git    => 'git://github.com/pat/ts-delayed-delta.git',
   :branch => 'master',
   :ref    => '839284f2f28b3f4caf3a3bf5ccde9a6d222c7f4d'
-gem 'possibly', '~> 0.2.0'
+gem 'possibly'
 
 gem 'delayed_job', "~> 4.1.1"
 gem 'delayed_job_active_record', "~> 4.1.0"
@@ -124,10 +124,8 @@ gem "react_on_rails", "~> 5.1.1"
 #
 # The latest master is needed because it contains the I18n.extend configuration
 # See: https://github.com/fnando/i18n-js/pull/397
-gem "i18n-js",
-    git: "git://github.com/fnando/i18n-js.git",
-    branch: "master",
-    ref: "2ca6d31365bb41db21e373d126cac00d38d15144"
+gem "i18n-js"
+  
 
 # A store scoped to the request object for caching
 gem "request_store", "~> 1.3"
@@ -151,7 +149,8 @@ end
 
 group :development do
   gem 'rb-fsevent', "~> 0.9.4", require: false
-  gem 'guard-rspec', "~> 4.6.5", require: false
+  gem 'guard-rspec', require: false
+  gem 'guard-cucumber', require: false
   gem 'annotate', "~> 2.6.5"
   gem 'quiet_assets', "~> 1.1.0"
   gem 'better_errors', "~> 2.1.1"
@@ -163,19 +162,19 @@ group :test do
   gem "spring"
   gem 'spring-commands-rspec'
   gem 'spring-commands-cucumber'
-  gem 'capybara', '~> 2.6.2'
+  gem 'capybara'
   gem "rspec-rails", "~>3.0"
 
-  gem 'cucumber-rails', '~> 1.4.0', require: false # require: false is needed for cucumber-rails
+  gem 'cucumber-rails', require: false # require: false is needed for cucumber-rails
 
-  gem 'selenium-webdriver', '~> 2.45'
+  gem 'selenium-webdriver'
 
   # Launchy is needed by Capybara, e.g. save_and_open command needs Launchy to open a browser
   gem 'launchy', '~> 2.4', '>= 2.4.3'
   gem 'email_spec', '~> 1.6.0'
   gem 'timecop', '~> 0.6.3'
   gem 'rack-test', "~> 0.6.2"
-  gem 'database_cleaner', '~> 1.1'
+  gem 'database_cleaner'
   gem 'connection_pool', "~> 0.9.3"
   gem 'poltergeist'
   gem 'phantomjs', :require => 'phantomjs/poltergeist'

@@ -3,8 +3,8 @@
 #new-listing.flex{"ng-controller": "newListingCtrl"}
   %md-steppers{"md-dynamic-height": true, "md-stretch-steppers": "always", "md-selected": "selectedStep"}
 
-    %md-step{label: "Start", "md-complete": "infoForm.$valid"}
-      %md-content.bg-body.md-padding
+    %md-step{label: "Start", "md-complete": "listingForms.infoForm.$valid"}
+      %md-content.bg-body.md-padding#start
         .layout-row.layout-align-center-center
           .layout-column.flex-gt-sm-66.layout-margin
             .md-whiteframe-z1.benefits-hero
@@ -43,7 +43,7 @@
                     %span
                       What are you selling?
               %md-content.layout-padding
-                %form{name: "infoForm"}
+                %form{name: "listingForms.infoForm"}
                   .layout-row.layout-sm-column.layout-xs-column.layout-padding
                     %md-autocomplete.flex{"placeholder": "Discipline", 
                       "md-delay": 400,
@@ -67,7 +67,7 @@
                     %md-input-container.flex
                       %label
                         Model
-                      %input{required: true, name: "model"}
+                      %input{required: true, name: "model", "ng-model": "listing_resource.listing.model"}
                       %div{"ng-messages": "infoForm.model.$error"}
                         %div{"ng-message": "required"}
                           This is required.
@@ -97,7 +97,7 @@
                     %md-input-container.flex-50.flex-gt-sm-25
                       %label
                         Condition
-                      %md-select{"ng-model": "listing_resource.listing.condition", name: "condition"}
+                      %md-select{"ng-model": "listing_resource.listing.condition", name: "condition", required: true}
                         %md-option{"ng-repeat": "condition in conditions track by $index", "ng-bind": "condition", "ng-value": "condition"}
                       %div{"ng-messages": "infoForm.condition.$error"}
                         %div{"ng-message": "required"}
@@ -114,8 +114,8 @@
                           This is required.
 
 
-    %md-step{label: "Category"}
-      %md-content.bg-body.md-padding
+    %md-step{label: "Category", "ng-disabled": "listingForms.infoForm.$invalid", "md-complete": "listingForms.categoryForm.$valid"}
+      %md-content.bg-body.md-padding#categories
         .layout-row.layout-align-center-center
           .layout-column.flex-gt-sm-66.layout-margin
             .md-whiteframe-z1
@@ -125,15 +125,26 @@
                     %span
                       Let's find a good spot for your listing
               %md-content.layout-padding
-                %h2.md-subheader
-                  Category
-                %md-input-container.flex
-                  %md-radio-group{"ng-show": "categories", "ng-model": "listing_resource.listing.category_id", "ng-change": "fetchCustomFields()"}
-                    %md-radio-button{"ng-repeat": "option in categories", value: "{{option.id}}"}
-                      {{option.translations[0].name}}
+     
+                %form{name: "listingForms.categoryForm"}
+                  .layout-row
+                    .flex
+                      %h2.md-subheader
+                        Category
+                      %md-input-container.flex
+                        %md-radio-group{"ng-show": "categories", "ng-model": "listing_resource.listing.category_id",  "ng-change": "fetchSubcategories()", name: "category", required: true}
+                          %md-radio-button{"ng-repeat": "option in categories", value: "{{option.id}}"}
+                            {{option.name}}
+                    .flex{"ng-if": "subcategories && subcategories.length > 0"}
+                      %h2.md-subheader
+                        Subcategory
+                      %md-input-container.flex
+                        %md-radio-group{"ng-show": "categories", "ng-model": "listing_resource.listing.subcategory_id", name: "subcategory", required: true}
+                          %md-radio-button{"ng-repeat": "option in subcategories", value: "{{option.id}}"}
+                            {{option.name}}
 
-    %md-step{label: "Details"}
-      %md-content.bg-body.md-padding
+    %md-step{label: "Details", "ng-disabled": "listingForms.infoForm.$invalid || listingForms.categoryForm.$invalid"}
+      %md-content.bg-body.md-padding#details
         .layout-row.layout-align-center-center
           .layout-column.flex-gt-sm-66.layout-margin
             .md-whiteframe-z1
@@ -143,8 +154,8 @@
                     %span
                       Add a few extra details
               %md-content.layout-padding
-                .layout-row.flex
-                  %md-input-container.md-block
+                .layout-row.layout-fill
+                  %md-input-container.flex
                     %label Description
                     %textarea{rows: "5"}
                 .layout-row.flex
@@ -234,5 +245,7 @@
               .paypal-redirect-message
                 = t("paypal_accounts.redirect_message", redirect_link: paypal_redirect_link).html_safe
 
-  %md-button.progress-button.md-button.md-fab.md-fab-bottom-right{style: "position: fixed;", "ng-show": "infoForm.$valid || true", "ng-click": "submitListing()"}
+  %md-button.ng-cloak.progress-button.md-button.md-fab.md-fab-bottom-right#next-button{style: "position: fixed;", "ng-disabled": "!eligibleForNextStep()", "ng-click": "nextStep()", disabled: "true"}
     Next
+
+      

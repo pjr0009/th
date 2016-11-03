@@ -179,7 +179,6 @@ class ListingsController < ApplicationController
     payment_gateway = MarketplaceService::Community::Query.payment_type(@current_community.id)
     process = get_transaction_process(community_id: @current_community.id, transaction_process_id: @listing.transaction_process_id)
     form_path = new_transaction_path(listing_id: @listing.id)
-    community_country_code = LocalizationUtils.valid_country_code(@current_community.country)
 
     delivery_opts = delivery_config(@listing.require_shipping_address, @listing.pickup_enabled, @listing.shipping_price, @listing.shipping_price_additional, @listing.currency)
 
@@ -201,7 +200,6 @@ class ListingsController < ApplicationController
       process: process,
       delivery_opts: delivery_opts,
       listing_unit_type: @listing.unit_type,
-      country_code: community_country_code,
       received_testimonials: received_testimonials,
       received_positive_testimonials: received_positive_testimonials,
       feedback_positive_percentage: feedback_positive_percentage,
@@ -215,14 +213,12 @@ class ListingsController < ApplicationController
 
 
     def ask_order_permission
-      community_country_code = LocalizationUtils.valid_country_code(@current_community.country)
       response = accounts_api.request(
         body: PaypalService::API::DataTypes.create_create_account_request(
         {
           community_id: @current_community.id,
           person_id: @current_user.id,
-          callback_url: permissions_verified_listings_url,
-          country: community_country_code
+          callback_url: permissions_verified_listings_url
         }),
         flow: :old)
 
@@ -262,29 +258,17 @@ class ListingsController < ApplicationController
 
 
   def new
-    community_currency = @current_community.default_currency
-    payment_settings = payment_settings_api.get_active(community_id: @current_community.id).maybe.get
-    community_country_code = LocalizationUtils.valid_country_code(@current_community.country)
-
-    category_tree = CategoryViewUtils.category_tree(
-      categories: ListingService::API::Api.categories.get_all(community_id: @current_community.id)[:data],
-      shapes: get_shapes
-    )
+    payment_settings = payment_settings_api.get_active(community_id: Community.first).maybe
 
     render :new, locals: {
-      categories: @current_community.top_level_categories,
-      subcategories: @current_community.subcategories,
       disciplines: Discipline.all,
-      shapes: get_shapes,
-      category_tree: category_tree,
       order_permission_action: ask_order_permission_listings_path,
       commission_from_seller: t("paypal_accounts.commission", commission: payment_settings[:commission_from_seller]),
-      minimum_commission: Money.new(payment_settings[:minimum_transaction_fee_cents], community_currency),
+      minimum_commission: Money.new(1, "USD"),
       commission_type: payment_settings[:commission_type],
-      currency: community_currency,
-      paypal_fees_url: PaypalCountryHelper.fee_link(community_country_code),
+      paypal_fees_url: PaypalCountryHelper.fee_link("EN"),
       create_url: PaypalCountryHelper.create_paypal_account_url,
-      receive_funds_info_label_tr_key: PaypalCountryHelper.receive_funds_info_label_tr_key(community_country_code)
+      receive_funds_info_label_tr_key: PaypalCountryHelper.receive_funds_info_label_tr_key("EN")
     }
   end
 
@@ -426,12 +410,9 @@ class ListingsController < ApplicationController
              categories: @current_community.top_level_categories,
              subcategories: @current_community.subcategories,
              disciplines: Discipline.all,
-             shapes: get_shapes,
              category_id: category_id,
              discipline_id: @listing.discipline_id,
-             subcategory_id: subcategory_id,
-             shape_id: @listing.listing_shape_id,
-             form_content: form_locals(shape)
+             subcategory_id: subcategory_id
            }
   end
 
@@ -487,7 +468,6 @@ class ListingsController < ApplicationController
     process = get_transaction_process(community_id: @current_community.id, transaction_process_id: @listing.transaction_process_id)
 
     payment_gateway = MarketplaceService::Community::Query.payment_type(@current_community.id)
-    community_country_code = LocalizationUtils.valid_country_code(@current_community.country)
 
     @listing.update_attribute(:open, false)
     respond_to do |format|
@@ -495,7 +475,7 @@ class ListingsController < ApplicationController
         redirect_to @listing
       }
       format.js {
-        render :layout => false, locals: {payment_gateway: payment_gateway, process: process, country_code: community_country_code }
+        render :layout => false, locals: {payment_gateway: payment_gateway, process: process}
       }
     end
   end
@@ -568,8 +548,6 @@ class ListingsController < ApplicationController
           0
         end
 
-      community_country_code = LocalizationUtils.valid_country_code(@current_community.country)
-
       commission(@current_community, process).merge({
         shape: shape,
         unit_options: unit_options,
@@ -578,7 +556,7 @@ class ListingsController < ApplicationController
         pickup_enabled: @listing.pickup_enabled?,
         shipping_price_additional: shipping_price_additional,
         always_show_additional_shipping_price: shape[:units].length == 1 && shape[:units].first[:kind] == :quantity,
-        paypal_fees_url: PaypalCountryHelper.fee_link(community_country_code)
+        paypal_fees_url: PaypalCountryHelper.fee_link("EN")
       })
     end
   end
@@ -900,9 +878,6 @@ class ListingsController < ApplicationController
   end
 
   def get_shapes
-    @shapes ||= listings_api.shapes.get(community_id: @current_community.id).maybe.or_else(nil).tap { |shapes|
-      raise ArgumentError.new("Cannot find any listing shape for community #{@current_community.id}") if shapes.nil?
-    }
   end
 
   def get_processes

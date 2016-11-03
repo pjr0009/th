@@ -27,4 +27,8 @@ class Discipline < ActiveRecord::Base
         :email => "150x100#"
       }
   
+
+  def top_level_categories
+    self.categories.where(:parent_id => nil)
+  end
 end

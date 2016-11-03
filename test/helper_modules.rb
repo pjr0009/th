@@ -1,49 +1,6 @@
 # Modules in this file are included in both specs and cucumber steps.
 
 module TestHelpers
-  module CategoriesHelper
-
-    DEFAULT_LISTING_SHAPE_TEMPLATES_FOR_TESTS = {
-      Sell: {
-        en: {
-          name: "Selling", action_button_label: "Buy this item"
-        }
-      },
-      Lend: {
-        en: {
-          name: "Lending", action_button_label: "Borrow this item"
-        }
-      },
-      Rent: {
-        en: {
-          name: "Renting", action_button_label: "Rent this item"
-        }
-      },
-      Request: {
-        en: {
-          name: "Requesting", action_button_label: "Offer"
-        }
-      },
-      Service: {
-        en: {
-          name: "Selling services", action_button_label: "Offer"
-        }
-      }
-    }
-
-    DEFAULT_CATEGORIES_FOR_TESTS = [
-      {
-      "item" => [
-        "tools",
-        "books"
-        ]
-      },
-      "favor",
-      "housing"
-    ]
-
-
-  end
 
   # http://pullmonkey.com/2008/01/06/convert-a-ruby-hash-into-a-class-object/
   class HashClass
@@ -110,20 +67,40 @@ module TestHelpers
 
   # This is loaded only once before running the whole test set
   def load_default_test_data_to_db_before_suite
-    community1 = FactoryGirl.create(:community, :ident => "test", :consent => "test_consent0.1", :settings => {"locales" => ["en", "fi"]}, :real_name_required => true)
-    community1.community_customizations.create(name: "Sharetribe", locale: "fi")
-    community2 = FactoryGirl.create(:community, :ident => "test2", :consent => "KASSI_FI1.0", :settings => {"locales" => ["en"]}, :real_name_required => true, :allowed_emails => "@example.com")
-    community3 = FactoryGirl.create(:community, :ident => "test3", :consent => "KASSI_FI1.0", :settings => {"locales" => ["en"]}, :real_name_required => true)
+    discipline = Discipline.create(:name => "English")
+    [
+      {name: "Saddles", subcategories: ["Dressage Saddles", "Jumping Saddles"]},
+      {name: "Boots", subcategories: ["Paddock Boots", "Tall Boots"]},
+      {name: "Breeches", subcategories: []}
+    ].each do |category|
+      root_category = Category.create(name: category[:name])
+      discipline.categories << root_category
+      unless category[:subcategories].blank?
+        category[:subcategories].each do |subcategory|
+          discipline.categories << Category.create(name: subcategory, parent_id: root_category.id)
+        end
+      end
+    end
 
+    discipline = Discipline.create(:name => "Western")
+    [
+      {name: "Saddles", subcategories: ["Cutting Saddles", "Roping Saddles"]},
+      {name: "Boots", subcategores: ["Cowboy Boots", "Work Boots"]},
+      {name: "Chaps", subcategories: []}
+    ].each do |category|
+      root_category = Category.create(name: category[:name])
+      discipline.categories << root_category
+      unless category[:subcategories].blank?
+        category[:subcategories].each do |subcategory|
+          discipline.categories << Category.create(name: subcategory, parent_id: root_category.id)
+        end
+      end
+    end
   end
   module_function :load_default_test_data_to_db_before_suite
 
   # This is loaded before each test
   def load_default_test_data_to_db_before_test
-    community1 = Community.where(ident: "test").first
-    community2 = Community.where(ident: "test2").first
-    community3 = Community.where(ident: "test3").first
-
     person1 = FactoryGirl.create(:person,
                                  community_id: community1.id,
                                  username: "kassi_testperson1",
@@ -149,19 +126,6 @@ module TestHelpers
                                  family_name: "Testperson2",
                                  created_at: "2012-05-04 18:17:04")
 
-    FactoryGirl.create(:community_membership, :person => person1,
-                        :community => community1,
-                        :admin => 1,
-                        :consent => "test_consent0.1",
-                        :last_page_load_date => DateTime.now,
-                        :status => "accepted" )
-
-    FactoryGirl.create(:community_membership, :person => person2,
-                      :community=> community1,
-                      :admin => 0,
-                      :consent => "test_consent0.1",
-                      :last_page_load_date => DateTime.now,
-                      :status => "accepted")
 
     FactoryGirl.create(:email,
     :person => person1,
@@ -174,8 +138,6 @@ module TestHelpers
     :address => "kassi_testperson2@example.com",
     :send_notifications => true,
     :confirmed_at => "2012-05-04 18:17:04")
-
-    FactoryGirl.create(:discipline)
   end
   module_function :load_default_test_data_to_db_before_test
 

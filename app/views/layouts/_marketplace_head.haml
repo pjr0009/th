@@ -1,33 +1,33 @@
-- title_service_name = "#{@current_community.full_name(I18n.locale)}"
+- title_service_name = "Tack Hunter"
 
 - if content_for?(:title)
   - title = "#{content_for(:title)} | #{title_service_name}"
 - else
-  - title = "#{title_service_name} | #{community_slogan}"
+  - title = "#{title_service_name} | The New Way To Buy & Sell Tack"
 
 - if content_for?(:keywords)
   - keywords = content_for(:keywords)
 - else
-  - keywords = StringUtils.keywords(community_slogan)
+  - keywords = "Buy Used Tack, Buy Used Saddles, Sell Saddle, Used Saddles, Used Tack"
 
 - if content_for?(:meta_author)
   - meta_author = content_for(:meta_author)
 - else
-  - meta_author = @current_community.name(I18n.locale)
+  - meta_author = "Tack Hunter"
 
 - full_url = "#{request.url}"
 
 - if content_for?(:meta_description)
   - meta_description = "#{content_for(:meta_description)}"
 - else
-  - meta_description = "#{community_description(false)} - #{community_slogan}"
+  - meta_description = "Shop The Tack Trunks of America, And Sell Yours Too! Find An Amazing Deal On Saddles, Tack, And Equipment"
 
 - if content_for?(:meta_image)
   - meta_image = content_for(:meta_image)
   - meta_image_width = content_for(:meta_image_width)
   - meta_image_height = content_for(:meta_image_height)
 - else
-  - meta_image = @current_community.logo.url(:original)
+  - meta_image = "https://assets.tackhunter.com/images/communities/logos/26619/original/logotry2.jpg?1469210242"
 
 
 %title= title
@@ -36,10 +36,10 @@
 %meta{ :name => "author", :content=> meta_author }
 %meta{ :name => "keywords", :content => keywords }
 %meta{ :property => "og:url", :content => full_url}
-%meta{ :name => "identifier-url", :content => "#{@current_community.full_domain(with_protocol: true)}"}
-%meta{ :name => "copyright", :content => "#{@current_community.name(I18n.locale)}"}
+%meta{ :name => "identifier-url", :content => "https://www.tackhunter.com/"}
+%meta{ :name => "copyright", :content => "Tack Hunter"}
 %meta{ :name => "twitter:url", :content => full_url}
-%meta{ :property => "og:site_name", :content =>"#{@current_community.full_name(locale)}"}
+%meta{ :property => "og:site_name", :content =>"Tack Hunter"}
 %meta{ :name => "description", :content => strip_tags(meta_description).html_safe}
 %meta{ :property => "og:description", :content => strip_tags(meta_description).html_safe}
 %meta{ :name => "twitter:description", :content => strip_tags(meta_description).html_safe}
@@ -49,14 +49,8 @@
   %meta{ :property => "og:image:height", :content => meta_image_height}
 %meta{ :name => "twitter:image", :content => meta_image}
 %link{:rel => "canonical", :href => full_url}
-- if @facebook_locale_code
-  %meta{ :property => "og:locale", :content => @facebook_locale_code}
-
-- if @current_community.twitter_handle.present?
-  %meta{ :name => "twitter:site", :content => "@#{@current_community.twitter_handle}"}
-
-- if @current_community.facebook_connect_id
-  %meta{ :property => "fb:app_id", :content => "#{@current_community.facebook_connect_id}" }
+%meta{ :name => "twitter:site", :content => "@TackHunter"}
+%meta{ :property => "fb:app_id", :content => "tackhunter" }
 
 / CSS
 = stylesheet_link_tag 'application'
@@ -81,11 +75,6 @@
 
 %link{:rel => "image_src", :href => meta_image}
 
-%link{:rel => "shortcut icon", :href => @current_community.favicon }
+%link{:rel => "shortcut icon", :href => "favicon.ico" }
 
-%link{:rel => "apple-touch-icon-precomposed",:href => @current_community.logo.url(:apple_touch)}
-
-= auto_discovery_link_tag(:atom, atom_feed_url )
-
-- unless on_admin?
-  = @current_community.custom_head_script.try(:html_safe)
+%link{:rel => "apple-touch-icon-precomposed",:href => "https://www.tackhunter.com/apple-icon-57x57.png"}

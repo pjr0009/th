@@ -48,7 +48,7 @@ module ListingIndexService::API
     end
 
     def log_error(err_response)
-      logger.error(err_response.error_msg)
+      Rails.logger.error(err_response.error_msg)
     end
   end
 

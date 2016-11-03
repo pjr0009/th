@@ -102,7 +102,19 @@ FactoryGirl.define do
     sequence :id
     name "English"
     after(:create) do |discipline, evaluator|
-      discipline.categories << FactoryGirl.create(:category, name: "TestCategory")
+      [
+        {name: "Saddles", subcategories: ["Dressage Saddles", "Jumping Saddles"]},
+        {name: "Boots", subcategores: ["Paddock Boots", "Tall Boots"]},
+        {name: "Breeches", subcategories: []}
+      ].each do |category|
+        root_category = FactoryGirl.create(:category, name: category[:name])
+        discipline.categories << root_category
+        unless category[:subcategories].blank?
+          category[:subcategories].each do |subcategory|
+            discipline.categories << FactoryGirl.create(:category, name: subcategory, parent_id: root_category[:id])
+          end
+        end
+      end
     end
   end
 
@@ -233,6 +245,7 @@ FactoryGirl.define do
 
   factory :category do
     sequence :id
+    parent_id 0
     name "category"
     icon "item"
     build_association(:community)

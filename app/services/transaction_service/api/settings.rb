@@ -26,7 +26,7 @@ module TransactionService::API
     end
 
     def get_active(community_id:)
-      Result::Success.new(PaymentSettingsStore.get_active(community_id: community_id))
+      Result::Success.new(PaymentSettingsStore.get_active)
     end
 
     # Update the given gateway and process to be the active one, disable others

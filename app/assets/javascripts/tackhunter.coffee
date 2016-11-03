@@ -39,3 +39,46 @@ app = angular.module('TackHunter', [
   $scope.toggleLeftNav = () ->
     $mdSidenav('left').toggle();
 ])
+
+app.factory('Listing', ["$resource", ($resource) ->
+  return $resource('/listings/:id')
+])
+app.factory('Category', ["$resource", ($resource) ->
+  return $resource('/categories/:id', null, {
+    subcategories: {
+      url: "/api/categories/:id/subcategories"
+      method: 'GET',
+      isArray: true
+    }
+  })
+])
+
+app.factory('CategoryApi', ["$resource", ($resource) ->
+  return $resource('/api/categories/:id', null, {
+    subcategories: {
+      url: "/api/categories/:id/subcategories"
+      method: 'GET',
+      isArray: true
+    }
+  })
+])
+app.factory('Discipline', ["$resource", ($resource) ->
+  return $resource('/disciplines/:id')
+])
+
+app.factory('Brand', ["$resource", ($resource) -> 
+  return $resource('/brands/:id'); 
+]);
+
+app.factory('Product', ["$resource", ($resource) -> 
+  return $resource('/products/:id'); 
+]);
+app.factory('Sale', ["$resource", ($resource) -> 
+  return $resource('/api/sales/:id', null, {
+    query: {
+      method: 'GET',
+      isArray: false
+    }
+  });
+]);
+

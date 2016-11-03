@@ -37,10 +37,6 @@ Kassi::Application.configure do
     config.log_level = log_level
   }
 
-  m_config[:use_i18n_js_middleware].each { |use_middleware|
-    config.middleware.use I18n::JS::Middleware if use_middleware
-  }
-
   m_config[:use_js_routes_middleware].each { |use_middleware|
     config.middleware.use JsRoutes::Middleware if use_middleware
   }

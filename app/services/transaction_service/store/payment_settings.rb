@@ -48,9 +48,9 @@ module TransactionService::Store::PaymentSettings
       .or_else(nil)
   end
 
-  def get_active(community_id:)
+  def get_active
     Maybe(PaymentSettingsModel
-           .where(community_id: community_id, active: true)
+           .where(active: true)
            .first)
       .map { |m| from_model(m) }
       .or_else(nil)

@@ -17,7 +17,7 @@
           %md-icon
             %i.icon-search
       .flex-25.layout-row.layout-align-center-center
-        = link_to "Sell", new_listing_path, :class => "md-button hide-xs new-listing-link"
+        = link_to "Sell", new_listing_path, :class => "md-button hide-xs", :id => "new-listing-link"
         = link_to "News", news_index_path, :class => "md-button hide-xs"  
         - if logged_in
           = render :partial => "layouts/header_right_visible_tablet", locals: {unread_count: unread_count, inbox_path: inbox_path, icons: icons}

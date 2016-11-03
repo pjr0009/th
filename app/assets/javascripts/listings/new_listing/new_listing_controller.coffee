@@ -1,16 +1,11 @@
 app = angular.module("TackHunter")
 
-app.factory('Listing', ["$resource", ($resource) ->
-  return $resource('/listings/:id')
-])
-app.factory('Category', ["$resource", ($resource) ->
-  return $resource('/categories/:id')
-])
-app.factory('Discipline', ["$resource", ($resource) ->
-  return $resource('/disciplines/:id')
-])
-app.controller("newListingCtrl", ["$scope", "$http", "Upload", "Listing", "Category", "Discipline", ($scope, $http, Upload, Listing, Category, Discipline) ->
+app.controller("newListingCtrl", ["$scope", "$http", "Upload", "Listing", "Category", "CategoryApi", "Discipline", "Brand", ($scope, $http, Upload, Listing, Category, CategoryApi, Discipline, Brand) ->
   $scope.listing_resource = new Listing();
+  $scope.listingForms = {
+    categoryForm: {},
+    infoForm: {}
+  }
   $scope.listing_resource.listing = {
     listing_image_ids: []
   };
@@ -22,10 +17,21 @@ app.controller("newListingCtrl", ["$scope", "$http", "Upload", "Listing", "Categ
   ]
   $scope.disciplines = Discipline.query()
 
+
+  $scope.brandSearchTextChange = (searchText) ->
+    return Brand.query({q: searchText}).$promise;
+
   $scope.fetchCategories = () ->
     if $scope.listing_resource.listing.discipline_id
       $http.get("/" + $scope.listing_resource.listing.discipline_id + "/categories").success (data) ->
         $scope.categories = data
+  
+  $scope.fetchSubcategories = () ->
+    $scope.subcategories = [] 
+    if $scope.listing_resource.listing.discipline_id
+      CategoryApi.subcategories {id: $scope.listing_resource.listing.category_id}, (data) ->
+        console.log data
+        $scope.subcategories = data  
   
   $scope.fetchCustomFields = () ->
     if $scope.listing_resource.listing.category_id
@@ -33,7 +39,8 @@ app.controller("newListingCtrl", ["$scope", "$http", "Upload", "Listing", "Categ
         $scope.custom_fields = data
   
   $scope.nextStep = () ->
-    $scope.selectedStep += 1 if $scope.selectedStep < 4
+    if $scope.eligibleForNextStep
+      $scope.selectedStep += 1 if $scope.selectedStep < 4
 
   $scope.confirmStagingPic = () ->
     $scope.listing_images.unshift($scope.croppedStagingUrl)
@@ -72,12 +79,16 @@ app.controller("newListingCtrl", ["$scope", "$http", "Upload", "Listing", "Categ
   $scope.submitListing = () ->
     if $scope.listingIsValid()
       $scope.listing_resource.$save();
+  
   $scope.listingIsValid = () ->
     return \
       $scope.listing_resource.listing.listing_image_ids \
       && $scope.listing_resource.listing.listing_image_ids.length > 0
 
-
+  $scope.eligibleForNextStep = () ->
+    switch $scope.selectedStep
+      when 0 then $scope.listingForms.infoForm.$valid
+      when 1 then $scope.listingForms.infoForm.$valid && $scope.listingForms.categoryForm.$valid
 
 
   $scope.conditions = ["New", "Excellent", "Good", "Fair", "Poor/Non-Functioning"]

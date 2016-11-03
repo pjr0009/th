@@ -5,19 +5,6 @@
 # files.
 
 require 'cucumber/rails'
-require 'capybara/cucumber'
-require 'capybara/poltergeist'
-require File.expand_path('../../../test/helper_modules', __FILE__)
-include TestHelpers
-
-
-Capybara.javascript_driver = :poltergeist
-
-Capybara.register_driver :chrome do |app|
-  Capybara::Selenium::Driver.new(app, :browser => :chrome)
-end
-
-Capybara.default_driver = :chrome
 
 # Capybara defaults to CSS3 selectors rather than XPath.
 # If you'd prefer to use XPath, just uncomment this line and adjust any
@@ -52,22 +39,20 @@ end
 # You may also want to configure DatabaseCleaner to use different strategies for certain features and scenarios.
 # See the DatabaseCleaner documentation for details. Example:
 #
-  Before('@no-txn,@selenium,@culerity,@celerity,@javascript') do
-    # { :except => [:widgets] } may not do what you expect here
-    # as Cucumber::Rails::Database.javascript_strategy overrides
-    # this setting.
-    DatabaseCleaner.strategy = :truncation
-  end
-
-  Before('~@no-txn', '~@selenium', '~@culerity', '~@celerity', '~@javascript') do
-    DatabaseCleaner.strategy = :transaction
-  end
+#   Before('@no-txn,@selenium,@culerity,@celerity,@javascript') do
+#     # { :except => [:widgets] } may not do what you expect here
+#     # as Cucumber::Rails::Database.javascript_strategy overrides
+#     # this setting.
+#     DatabaseCleaner.strategy = :truncation
+#   end
 #
-DatabaseCleaner.clean_with(:truncation)
-load_default_test_data_to_db_before_suite
+#   Before('~@no-txn', '~@selenium', '~@culerity', '~@celerity', '~@javascript') do
+#     DatabaseCleaner.strategy = :transaction
+#   end
+#
 
 # Possible values are :truncation and :transaction
 # The :transaction strategy is faster, but might give you threading problems.
 # See https://github.com/cucumber/cucumber-rails/blob/master/features/choose_javascript_database_strategy.feature
-# Cucumber::Rails::Database.javascript_strategy = :truncation
+Cucumber::Rails::Database.javascript_strategy = :truncation
 
