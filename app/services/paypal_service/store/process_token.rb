@@ -4,7 +4,6 @@ module PaypalService::Store::ProcessToken
 
   ProcessToken = EntityUtils.define_builder(
     [:process_token, :mandatory, :string],
-    [:community_id, :mandatory, :fixnum],
     [:paypal_token, :string],
     [:transaction_id, :fixnum],
     [:op_completed, :to_bool],
@@ -15,9 +14,8 @@ module PaypalService::Store::ProcessToken
 
   module_function
 
-  def create(community_id:, transaction_id:, op_name:, op_input: [])
+  def create(transaction_id:, op_name:, op_input: [])
     create_unique({
-        community_id: community_id,
         transaction_id: transaction_id,
         op_name: op_name,
         op_input: op_input
@@ -29,10 +27,9 @@ module PaypalService::Store::ProcessToken
       .update_attributes(op_completed: true, op_output: YAML.dump(op_output))
   end
 
-  def get_by_transaction(community_id:, transaction_id:, op_name:)
+  def get_by_transaction(transaction_id:, op_name:)
     Maybe(ProcessTokenModel.where(
         transaction_id: transaction_id,
-        community_id: community_id,
         op_name: op_name
       ).first)
       .map { |model| from_model(model) }

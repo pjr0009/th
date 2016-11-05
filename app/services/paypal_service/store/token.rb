@@ -3,7 +3,6 @@ module PaypalService::Store::Token
 
   module Entity
     Token = EntityUtils.define_builder(
-      [:community_id, :mandatory, :fixnum],
       [:token, :string, :mandatory],
       [:transaction_id, :fixnum, :mandatory],
       [:merchant_id, :string, :mandatory],
@@ -31,7 +30,6 @@ module PaypalService::Store::Token
 
   def create(opts)
     pt_opts = {
-      community_id: opts[:community_id],
       token: opts[:token],
       transaction_id: opts[:transaction_id],
       merchant_id: opts[:merchant_id],
@@ -47,18 +45,18 @@ module PaypalService::Store::Token
     PaypalTokenModel.create!(pt_opts)
   end
 
-  def delete(community_id, transaction_id)
-    PaypalTokenModel.where(community_id: community_id, transaction_id: transaction_id).destroy_all
+  def delete(transaction_id)
+    PaypalTokenModel.where(transaction_id: transaction_id).destroy_all
   end
 
-  def get(community_id, token)
-    Maybe(PaypalTokenModel.where(token: token, community_id: community_id).first)
+  def get(token)
+    Maybe(PaypalTokenModel.where(token: token)
       .map { |model| Entity.from_model(model) }
       .or_else(nil)
   end
 
-  def get_for_transaction(community_id, transaction_id)
-    Maybe(PaypalTokenModel.where(community_id: community_id, transaction_id: transaction_id).first)
+  def get_for_transaction(transaction_id)
+    Maybe(PaypalTokenModel.where(transaction_id: transaction_id).first)
       .map { |model| Entity.from_model(model) }
       .or_else(nil)
   end

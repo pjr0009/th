@@ -29,7 +29,6 @@ Kassi::Application.configure do
 
     { params: params,
       host: event.payload[:host],
-      community_id: event.payload[:community_id],
       current_user_id: event.payload[:current_user_id],
       request_uuid: event.payload[:request_uuid] }
   }

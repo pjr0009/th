@@ -3,7 +3,6 @@ module PaypalService::Store::PaypalPayment
   PaypalPaymentModel = ::PaypalPayment
 
   InitialPaymentData = EntityUtils.define_builder(
-    [:community_id, :mandatory, :fixnum],
     [:transaction_id, :mandatory, :fixnum],
     [:payer_id, :mandatory, :string],
     [:receiver_id, :mandatory, :string],
@@ -19,7 +18,6 @@ module PaypalService::Store::PaypalPayment
 
   PaypalPayment = EntityUtils.define_builder(
     [:id, :fixnum],
-    [:community_id, :mandatory, :fixnum],
     [:transaction_id, :mandatory, :fixnum],
     [:payer_id, :mandatory, :string],
     [:receiver_id, :mandatory, :string],
@@ -58,22 +56,21 @@ module PaypalService::Store::PaypalPayment
     new_data if data_changed?(old_data, new_data)
   end
 
-  def create(community_id, transaction_id, payment)
+  def create(transaction_id, payment)
     begin
       payment[:payment_status] = payment[:payment_status].downcase if payment[:payment_status]
-      payment.merge!({payment_date: Time.now, community_id: community_id, transaction_id: transaction_id, currency: payment[:payment_total].currency.iso_code})
+      payment.merge!({payment_date: Time.now, transaction_id: transaction_id, currency: payment[:payment_total].currency.iso_code})
       model = PaypalPaymentModel.create!(
         InitialPaymentData.call(payment)
       )
       from_model(model)
     rescue ActiveRecord::RecordNotUnique => rnu
-      get(community_id, transaction_id)
+      get(transaction_id)
     end
   end
 
-  def get(community_id, transaction_id)
+  def get(transaction_id)
     Maybe(PaypalPaymentModel.where(
-        community_id: community_id,
         transaction_id: transaction_id
         ).first)
       .map { |model| from_model(model) }
@@ -94,8 +91,7 @@ module PaypalService::Store::PaypalPayment
 
   def find_payment(opts)
     PaypalPaymentModel.where(
-      "(community_id = ? and transaction_id = ?) or ext_transaction_id = ?",
-      opts[:community_id],
+      "transaction_id = ? or ext_transaction_id = ?",
       opts[:transaction_id],
       opts[:ext_transaction_id]
     ).first

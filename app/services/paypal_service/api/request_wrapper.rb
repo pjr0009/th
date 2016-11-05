@@ -33,12 +33,11 @@ module PaypalService::API::RequestWrapper
     result
   end
 
-  def log_and_return(cid, txid, request, err_response, data = {})
-    @logger.warn("PayPal operation #{request[:method]} failed. Community: #{cid}, transaction: #{txid}, error code: #{err_response[:error_code]}, msg: #{err_response[:error_msg]}")
+  def log_and_return(txid, request, err_response, data = {})
+    @logger.warn("PayPal operation #{request[:method]} failed. transaction: #{txid}, error code: #{err_response[:error_code]}, msg: #{err_response[:error_msg]}")
     Result::Error.new(
       "Failed response from Paypal. Error code: #{err_response[:error_code]}, msg: #{err_response[:error_msg]}",
       {
-        community_id: cid,
         transaction_id: txid,
         paypal_error_code: err_response[:error_code]
       }.merge(data)

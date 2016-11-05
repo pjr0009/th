@@ -28,12 +28,13 @@ module PaypalService::API
 
         redirect_url = URLUtils.prepend_path_component(perm_req_response[:redirect_url], body[:country])
 
-        Result::Success.new(
+        resp = Result::Success.new(
           DataTypes.create_account_request(
           {
             person_id: body[:person_id],
             redirect_url: redirect_url
           }))
+        raise resp
       }
     end
 
@@ -180,8 +181,8 @@ module PaypalService::API
 
     ## DELETE /accounts/?community_id=1&person_id=asdfgasdgasdfaasdf
 
-    def delete(community_id:, person_id: nil)
-      Result::Success.new(PaypalAccountStore.delete_all(person_id: person_id, community_id: community_id))
+    def delete(person_id: nil)
+      Result::Success.new(PaypalAccountStore.delete_all(person_id: person_id))
     end
 
     ## GET /accounts/?community_id=1&person_id=asdfgasdgasdfaasdf

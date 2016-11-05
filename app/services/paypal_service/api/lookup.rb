@@ -22,15 +22,15 @@ module PaypalService::API
       end
     end
 
-    def with_accounts(cid, pid, receiver_id, &block)
-      admin_acc = AccountStore.get_active(community_id: cid)
+    def with_accounts(pid, receiver_id, &block)
+      admin_acc = AccountStore.get_active
       if admin_acc.nil?
         return log_and_return(Result::Error.new("No matching admin account for community_id: #{cid}."))
       end
 
-      m_acc = AccountStore.get(person_id: pid, community_id: cid, payer_id: receiver_id)
+      m_acc = AccountStore.get(person_id: pid, payer_id: receiver_id)
       if m_acc.nil?
-        return log_and_return(Result::Error.new("Cannot find paypal account for the given community and person: community_id: #{cid}, person_id: #{pid}, payer_id: #{receiver_id}."))
+        return log_and_return(Result::Error.new("Cannot find paypal account for the given community and person: community_id, person_id: #{pid}, payer_id: #{receiver_id}."))
       elsif m_acc[:billing_agreement_state] != :verified
         return log_and_return(Result::Error.new("Merchant account has no billing agreement setup."))
       end
@@ -39,51 +39,50 @@ module PaypalService::API
     end
 
 
-    def with_token(cid, t, &block)
-      token = TokenStore.get(cid, t)
+    def with_token(t, &block)
+      token = TokenStore.get(t)
       if (token.nil?)
-        return log_and_return(Result::Error.new("No matching token for community_id: #{cid} and token: #{t}"))
+        return log_and_return(Result::Error.new("No matching token for and token: #{t}"))
       end
 
       block.call(token)
     end
 
-    def with_merchant_account(cid, token, &block)
+    def with_merchant_account(token, &block)
       m_acc = AccountStore.get(
         person_id: token[:merchant_id],
-        community_id: cid,
         payer_id: token[:receiver_id]
       )
       if m_acc.nil?
-        return log_and_return(Result::Error.new("No matching merchant account for community_id: #{cid} and person_id: #{token[:merchant_id]}."))
+        return log_and_return(Result::Error.new("No matching merchant account for community and person_id: #{token[:merchant_id]}."))
       end
 
       block.call(m_acc)
     end
 
-    def with_payment(cid, txid, accepted_states = [], &block)
-      payment = PaymentStore.get(cid, txid)
+    def with_payment(txid, accepted_states = [], &block)
+      payment = PaymentStore.get(txid)
 
       if (payment.nil?)
-        return log_and_return(Result::Error.new("No matching payment for community_id: #{cid} and transaction_id: #{txid}."))
+        return log_and_return(Result::Error.new("No matching payment for community and transaction_id: #{txid}."))
       end
 
       if (!payment_in_accepted_state?(payment, accepted_states))
         return log_and_return(Result::Error.new("Payment was not in accepted precondition state for the requested operation. Expected one of: #{accepted_states}, was: :[#{payment[:payment_status]}, :#{payment[:pending_reason]}]"))
       end
 
-      m_acc = AccountStore.get(person_id: payment[:merchant_id], community_id: cid, payer_id: payment[:receiver_id])
+      m_acc = AccountStore.get(person_id: payment[:merchant_id], payer_id: payment[:receiver_id])
       if m_acc.nil?
-        return log_and_return(Result::Error.new("No matching merchant account for community_id: #{cid} and transaction_id: #{txid}."))
+        return log_and_return(Result::Error.new("No matching merchant account for community and transaction_id: #{txid}."))
       end
 
       block.call(payment, m_acc)
     end
 
-    def with_completed_payment(cid, txid, &block)
-      payment = PaypalService::Store::PaypalPayment.get(cid, txid)
+    def with_completed_payment(txid, &block)
+      payment = PaypalService::Store::PaypalPayment.get(txid)
       if (payment.nil?)
-        return log_and_return(Result::Error.new("No matching payment for community_id: #{cid} and transaction_id: #{txid}."))
+        return log_and_return(Result::Error.new("No matching payment for and transaction_id: #{txid}."))
       end
 
       if (payment[:payment_status] != :completed)
@@ -99,7 +98,7 @@ module PaypalService::API
 
 
     def get_payment_by_token(token)
-      PaymentStore.get(token[:community_id], token[:transaction_id])
+      PaymentStore.get(token[:transaction_id])
     end
 
     def get_refund_by_payment_id(paypal_payment_id)

@@ -56,6 +56,9 @@ module PaypalService
       wrapped = wrapper_method.call(input)
 
       begin
+        puts api.to_json
+        raise api.to_json
+
         response = action_method.call(wrapped)
         @logger.log_response(response, request_id)
         if (response.success?)
@@ -64,6 +67,8 @@ module PaypalService
           create_failure_response(response)
         end
       rescue PayPal::SDK::Core::Exceptions::ConnectionError => e
+        puts e.to_json
+        @logger.error(e.to_json)
         @logger.error("Paypal permission service failed to respond.")
         DataTypes.create_failure_response({error_msg: "Paypal permission service failed to respond."})
       end
