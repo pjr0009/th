@@ -47,7 +47,6 @@ module PaypalService::API::DataTypes
 
   Payment = EntityUtils.define_builder(
     [:id, :fixnum],
-    [:community_id, :mandatory, :fixnum],
     [:transaction_id, :mandatory, :fixnum],
     [:payer_id, :mandatory, :string],
     [:receiver_id, :mandatory, :string],
@@ -88,13 +87,11 @@ module PaypalService::API::DataTypes
     [:result])
 
   CreateAccountRequest = EntityUtils.define_builder(
-    [:community_id, :mandatory, :fixnum],
     [:person_id, :optional, :string],
     [:country, :mandatory, :string],
     [:callback_url, :mandatory, :string])
 
   AccountRequest = EntityUtils.define_builder(
-    [:community_id, :mandatory, :fixnum],
     [:person_id, :optional, :string],
     [:redirect_url, :mandatory, :string],
     [:onboarding_params, :hash])

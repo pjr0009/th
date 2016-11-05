@@ -258,7 +258,7 @@ class ListingsController < ApplicationController
 
 
   def new
-    payment_settings = payment_settings_api.get_active(community_id: Community.first).maybe
+    payment_settings = payment_settings_api.get_active.maybe
 
     render :new, locals: {
       disciplines: Discipline.all,

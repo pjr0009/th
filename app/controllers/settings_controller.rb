@@ -7,7 +7,7 @@ class SettingsController < ApplicationController
   before_filter EnsureCanAccessPerson.new(:person_id, error_message_key: "layouts.notifications.you_are_not_authorized_to_view_this_content"), except: :unsubscribe
 
   def show
-    target_user = Person.find_by!(username: params[:person_id], community_id: @current_community.id)
+    target_user = Person.find_by!(username: params[:person_id])
     add_location_to_person!(target_user)
     flash.now[:notice] = t("settings.profile.image_is_processing") if target_user.image.processing?
     @selected_left_navi_link = "profile"
@@ -15,7 +15,7 @@ class SettingsController < ApplicationController
   end
 
   def account
-    target_user = Person.find_by!(username: params[:person_id], community_id: @current_community.id)
+    target_user = Person.find_by!(username: params[:person_id])
     @selected_left_navi_link = "account"
     target_user.emails.build
     has_unfinished = TransactionService::Transaction.has_unfinished_transactions(target_user.id)
@@ -24,9 +24,10 @@ class SettingsController < ApplicationController
   end
 
   def notifications
-    target_user = Person.find_by!(username: params[:person_id], community_id: @current_community.id)
+    @email_notification_types = Person::EMAIL_NOTIFICATION_TYPES
+    target_user = Person.find_by!(username: params[:person_id])
     @selected_left_navi_link = "notifications"
-    render locals: {target_user: target_user}
+    render locals: {target_user: target_user, email_notification_types: @email_notification_types}
   end
 
   def unsubscribe

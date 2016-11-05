@@ -21,12 +21,8 @@ class PeopleController < Devise::RegistrationsController
   helper_method :show_closed?
 
   def show
-    @person = Person.find_by!(username: params[:username], community_id: @current_community.id)
+    @person = Person.find_by!(username: params[:username])
     raise PersonDeleted if @person.deleted?
-
-    redirect_to landing_page_path and return if @current_community.private? && !@current_user
-    @selected_tribe_navi_tab = "members"
-    @community_membership = CommunityMembership.find_by_person_id_and_community_id_and_status(@person.id, @current_community.id, "accepted")
 
     include_closed = @current_user == @person && params[:show_closed]
     search = {
@@ -85,7 +81,7 @@ class PeopleController < Devise::RegistrationsController
   end
 
   def create
-    domain = @current_community ? @current_community.full_url : "#{request.protocol}#{request.host_with_port}"
+    domain = "#{request.protocol}#{request.host_with_port}"
     error_redirect_path = domain + sign_up_path
 
     if params[:person].blank? || params[:person][:input_again].present? # Honey pot for spammerbots
@@ -94,65 +90,24 @@ class PeopleController < Devise::RegistrationsController
       redirect_to error_redirect_path and return
     end
 
-    if @current_community && @current_community.join_with_invite_only? || params[:invitation_code]
-
-      unless Invitation.code_usable?(params[:invitation_code], @current_community)
-        # abort user creation if invitation is not usable.
-        # (This actually should not happen since the code is checked with javascript)
-        session[:invitation_code] = nil # reset code from session if there was issues so that's not used again
-        ApplicationHelper.send_error_notification("Invitation code check did not prevent submiting form, but was detected in the controller", "Invitation code error")
-
-        # TODO: if this ever happens, should change the message to something else than "unknown error"
-        flash[:error] = t("layouts.notifications.unknown_error")
-        redirect_to error_redirect_path and return
-      else
-        invitation = Invitation.find_by_code(params[:invitation_code].upcase)
-      end
-    end
 
     # Check that email is not taken
-    unless Email.email_available?(params[:person][:email], @current_community.id)
+    unless Email.email_available?(params[:person][:email])
       flash[:error] = t("people.new.email_is_in_use")
       redirect_to error_redirect_path and return
     end
 
-    # Check that the email is allowed for current community
-    if @current_community && ! @current_community.email_allowed?(params[:person][:email])
-      flash[:error] = t("people.new.email_not_allowed")
-      redirect_to error_redirect_path and return
-    end
+    @person, email = new_person(params)
 
-    @person, email = new_person(params, @current_community)
-
-    # Make person a member of the current community
-    if @current_community
-      membership = CommunityMembership.new(:person => @person, :community => @current_community, :consent => @current_community.consent)
-      membership.status = "pending_email_confirmation"
-      membership.invitation = invitation if invitation.present?
-      # If the community doesn't have any members, make the first one an admin
-      if @current_community.members.count == 0
-        membership.admin = true
-      end
-      membership.save!
-      session[:invitation_code] = nil
-    end
 
     session[:person_id] = @person.id
 
-    # If invite was used, reduce usages left
-    invitation.use_once! if invitation.present?
-
-    Delayed::Job.enqueue(CommunityJoinedJob.new(@person.id, @current_community.id)) if @current_community
+    # Delayed::Job.enqueue(CommunityJoinedJob.new(@person.id, @current_community.id)) if @current_community
     flash[:notice] = "Welcome to Tack Hunter, the world's biggest tack swap!"
 
     email.confirm!
 
     redirect_to search_path
-    # else
-    #   Email.send_confirmation(email, @current_community)
-
-    #   redirect_to confirmation_pending_path
-    # end
   end
 
   def build_devise_resource_from_person(person_params)
@@ -254,7 +209,7 @@ class PeopleController < Devise::RegistrationsController
       m_email_address = Maybe(person_params)[:email_attributes][:address]
       m_email_address.each { |new_email_address|
         # This only builds the emails, they will be saved when `update_attributes` is called
-        target_user.emails.build(address: new_email_address, community_id: @current_community.id)
+        target_user.emails.build(address: new_email_address)
       }
 
       if target_user.update_attributes(person_params.except(:email_attributes))
@@ -286,7 +241,7 @@ class PeopleController < Devise::RegistrationsController
   end
 
   def destroy
-    target_user = Person.find_by!(username: params[:id], community_id: @current_community.id)
+    target_user = Person.find_by!(username: params[:id])
 
     has_unfinished = TransactionService::Transaction.has_unfinished_transactions(target_user.id)
     return redirect_to search_path if has_unfinished
@@ -296,7 +251,7 @@ class PeopleController < Devise::RegistrationsController
       UserService::API::Users.delete_user(target_user.id)
       MarketplaceService::Listing::Command.delete_listings(target_user.id)
 
-      PaypalService::API::Api.accounts.delete(community_id: target_user.community_id, person_id: target_user.id)
+      PaypalService::API::Api.accounts.delete(person_id: target_user.id)
     end
 
     sign_out target_user
@@ -307,14 +262,14 @@ class PeopleController < Devise::RegistrationsController
 
   def check_username_availability
     respond_to do |format|
-      format.json { render :json => Person.username_available?(params[:person][:username], @current_community.id) }
+      format.json { render :json => Person.username_available?(params[:person][:username]) }
     end
   end
 
   def check_email_availability_and_validity
     email = params[:person][:email]
 
-    allowed_and_available = @current_community.email_allowed?(email) && Email.email_available?(email, @current_community.id)
+    allowed_and_available = Email.email_available?(email)
 
     respond_to do |format|
       format.json { render json: allowed_and_available }
@@ -340,24 +295,22 @@ class PeopleController < Devise::RegistrationsController
     params[:closed] && params[:closed].eql?("true")
   end
 
+
   private
 
   # Create a new person by params and current community
-  def new_person(params, current_community)
+  def new_person(params)
     person = Person.new
 
     params[:person][:locale] =  params[:locale] || APP_CONFIG.default_locale
     params[:person][:test_group_number] = 1 + rand(4)
-    params[:person][:community_id] = current_community.id
 
-    email = Email.new(:person => person, :address => params[:person][:email].downcase, :send_notifications => true, community_id: current_community.id)
+    email = Email.new(:person => person, :address => params[:person][:email].downcase, :send_notifications => true)
     params["person"].delete(:email)
 
     person = build_devise_resource_from_person(params[:person])
 
     person.emails << email
-
-    person.inherit_settings_from(current_community)
 
     if person.save!
       sign_in(resource_name, resource)
@@ -368,6 +321,5 @@ class PeopleController < Devise::RegistrationsController
     [person, email]
   end
 
-  def email_availability(email, community_id)
-  end
+
 end

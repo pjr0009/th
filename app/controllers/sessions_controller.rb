@@ -81,8 +81,8 @@ class SessionsController < ApplicationController
   def destroy
     sign_out
     session[:person_id] = nil
-    flash[:notice] = t("layouts.notifications.logout_successful")
-    redirect_to root
+    flash[:notice] = "Come back soon!"
+    redirect_to root_path
   end
 
   def index

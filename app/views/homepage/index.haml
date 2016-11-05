@@ -3,10 +3,10 @@
 
 - content_for :coverfade_class do
   = "without-text"
-- if @selected_category
-  - content_for :title, @selected_category.name
-  - content_for :keywords, @selected_category.children.map{|c| c.name}.join(", ")
-  - content_for :meta_description, "Find Great Deals On New And Used #{@selected_category.name}"
+- if @category
+  - content_for :title, @category.name
+  - content_for :keywords, @category.children.map{|c| c.name}.join(", ")
+  - content_for :meta_description, "Find Great Deals On New And Used #{@category.name}"
 - #schema markup for homepage search in SERPS
 - content_for :extra_javascript do
   :plain
@@ -33,19 +33,20 @@
             .md-subheader-inner
               Categories
         - @main_categories.each do |category|
-          - selected_category_class = (@selected_category && @selected_category.id == category.id) ? 'font-weight: 700' : ''
-          %md-list-item.layout-column{role: "listItem", style: "margin: 0; padding: 0; min-height: 36px;"}
-            %a.md-no-style.md-ink-ripple.md-button{href: "/#{@discipline.slug}/#{category.url}", style: "padding: 0; margin: 0;"} 
-              .md-list-item-inner{style: "font-size: 14px; margin: 0; padding: 0 24px; min-height: 36px; #{selected_category_class}"}
-                = category.name
-            - if (@selected_category && @selected_category.id == category.id) && !@discipline.categories.where(:parent_id => category.id).blank?
-              %md-list.flex.layout-fill.layout-padding
-                - @discipline.categories.where(:parent_id => category.id).each do |child|
-                  - is_selected = @selected_category == child
-                  %md-list-item.layout-column{role: "listItem", style: "margin: 0; padding: 0; min-height: 36px;"}
-                    %a.md-no-style.md-ink-ripple.md-button{href: "/#{@discipline.slug}/#{child.url}", style: "padding: 0; margin: 0;"} 
-                      .md-list-item-inner{style: "font-size: 14px; margin: 0; padding: 0 24px; min-height: 36px;"}
-                        = child.name
+          - selected_category_class = (@category && @category.id == category.id) ? 'font-weight: 700' : ''
+          %md-list-item{role: "listItem", style: "margin: 0; padding: 0; min-height: 36px;"}
+            .layout-column.flex
+              %a.md-no-style.md-ink-ripple.md-button{href: "/#{@discipline.slug}/#{category.slug}", style: "padding: 0; margin: 0;"} 
+                .md-list-item-inner{style: "font-size: 14px; margin: 0; padding: 0 24px; min-height: 36px; #{selected_category_class}"}
+                  = category.name
+              - if @category && (((@category.id == category.id) && !@discipline.categories.where(:parent_id => category.id).blank?) || (@category.parent_id == category.id))
+                %md-list.flex.layout-fill.layout-padding
+                  - @discipline.categories.where(:parent_id => category.id).each do |child|
+                    - selected_subcategory_class = (@category && @category.id == child.id) ? 'font-weight: 700' : ''
+                    %md-list-item{role: "listItem", style: "margin: 0; padding: 0; min-height: 36px;"}
+                      %a.md-no-style.md-ink-ripple.md-button{href: "/#{@discipline.slug}/#{child.slug}", style: "padding: 0; margin: 0;"} 
+                        .md-list-item-inner{style: "font-size: 14px; margin: 0; padding: 0 24px; min-height: 36px; #{selected_subcategory_class}"}
+                          = child.name
       - if false
         %md-list
           .md-subheader.bg-body

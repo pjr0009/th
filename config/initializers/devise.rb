@@ -15,7 +15,7 @@ module Devise
       def authenticate!
         hashed = false
         person = DatabaseAuthenticatableHelpers.resolve_person(
-          authentication_hash[:login], password, env[:community_id])
+          authentication_hash[:login], password)
 
         if person && validate(person) { person.valid_password?(password) }
           hashed = true
@@ -38,19 +38,18 @@ module DatabaseAuthenticatableHelpers
 
   module_function
 
-  def resolve_person(login, password, community_id)
+  def resolve_person(login, password)
     if password.present?
-      find_by_username_or_email(login.downcase, community_id)
+      find_by_username_or_email(login.downcase)
     end
   end
 
   # private
 
-  def find_by_username_or_email(login, community_id)
+  def find_by_username_or_email(login)
     Person
       .joins("LEFT OUTER JOIN emails ON emails.person_id = people.id")
-      .where("(people.is_admin = '1' OR people.community_id = :cid) AND (people.username = :login OR emails.address = :login)",
-             cid: community_id, login: login)
+      .where("(people.username = :login OR emails.address = :login)", login: login)
       .first
   end
 end

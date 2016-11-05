@@ -37,16 +37,16 @@ module MarketplaceService
 
       module_function
 
-      def inbox_data_count(person_id, community_id)
-        QueryHelper.query_inbox_data_count(person_id, community_id)
+      def inbox_data_count(person_id)
+        QueryHelper.query_inbox_data_count(person_id)
       end
 
-      def inbox_data(person_id, community_id, limit, offset)
-        QueryHelper.query_inbox_data(person_id, community_id, limit, offset)
+      def inbox_data(person_id, limit, offset)
+        QueryHelper.query_inbox_data(person_id, limit, offset)
       end
 
-      def notification_count(person_id, community_id)
-        QueryHelper.query_notification_count(person_id, community_id)
+      def notification_count(person_id)
+        QueryHelper.query_notification_count(person_id)
       end
     end
 
@@ -104,28 +104,26 @@ module MarketplaceService
 
       module_function
 
-      def query_notification_count(person_id, community_id)
+      def query_notification_count(person_id)
         conversation_ids = Participation.where(person_id: person_id).pluck(:conversation_id)
         return 0 if conversation_ids.empty?
 
         connection = ActiveRecord::Base.connection
         sql = SQLUtils.ar_quote(connection, @construct_notification_count_sql,
           person_id: person_id,
-          community_id: community_id,
           conversation_ids: conversation_ids
         )
 
         connection.select_value(sql)
       end
 
-      def query_inbox_data(person_id, community_id, limit, offset)
+      def query_inbox_data(person_id, limit, offset)
         conversation_ids = Participation.where(person_id: person_id).pluck(:conversation_id)
         return [] if conversation_ids.empty?
 
         connection = ActiveRecord::Base.connection
         sql = SQLUtils.ar_quote(connection, @construct_sql,
           person_id: person_id,
-          community_id: community_id,
           limit: limit,
           offset: offset,
           conversation_ids: conversation_ids
@@ -171,14 +169,13 @@ module MarketplaceService
         }
       end
 
-      def query_inbox_data_count(person_id, community_id)
+      def query_inbox_data_count(person_id)
         conversation_ids = Participation.where(person_id: person_id).pluck(:conversation_id)
         return 0 if conversation_ids.empty?
 
         connection = ActiveRecord::Base.connection
         sql = SQLUtils.ar_quote(connection, @construct_inbox_row_count_sql,
           person_id: person_id,
-          community_id: community_id,
           conversation_ids: conversation_ids
         )
 
@@ -248,8 +245,7 @@ module MarketplaceService
           LEFT JOIN participations    ON (participations.conversation_id = conversations.id AND participations.person_id = #{params[:person_id]})
 
           # Where person and community
-          WHERE conversations.community_id = #{params[:community_id]}
-          AND conversations.id IN (#{params[:conversation_ids].join(',')})
+          WHERE conversations.id IN (#{params[:conversation_ids].join(',')})
 
           # Ignore initiated and deleted
           AND (
@@ -333,8 +329,7 @@ module MarketplaceService
           LEFT JOIN participations    AS other_participation ON (other_participation.conversation_id = conversations.id AND other_participation.person_id != #{params[:person_id]})
 
           # Where person and community
-          WHERE conversations.community_id = #{params[:community_id]}
-          AND conversations.id IN (#{params[:conversation_ids].join(',')})
+          WHERE conversations.id IN (#{params[:conversation_ids].join(',')})
 
           # Ignore initiated and deleted
           AND (
@@ -359,8 +354,7 @@ module MarketplaceService
           LEFT JOIN transactions      ON transactions.conversation_id = conversations.id
 
           # Where person and community
-          WHERE conversations.community_id = #{params[:community_id]}
-          AND conversations.id IN (#{params[:conversation_ids].join(',')})
+          WHERE conversations.id IN (#{params[:conversation_ids].join(',')})
 
           # Ignore initiated and deleted
           AND (

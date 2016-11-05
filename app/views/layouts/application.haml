@@ -15,35 +15,9 @@
       %md-content.layout-column.layout-fill.flex.bg-body
         -# Render railsContext here before any react component gets rendered
         = prepend_render_rails_context("")
-
-
-        - if display_onboarding_topbar?
-          - props = onboarding_topbar_props
-          - unless props[:next_step] == :all_done
-            - react_component_cache(name: "onboarding_topbar", props: props) do
-              = react_component("OnboardingTopBar", props: props, prerender: true)
-
         - if content_for?(:hero)
           %header.hero
             = yield :hero
-          
-        - if display_expiration_notice?
-          = render partial: "layouts/expiration_notice",
-              :locals => {external_plan_service_login_url: admin_plan_path}
-        - if params[:controller] == "homepage" && params[:action] == "index"
-          %section.marketplace-lander.hidden-tablet
-            .title-container
-              .title-header-wrapper
-                .marketplace-title-header
-                  = yield :title_header
-        - elsif content_for?(:title_header)
-          %section.marketplace-lander.visible-tablet
-            .title-container
-              .title-header-wrapper
-                .marketplace-title-header
-                  = yield :title_header
-        - elsif content_for?(:benefits_banner)
-          = yield :benefits_banner
 
         = render :partial => "layouts/notifications"
         = yield

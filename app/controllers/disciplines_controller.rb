@@ -1,6 +1,7 @@
 class DisciplinesController < ApplicationController
   include Searchable
   before_action :set_discipline, only: [:show, :edit, :update, :destroy, :categories]
+  before_action :set_category, only: [:show]
 
   # GET /disciplines
   def index
@@ -10,9 +11,9 @@ class DisciplinesController < ApplicationController
 
   # GET /disciplines/1
   def show
-    set_categories
+    set_sidebar_categories
     params[:page] ||= 1
-    search_result = find_listings(params[:q], params[:category], @discipline.id, params[:page])
+    search_result = find_listings(params[:q], params[:category_id], @discipline.id, params[:page])
     search_result.on_success { |listings|
         @listings = listings
         render "homepage/index", locals: {
@@ -72,7 +73,12 @@ class DisciplinesController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_discipline
+      #routes.rb defaults to english
       @discipline = Discipline.find(params[:id])
+    end
+
+    def set_category
+      @category = Category.find(params[:category_id]) if params[:category_id]
     end
 
     # Only allow a trusted parameter "white list" through.

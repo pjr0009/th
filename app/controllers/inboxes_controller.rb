@@ -13,11 +13,10 @@ class InboxesController < ApplicationController
 
     inbox_rows = MarketplaceService::Inbox::Query.inbox_data(
       @current_user.id,
-      @current_community.id,
       pagination_opts[:limit],
       pagination_opts[:offset])
 
-    count = MarketplaceService::Inbox::Query.inbox_data_count(@current_user.id, @current_community.id)
+    count = MarketplaceService::Inbox::Query.inbox_data_count(@current_user.id)
 
     inbox_rows = inbox_rows.map { |inbox_row|
       extended_inbox = inbox_row.merge(
@@ -49,7 +48,6 @@ class InboxesController < ApplicationController
     else
       render locals: {
         inbox_rows: paginated_inbox_rows,
-        payments_in_use: @current_community.payments_in_use?
       }
     end
   end

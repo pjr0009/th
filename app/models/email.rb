@@ -4,7 +4,6 @@
 #
 #  id                   :integer          not null, primary key
 #  person_id            :string(255)
-#  community_id         :integer          not null
 #  address              :string(255)      not null
 #  confirmed_at         :datetime
 #  confirmation_sent_at :datetime
@@ -16,8 +15,7 @@
 # Indexes
 #
 #  index_emails_on_address                   (address)
-#  index_emails_on_address_and_community_id  (address,community_id) UNIQUE
-#  index_emails_on_community_id              (community_id)
+#  index_emails_on_address_and_community_id  (address) UNIQUE
 #  index_emails_on_person_id                 (person_id)
 #
 
@@ -48,11 +46,8 @@ class Email < ActiveRecord::Base
   end
 
   # Email already in use for current user or someone else
-  def self.email_available?(email, community_id)
-    !Email
-      .joins("LEFT OUTER JOIN people ON emails.person_id = people.id")
-      .where("emails.address = :email AND (people.is_admin = '1' OR people.community_id = :cid)", email: email, cid: community_id)
-      .present?
+  def self.email_available?(email)
+    Email.where(:address => email).count == 0
   end
 
   def self.send_confirmation(email, community)

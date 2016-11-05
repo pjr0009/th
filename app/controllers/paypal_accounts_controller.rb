@@ -7,45 +7,40 @@ class PaypalAccountsController < ApplicationController
 
   def index
     m_account = accounts_api.get(
-      community_id: @current_community.id,
       person_id: @current_user.id
     ).maybe
 
     @selected_left_navi_link = "payments"
 
 
-    community_currency = @current_community.default_currency
-    payment_settings = payment_settings_api.get_active(community_id: @current_community.id).maybe.get
-    community_country_code = LocalizationUtils.valid_country_code(@current_community.country)
+    payment_settings = payment_settings_api.get_active.maybe
 
     render(locals: {
       next_action: next_action(m_account[:state].or_else("")),
-      left_hand_navigation_links: settings_links_for(@current_user, @current_community),
+      left_hand_navigation_links: settings_links_for(@current_user),
       order_permission_action: ask_order_permission_person_paypal_account_path(@current_user),
       paypal_account_email: m_account[:email].or_else(""),
       commission_from_seller: t("paypal_accounts.commission", commission: payment_settings[:commission_from_seller]),
-      minimum_commission: Money.new(payment_settings[:minimum_transaction_fee_cents], community_currency),
+      minimum_commission: Money.new(payment_settings[:minimum_transaction_fee_cents], "USD"),
       commission_type: payment_settings[:commission_type],
-      currency: community_currency,
-      paypal_fees_url: PaypalCountryHelper.fee_link(community_country_code),
+      paypal_fees_url: PaypalCountryHelper.fee_link("EN"),
       create_url: PaypalCountryHelper.create_paypal_account_url,
-      receive_funds_info_label_tr_key: PaypalCountryHelper.receive_funds_info_label_tr_key(community_country_code),
-      upgrade_url: "https://www.paypal.com/#{community_country_code}/upgrade"
+      receive_funds_info_label_tr_key: PaypalCountryHelper.receive_funds_info_label_tr_key("EN"),
+      upgrade_url: "https://www.paypal.com/US/upgrade"
     })
   end
 
   def ask_order_permission
-    community_country_code = LocalizationUtils.valid_country_code(@current_community.country)
     response = accounts_api.request(
       body: PaypalService::API::DataTypes.create_create_account_request(
       {
-        community_id: @current_community.id,
         person_id: @current_user.id,
         callback_url: permissions_verified_person_paypal_account_url,
-        country: community_country_code
+        country: "US"
       }),
       flow: :old)
 
+    raise response.to_json
     permissions_url = response.data[:redirect_url]
 
     if permissions_url.blank?
@@ -66,7 +61,6 @@ class PaypalAccountsController < ApplicationController
     end
 
     response = accounts_api.create(
-      community_id: @current_community.id,
       person_id: @current_user.id,
       order_permission_request_token: params[:request_token],
       body: PaypalService::API::DataTypes.create_account_permission_verification_request(
@@ -145,14 +139,14 @@ class PaypalAccountsController < ApplicationController
     :index
   end
 
-  def payment_gateway_commission(community_id)
+  def payment_gateway_commission
     p_set =
-      Maybe(payment_settings_api.get_active(community_id: community_id))
+      Maybe(payment_settings_api.get_active)
       .map {|res| res[:success] ? res[:data] : nil}
       .select {|set| set[:payment_gateway] == :paypal }
       .or_else(nil)
 
-    raise ArgumentError.new("No active paypal gateway for community: #{community_id}.") if p_set.nil?
+    raise ArgumentError.new("No active paypal gateway for community.") if p_set.nil?
 
     p_set[:commission_from_seller]
   end

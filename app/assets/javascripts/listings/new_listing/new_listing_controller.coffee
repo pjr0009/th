@@ -5,6 +5,8 @@ app.controller("newListingCtrl", ["$scope", "$http", "Upload", "Listing", "Categ
   $scope.listingForms = {
     categoryForm: {},
     infoForm: {}
+    detailsForm: {}
+    pictureForm: {}
   }
   $scope.listing_resource.listing = {
     listing_image_ids: []
@@ -17,6 +19,11 @@ app.controller("newListingCtrl", ["$scope", "$http", "Upload", "Listing", "Categ
   ]
   $scope.disciplines = Discipline.query()
 
+  $scope.disableStep = (step) ->
+    unless $scope.eligibleForNextStep and $scope.selectedstep < step
+      return false
+    else
+      return true
 
   $scope.brandSearchTextChange = (searchText) ->
     return Brand.query({q: searchText}).$promise;
@@ -30,7 +37,6 @@ app.controller("newListingCtrl", ["$scope", "$http", "Upload", "Listing", "Categ
     $scope.subcategories = [] 
     if $scope.listing_resource.listing.discipline_id
       CategoryApi.subcategories {id: $scope.listing_resource.listing.category_id}, (data) ->
-        console.log data
         $scope.subcategories = data  
   
   $scope.fetchCustomFields = () ->
@@ -89,6 +95,7 @@ app.controller("newListingCtrl", ["$scope", "$http", "Upload", "Listing", "Categ
     switch $scope.selectedStep
       when 0 then $scope.listingForms.infoForm.$valid
       when 1 then $scope.listingForms.infoForm.$valid && $scope.listingForms.categoryForm.$valid
+      when 2 then $scope.listingForms.infoForm.$valid && $scope.listingForms.categoryForm.$valid && $scope.listingForms.detailsForm.$valid
 
 
   $scope.conditions = ["New", "Excellent", "Good", "Fair", "Poor/Non-Functioning"]

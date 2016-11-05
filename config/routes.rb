@@ -12,7 +12,7 @@ Kassi::Application.routes.draw do
   Discipline.all.each do |discipline|
     get discipline.slug => 'disciplines#show', :defaults => { :id => discipline.name }
     get discipline.slug + "/categories" => 'disciplines#categories', :defaults => { :id => discipline.name }
-    get discipline.slug + "/:category" => 'disciplines#show', :defaults => { :id => discipline.name }
+    get discipline.slug + "/:category_id" => 'disciplines#show', :defaults => { :id => discipline.name }
     get discipline.slug + "/brands/:brand" => 'brands#show', :defaults => { :id => discipline.name }
   end
   get "/sell", to: "listings#new", as: "sell_path"

@@ -42,7 +42,7 @@ end
 
 Given(/^I click the next button$/) do
   page.find(".md-button#next-button").click
-  sleep 1
+  sleep 1.5
 end
 
 Given(/^the category section is not visible$/) do
@@ -118,7 +118,7 @@ Then(/^I should be on the details step$/) do
 end
 
 Given(/^I fill in the description$/) do
-  pending # Write code here that turns the phrase above into concrete actions
+  page.fill_in "description", :with => "Here is an awesome description you know"
 end
 
 Then(/^I should be on the photos step$/) do

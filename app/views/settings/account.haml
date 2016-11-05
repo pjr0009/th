@@ -6,7 +6,7 @@
 
 .row
   .col-3
-    = render :partial => "layouts/left_hand_navigation", :locals => { :links => settings_links_for(target_user, @current_community) }
+    = render :partial => "layouts/left_hand_navigation", :locals => { :links => settings_links_for(target_user) }
   .col-9
     #person_settings_form.settings-section.account-settings
       -# Username

@@ -102,7 +102,7 @@ module ApplicationHelper
 
     image_url = person.image.present? ? person.image.url(:medium) : missing_avatar(:medium)
 
-    image_tag image_url, { :alt => person.name(@current_community) }.merge(options)
+    image_tag image_url, { :alt => person.given_name }.merge(options)
   end
 
   def missing_avatar(size = :medium)
@@ -477,7 +477,7 @@ module ApplicationHelper
   # rubocop:enable Metrics/MethodLength
 
   # Settings view left hand navigation content
-  def settings_links_for(person, community=nil)
+  def settings_links_for(person)
     links = [
       {
         :id => "settings-tab-profile",
@@ -499,36 +499,18 @@ module ApplicationHelper
         :icon_class => icon_class("notification_settings"),
         :path => notifications_person_settings_path(person),
         :name => "notifications"
-      }
-    ]
-
-    payment_type = MarketplaceService::Community::Query.payment_type(@current_community.id)
-
-    if payment_type.present?
-
-      path = payment_settings_path(payment_type, @current_user)
-
-      links << {
+      },
+      {
         :id => "settings-tab-payments",
         :text => t("layouts.settings.payments"),
         :icon_class => icon_class("payments"),
-        :path => path,
+        :path => paypal_account_settings_payment_path(@current_user),
         :name => "payments"
       }
+    ]
 
-    end
 
     return links
-  end
-
-  def payment_settings_path(gateway_type, person)
-    if gateway_type == :braintree
-      show_braintree_settings_payment_path(person)
-    elsif gateway_type == :checkout
-      person_checkout_account_path(person)
-    elsif gateway_type == :paypal
-      paypal_account_settings_payment_path(person)
-    end
   end
 
   def payment_settings_url(gateway_type, person, url_params)

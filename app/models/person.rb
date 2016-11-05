@@ -3,7 +3,6 @@
 # Table name: people
 #
 #  id                                 :string(22)       not null, primary key
-#  community_id                       :integer          not null
 #  created_at                         :datetime
 #  updated_at                         :datetime
 #  is_admin                           :integer          default(0)
@@ -43,18 +42,18 @@
 #  deleted                            :boolean          default(FALSE)
 #  cloned_from                        :string(22)
 #  website                            :string(255)
+#  status                             :string(255)      default("active")
 #
 # Indexes
 #
 #  index_people_on_authentication_token          (authentication_token)
-#  index_people_on_community_id                  (community_id)
 #  index_people_on_email                         (email) UNIQUE
 #  index_people_on_facebook_id                   (facebook_id)
-#  index_people_on_facebook_id_and_community_id  (facebook_id,community_id) UNIQUE
+#  index_people_on_facebook_id_and_community_id  (facebook_id) UNIQUE
 #  index_people_on_id                            (id)
 #  index_people_on_reset_password_token          (reset_password_token) UNIQUE
 #  index_people_on_username                      (username)
-#  index_people_on_username_and_community_id     (username,community_id) UNIQUE
+#  index_people_on_username_and_community_id     (username) UNIQUE
 #
 
 require 'json'
@@ -91,7 +90,6 @@ class Person < ActiveRecord::Base
   has_many :emails, -> { order("id ASC")}, :dependent => :destroy, :inverse_of => :person
 
   has_one :location, -> { where(location_type: :person) }, :dependent => :destroy
-  has_one :braintree_account, :dependent => :destroy
   has_one :checkout_account, dependent: :destroy
   has_many :news_posts
 
@@ -103,12 +101,6 @@ class Person < ActiveRecord::Base
   has_many :received_negative_testimonials, -> { where("grade IN (0.0,0.25)").order("id DESC") }, :class_name => "Testimonial", :foreign_key => "receiver_id"
   has_many :messages, :foreign_key => "sender_id"
   has_many :authored_comments, :class_name => "Comment", :foreign_key => "author_id", :dependent => :destroy
-  belongs_to :community
-  has_many :community_memberships, :dependent => :destroy
-  has_many :communities, -> { where("community_memberships.status = 'accepted'") }, :through => :community_memberships
-  has_one  :community_membership, :dependent => :destroy
-  has_one  :accepted_community, -> { where("community_memberships.status= 'accepted'") }, through: :community_membership, source: :community
-  has_many :invitations, :foreign_key => "inviter_id", :dependent => :destroy
   has_many :auth_tokens, :dependent => :destroy
   has_many :follower_relationships
   has_many :followers, :through => :follower_relationships, :foreign_key => "person_id"
@@ -116,10 +108,6 @@ class Person < ActiveRecord::Base
   has_many :followed_people, :through => :inverse_follower_relationships, :source => "person"
 
   has_and_belongs_to_many :followed_listings, :class_name => "Listing", :join_table => "listing_followers"
-
-  deprecate communities: "Use accepted_community instead.",
-            community_memberships: "Use community_membership instead.",
-            deprecator: MethodDeprecator.new
 
   def to_param
     username
@@ -222,10 +210,10 @@ class Person < ActiveRecord::Base
     USERNAME_BLACKLIST
   end
 
-  def self.username_available?(username, community_id)
+  def self.username_available?(username)
     !username.in?(USERNAME_BLACKLIST) &&
       !Person
-        .where("username = :username AND (is_admin = '1' OR community_id = :cid)", username: username, cid: community_id)
+        .where(:username => username)
         .present?
   end
 
@@ -272,12 +260,6 @@ class Person < ActiveRecord::Base
       initial = ""
     end
     "#{given_name} #{initial}"
-  end
-
-  # Deprecated: This is view logic (how to display name) and thus should not be in model layer
-  # Consider using PersonViewUtils
-  def name(community_or_display_type)
-    return name_or_username(community_or_display_type)
   end
 
   # Deprecated: This is view logic (how to display name) and thus should not be in model layer
@@ -389,13 +371,12 @@ class Person < ActiveRecord::Base
 
   def can_delete_email(email)
     EmailService.can_delete_email(self.emails,
-                                  email,
-                                  self.accepted_community.allowed_emails)[:result]
+                                  email)[:result]
   end
 
   # Returns true if the person has global admin rights in Sharetribe.
   def is_admin?
-    is_admin == 1
+    emails.where(:address => "admin@tackhunter.com").count > 0
   end
 
   # Starts following a listing
@@ -429,12 +410,8 @@ class Person < ActiveRecord::Base
     conversation.participations.where(["person_id LIKE ?", self.id]).first.update_attribute(:is_read, true)
   end
 
-  def consent
-    community_membership.consent
-  end
-
   def is_marketplace_admin?
-    community_membership.admin?
+    email
   end
 
   def has_admin_rights?
@@ -452,14 +429,6 @@ class Person < ActiveRecord::Base
 
   def profile_info_empty?
     (phone_number.nil? || phone_number.blank?) && (description.nil? || description.blank?) && location.nil?
-  end
-
-  def member_of?(community)
-    community.members.include?(self)
-  end
-
-  def banned?
-    community_membership.banned?
   end
 
   def has_email?(address)
@@ -499,10 +468,6 @@ class Person < ActiveRecord::Base
     email.present? && email.confirmed_at.present?
   end
 
-  def has_valid_email_for_community?(community)
-    community.can_accept_user_based_on_email?(self)
-  end
-
   def update_facebook_data(facebook_id)
     self.update_attribute(:facebook_id, facebook_id)
     if self.image_file_size.nil?
@@ -510,9 +475,9 @@ class Person < ActiveRecord::Base
     end
   end
 
-  def self.find_by_email_address_and_community_id(email_address, community_id)
+  def self.find_by_email_address(email_address)
     Maybe(
-      Email.find_by_address_and_community_id(email_address, community_id)
+      Email.find_by(:address => email_address)
     ).person.or_else(nil)
   end
 
@@ -542,11 +507,8 @@ class Person < ActiveRecord::Base
     false
   end
 
-  # A person inherits some default settings from the community in which she is joining
-  def inherit_settings_from(current_community)
-    # Mark as organization user if signed up through market place which is only for orgs
-    self.is_organization = current_community.only_organizations
-    self.min_days_between_community_updates = current_community.default_min_days_between_community_updates
+  def banned?
+    status == "banned"
   end
 
   def should_receive_community_updates_now?
@@ -586,10 +548,6 @@ class Person < ActiveRecord::Base
 
   def followed_people_by_id
     @followed_people_by_id ||= followed_people.group_by(&:id)
-  end
-
-  def self.members_of(community)
-    joins(:communities).where("communities.id" => community.id)
   end
 
 

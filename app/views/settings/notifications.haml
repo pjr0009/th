@@ -5,7 +5,7 @@
   %h1= t("layouts.no_tribe.settings")
 .row
   .col-3
-    = render :partial => "layouts/left_hand_navigation", :locals => { :links => settings_links_for(target_user, @current_community) }
+    = render :partial => "layouts/left_hand_navigation", :locals => { :links => settings_links_for(target_user) }
   .col-9
     #person_settings_form.settings-section.notification-settings
       = form_for target_user do |form|
@@ -17,6 +17,6 @@
         = render :partial => "notification_checkbox", :collection => Person::EMAIL_NEWSLETTER_TYPES, :as => :notification_type, locals: {target_user: target_user}
 
         %h2.lower= t(".i_want_to_get_email_notification_when")
-        = render :partial => "notification_checkbox", :collection => @current_community.email_notification_types, :as => :notification_type, locals: {target_user: target_user}
+        = render :partial => "notification_checkbox", :collection => @email_notification_types, :as => :notification_type, locals: {target_user: target_user}
 
         = form.button t("settings.save_information"), :class => "send_button_notifications"

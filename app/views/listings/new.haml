@@ -143,7 +143,7 @@
                           %md-radio-button{"ng-repeat": "option in subcategories", value: "{{option.id}}"}
                             {{option.name}}
 
-    %md-step{label: "Details", "ng-disabled": "listingForms.infoForm.$invalid || listingForms.categoryForm.$invalid"}
+    %md-step{label: "Details", "ng-disabled": "disableStep(2)" , "md-complete": "listingForms.detailsForm.$valid"}
       %md-content.bg-body.md-padding#details
         .layout-row.layout-align-center-center
           .layout-column.flex-gt-sm-66.layout-margin
@@ -154,18 +154,19 @@
                     %span
                       Add a few extra details
               %md-content.layout-padding
-                .layout-row.layout-fill
-                  %md-input-container.flex
-                    %label Description
-                    %textarea{rows: "5"}
-                .layout-row.flex
-                  .flex-50.flex-gt-sm-25.layout-wrap{"ng-repeat": "custom_field in custom_fields", "ng-switch": "custom_field.type"}
-                    %md-input-container{"ng-switch-when": "TextField"}
-                      %label
-                        {{custom_field.name.value}}
-                      %input{type: "text"}
+                %form{name: "listingForms.detailsForm"}
+                  .layout-row.layout-fill
+                    %md-input-container.flex
+                      %label Description
+                      %textarea#description{rows: "5", name: "description", required: true, "ng-model": "listing_resource.listing.description"}
+                  .layout-row.flex
+                    .flex-50.flex-gt-sm-25.layout-wrap{"ng-repeat": "custom_field in custom_fields", "ng-switch": "custom_field.type"}
+                      %md-input-container{"ng-switch-when": "TextField"}
+                        %label
+                          {{custom_field.name.value}}
+                        %input{type: "text"}
 
-    %md-step{label: "Photos"}
+    %md-step{label: "Photos", "ng-disabled": "disableStep(3)"}
       %md-content.bg-body.md-padding
         .layout-row.layout-align-center-center
           .layout-column.layout-fill.flex-gt-sm-66.layout-margin
@@ -205,7 +206,7 @@
                         .md-button{"ng-click": "sortListingImage($index, 1)", style: "margin: 0; padding: 0; min-width: 100%;"}
                           %i.icon-caret-right   
 
-    %md-step{label: "Preview"}
+    %md-step{label: "Preview", "ng-disabled": "disableStep(4)"}
 
     %md-step{"ng-if": "false", style: "display:none;", label: "Payments"}
       %md-content.md-padding

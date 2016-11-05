@@ -3,7 +3,6 @@
 # Table name: people
 #
 #  id                                 :string(22)       not null, primary key
-#  community_id                       :integer          not null
 #  created_at                         :datetime
 #  updated_at                         :datetime
 #  is_admin                           :integer          default(0)
@@ -43,18 +42,18 @@
 #  deleted                            :boolean          default(FALSE)
 #  cloned_from                        :string(22)
 #  website                            :string(255)
+#  status                             :string(255)      default("active")
 #
 # Indexes
 #
 #  index_people_on_authentication_token          (authentication_token)
-#  index_people_on_community_id                  (community_id)
 #  index_people_on_email                         (email) UNIQUE
 #  index_people_on_facebook_id                   (facebook_id)
-#  index_people_on_facebook_id_and_community_id  (facebook_id,community_id) UNIQUE
+#  index_people_on_facebook_id_and_community_id  (facebook_id) UNIQUE
 #  index_people_on_id                            (id)
 #  index_people_on_reset_password_token          (reset_password_token) UNIQUE
 #  index_people_on_username                      (username)
-#  index_people_on_username_and_community_id     (username,community_id) UNIQUE
+#  index_people_on_username_and_community_id     (username) UNIQUE
 #
 
 require 'spec_helper'

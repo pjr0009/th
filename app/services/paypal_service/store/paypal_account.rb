@@ -7,7 +7,6 @@ module PaypalService::Store::PaypalAccount
 
   PaypalAccountCreate = EntityUtils.define_builder(
     # Mandatory
-    [:community_id, :mandatory, :fixnum],
     [:person_id, :optional, :string],
     [:order_permission_paypal_username_to, :string],
 
@@ -39,7 +38,6 @@ module PaypalService::Store::PaypalAccount
 
   PaypalAccount = EntityUtils.define_builder(
     [:active, :mandatory, :to_bool],
-    [:community_id, :fixnum],
     [:person_id, :string],
     [:email, :string],
     [:payer_id, :string],
@@ -108,20 +106,20 @@ module PaypalService::Store::PaypalAccount
   #
   class PaypalAccountFinder
 
-    def find(person_id: nil, community_id:, payer_id:)
-      query_one(person_id: person_id, community_id: community_id, payer_id: payer_id)
+    def find(person_id: nil, payer_id:)
+      query_one(person_id: person_id, payer_id: payer_id)
     end
 
-    def find_pending(person_id: nil, community_id:, order_permission_request_token:)
-      query_one(person_id: person_id, community_id: community_id, order_permission_request_token: order_permission_request_token)
+    def find_pending(person_id: nil, order_permission_request_token:)
+      query_one(person_id: person_id, order_permission_request_token: order_permission_request_token)
     end
 
-    def find_active(person_id: nil, community_id:)
-      query_one(person_id: person_id, community_id: community_id, active: true)
+    def find_active(person_id: nil)
+      query_one(person_id: person_id, active: true)
     end
 
-    def find_all(person_id: nil, community_id:)
-      query_all(person_id: person_id, community_id: community_id)
+    def find_all(person_id: nil)
+      query_all(person_id: person_id)
     end
 
     private
@@ -162,15 +160,13 @@ module PaypalService::Store::PaypalAccount
 
     account_model = PaypalAccountModel.create!(account)
     account_model.create_order_permission(order_permission)
-    account_model = update_or_create_billing_agreement(account_model, HashUtils.compact(FlattingHelper.select_billing_agreement_values(entity)))
 
 
     from_model(Maybe(account_model))
   end
 
-  def update(community_id:, person_id: nil, payer_id:, opts:)
+  def update( person_id: nil, payer_id:, opts:)
     find_params = {
-      community_id: community_id,
       person_id: person_id,
       payer_id: payer_id
     }
@@ -179,9 +175,8 @@ module PaypalService::Store::PaypalAccount
     update_model(model, opts, find_params)
   end
 
-  def update_pending(community_id:, person_id: nil, order_permission_request_token:, opts:)
+  def update_pending(person_id: nil, order_permission_request_token:, opts:)
     find_params = {
-      community_id: community_id,
       person_id: person_id,
       order_permission_request_token: order_permission_request_token
     }
@@ -190,9 +185,8 @@ module PaypalService::Store::PaypalAccount
     update_model(model, opts, find_params)
   end
 
-  def update_active(community_id:, person_id: nil, opts:)
+  def update_active(person_id: nil, opts:)
     find_params = {
-      community_id: community_id,
       person_id: person_id
     }
 
@@ -200,46 +194,27 @@ module PaypalService::Store::PaypalAccount
     update_model(model, opts, find_params)
   end
 
-  def delete_billing_agreement(person_id:, community_id:)
-    maybe_account = finder.find_active(person_id: person_id, community_id: community_id)
-    maybe_account.billing_agreement.each { |billing_agreement| billing_agreement.destroy }
-  end
-
-  def delete_billing_agreement_by_payer_and_agreement_id(payer_id:, billing_agreement_id:)
-    maybe_billing_agreement = find_billing_agreement_by_payer_and_agreement_id(payer_id: payer_id, billing_agreement_id: billing_agreement_id)
-    maybe_billing_agreement.each { |billing_agreement| billing_agreement.destroy }
-  end
-
-  def delete_pending(person_id: nil, community_id:, order_permission_request_token:)
+  def delete_pending(person_id: nil, order_permission_request_token:)
     model = finder.find_pending(
-      community_id: community_id,
       person_id: person_id,
       order_permission_request_token: order_permission_request_token
     )
     model.each { |account| account.destroy }
   end
 
-  def delete_all(person_id: nil, community_id:)
-    finder.find_all(person_id: person_id, community_id: community_id).each { |accounts|
-      accounts.each { |account| account.destroy }
-    }
-  end
-
-  def get(person_id: nil, community_id:, payer_id:)
+  def get(person_id: nil, payer_id:)
     from_model(
       finder.find(
         person_id: person_id,
-        community_id: community_id,
         payer_id: payer_id
       )
     )
   end
 
-  def get_active(person_id: nil, community_id:)
+  def get_active(person_id: nil)
     from_model(
       finder.find_active(
         person_id: person_id,
-        community_id: community_id
       )
     )
   end
@@ -268,24 +243,10 @@ module PaypalService::Store::PaypalAccount
     end
   end
 
-  def update_or_create_billing_agreement(account_model, opts)
-    return account_model if opts.empty?
-
-    if account_model.billing_agreement.nil?
-      # create
-      account_model.create_billing_agreement(opts)
-    else
-      # update
-      account_model.billing_agreement.update_attributes(opts)
-    end
-    account_model
-  end
-
   def deactivate_other_accounts(active_account_model)
     base_query =
       PaypalAccountModel.where(
-        "community_id = ? AND id != ?",
-        active_account_model.community_id,
+        "id != ?",
         active_account_model.id
       )
 
@@ -299,20 +260,6 @@ module PaypalService::Store::PaypalAccount
       end
 
     query.update_all(active: false)
-  end
-
-  def find_billing_agreement_by_payer_and_agreement_id(payer_id:, billing_agreement_id:)
-    Maybe(
-      BillingAgreement
-      .joins(:paypal_account)
-      .where(
-        {
-          billing_agreement_id: billing_agreement_id,
-          paypal_accounts: {payer_id: payer_id}
-        })
-      .readonly(false)
-      .first
-    )
   end
 
   # Maybe(model) -> entity

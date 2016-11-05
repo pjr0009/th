@@ -21,7 +21,6 @@ module PaypalService::API
       ) { |perm_req_response|
         account = PaypalAccountStore.create(
           opts: {
-            community_id: body[:community_id],
             person_id: body[:person_id],
             order_permission_request_token: perm_req_response[:request_token],
             order_permission_paypal_username_to: perm_req_response[:username_to]
@@ -32,7 +31,6 @@ module PaypalService::API
         Result::Success.new(
           DataTypes.create_account_request(
           {
-            community_id: body[:community_id],
             person_id: body[:person_id],
             redirect_url: redirect_url
           }))
@@ -46,7 +44,7 @@ module PaypalService::API
     # { order_permission_verification_code: '123512321531145'
     # }
     #
-    def create(community_id:, person_id: nil, order_permission_request_token:, body:, flow: :old)
+    def create(person_id: nil, order_permission_request_token:, body:, flow: :old)
       with_success_permissions(
         PaypalService::DataTypes::Permissions
         .create_get_access_token(
@@ -64,7 +62,6 @@ module PaypalService::API
             })
         ) { |personal_data|
           account = create_verified_account!(
-            community_id: community_id,
             person_id: person_id,
             order_permission_request_token: order_permission_request_token,
             payer_id: personal_data[:payer_id],
@@ -189,15 +186,14 @@ module PaypalService::API
 
     ## GET /accounts/?community_id=1&person_id=asdfgasdgasdfaasdf
 
-    def get(community_id:, person_id: nil)
-      Result::Success.new(PaypalAccountStore.get_active(person_id: person_id, community_id: community_id))
+    def get(person_id: nil)
+      Result::Success.new(PaypalAccountStore.get_active(person_id: person_id))
     end
 
     private
 
-    def create_verified_account!(community_id:, person_id: nil, order_permission_request_token:, payer_id:, opts:)
+    def create_verified_account!(person_id: nil, order_permission_request_token:, payer_id:, opts:)
       existing = PaypalAccountStore.get(
-        community_id: community_id,
         person_id: person_id,
         payer_id: payer_id
       )
@@ -205,7 +201,6 @@ module PaypalService::API
       if existing.nil?
         # Update the 'new' account
         PaypalAccountStore.update_pending(
-          community_id: community_id,
           person_id: person_id,
           order_permission_request_token: order_permission_request_token,
           opts: opts
@@ -213,14 +208,12 @@ module PaypalService::API
       else
         # Delete the 'new' account
         PaypalAccountStore.delete_pending(
-          community_id: community_id,
           person_id: person_id,
           order_permission_request_token: order_permission_request_token
         )
 
         # Update the 'existing' account
         PaypalAccountStore.update(
-          community_id: community_id,
           person_id: person_id,
           payer_id: payer_id,
           opts: opts

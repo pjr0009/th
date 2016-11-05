@@ -1,7 +1,7 @@
  module Searchable
   extend ActiveSupport::Concern
 
-  def set_categories
+  def set_sidebar_categories
     @categories = @discipline.categories.all.includes(:children)
     @main_categories = @categories.select { |c| c.parent_id == nil }
   end
@@ -10,7 +10,7 @@
     categories = []
     Category.where(:url => category_url).each do |category|
       categories = category.own_and_subcategory_ids
-      @selected_category = category
+      selected_category = category
     end
     search = {
       # Add listing_id

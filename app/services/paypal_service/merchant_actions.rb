@@ -47,48 +47,6 @@ module PaypalService
 
 
     MERCHANT_ACTIONS = {
-      setup_billing_agreement: PaypalAction.def_action(
-        input_transformer: -> (req, config) {
-          {
-            SetExpressCheckoutRequestDetails: {
-              ReturnURL: req[:success],
-              CancelURL: req[:cancel],
-              ReqConfirmShipping: 0,
-              NoShipping: 1,
-              AllowNote: 0,
-              PaymentDetails: [{
-                  OrderTotal: { value: "0.0" },
-                  NotifyURL: hook_url(config[:ipn_hook]),
-                  PaymentAction: PAYMENT_ACTIONS[:authorization],
-                }],
-              BillingAgreementDetails: [{
-                  BillingType: "ChannelInitiatedBilling",
-                  BillingAgreementDescription: req[:description]
-                }]
-            }
-          }
-        },
-        wrapper_method_name: :build_set_express_checkout,
-        action_method_name: :set_express_checkout,
-        output_transformer: -> (res, api) {
-          DataTypes::Merchant.create_setup_billing_agreement_response({
-            token: res.token,
-            redirect_url: express_checkout_url(api, res.token),
-            username_to: api.config.subject || api.config.username
-          })
-        }
-      ),
-
-      create_billing_agreement: PaypalAction.def_action(
-        input_transformer: -> (req, _) { { Token: req[:token] } },
-        wrapper_method_name: :build_create_billing_agreement,
-        action_method_name: :create_billing_agreement,
-        output_transformer: -> (res, _) {
-          DataTypes::Merchant.create_create_billing_agreement_response({
-            billing_agreement_id: res.billing_agreement_id
-          })
-        }
-      ),
 
       do_reference_transaction: PaypalAction.def_action(
         input_transformer: -> (req, config) {
@@ -151,98 +109,6 @@ module PaypalService
         }
       ),
 
-      # Deprecated - Order flow will be removed soon
-      #
-      set_express_checkout_order: PaypalAction.def_action(
-        input_transformer: -> (req, config) {
-          req_details = {
-            cppcartbordercolor: "FFFFFF",
-            cpplogoimage: req[:merchant_brand_logo_url] || "",
-            ReturnURL: req[:success],
-            CancelURL: req[:cancel],
-            ReqConfirmShipping: 0,
-            NoShipping: req[:require_shipping_address] ? 0 : 1,
-            SolutionType: "Sole",
-            LandingPage: "Billing",
-            InvoiceID: req[:invnum],
-            AllowNote: 0,
-            MaxAmount: from_money(req[:order_total]),
-            PaymentDetails: [{
-              NotifyURL: hook_url(config[:ipn_hook]),
-              OrderTotal: from_money(req[:order_total]),
-              ItemTotal: from_money(req[:item_price] * req[:item_quantity]),
-              PaymentAction: PAYMENT_ACTIONS[:order],
-              PaymentDetailsItem: [{
-                Name: req[:item_name],
-                Quantity: req[:item_quantity],
-                Amount: from_money(req[:item_price])
-              }]
-            }]
-          }
-
-          if(req[:shipping_total])
-             req_details[:PaymentDetails][0][:ShippingTotal] = from_money(req[:shipping_total])
-          end
-
-          { SetExpressCheckoutRequestDetails: req_details }
-        },
-        wrapper_method_name: :build_set_express_checkout,
-        action_method_name: :set_express_checkout,
-        output_transformer: -> (res, api) {
-          DataTypes::Merchant.create_set_express_checkout_order_response({
-            token: res.token,
-            redirect_url: append_useraction_commit(express_checkout_url(api, res.token)),
-            receiver_username: api.config.subject || api.config.username
-          })
-        }
-      ),
-      #
-      # /Deprecated
-
-      set_express_checkout_authorization: PaypalAction.def_action(
-        input_transformer: -> (req, config) {
-          req_details = {
-            cppcartbordercolor: "FFFFFF",
-            cpplogoimage: req[:merchant_brand_logo_url] || "",
-            ReturnURL: req[:success],
-            CancelURL: req[:cancel],
-            ReqConfirmShipping: 0,
-            NoShipping: req[:require_shipping_address] ? 0 : 1,
-            SolutionType: "Sole",
-            LandingPage: "Billing",
-            InvoiceID: req[:invnum],
-            AllowNote: 0,
-            MaxAmount: from_money(req[:order_total]),
-            PaymentDetails: [{
-              NotifyURL: hook_url(config[:ipn_hook]),
-              OrderTotal: from_money(req[:order_total]),
-              ItemTotal: from_money(req[:item_price] * req[:item_quantity]),
-              PaymentAction: PAYMENT_ACTIONS[:authorization],
-              PaymentDetailsItem: [{
-                Name: req[:item_name],
-                Quantity: req[:item_quantity],
-                Amount: from_money(req[:item_price])
-              }]
-            }]
-          }
-
-          if(req[:shipping_total])
-             req_details[:PaymentDetails][0][:ShippingTotal] = from_money(req[:shipping_total])
-          end
-
-          { SetExpressCheckoutRequestDetails: req_details }
-        },
-        wrapper_method_name: :build_set_express_checkout,
-        action_method_name: :set_express_checkout,
-        output_transformer: -> (res, api) {
-          DataTypes::Merchant.create_set_express_checkout_order_response({
-            token: res.token,
-            redirect_url: append_useraction_commit(express_checkout_url(api, res.token)),
-            receiver_username: api.config.subject || api.config.username
-          })
-        }
-      ),
-      
       create_chained_payment: PaypalAction.def_action(
         input_transformer: -> (req, config) {
 
@@ -356,26 +222,6 @@ module PaypalService
         action_method_name: :set_payment_options,
         output_transformer: -> (res, api) {
           DataTypes::Merchant.set_payment_options_response({success: true})
-        }
-      ),
-
-      do_void: PaypalAction.def_action(
-        input_transformer: -> (req, _) {
-          {
-            AuthorizationID: req[:transaction_id],
-            Note: req[:note],
-            MsgSubID: req[:msg_sub_id]
-          }
-        },
-        wrapper_method_name: :build_do_void,
-        action_method_name: :do_void,
-        output_transformer: -> (res, api) {
-          DataTypes::Merchant.create_do_void_response(
-            {
-              voided_id: res.authorization_id,
-              msg_sub_id: res.msg_sub_id
-            }
-          )
         }
       ),
 

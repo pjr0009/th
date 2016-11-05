@@ -1,9 +1,6 @@
 - content_for :javascript do
   initialize_signup_form("#{I18n.locale}","#{t("people.new.username_is_in_use")}","#{t("people.new.username_is_invalid")}","#{email_not_accepted_message}", "#{t("people.new.invalid_invitation_code")}", false, false);
 
-- content_for :title_header do
-  %h1= t('.sign_up')
-
 .signup-form.centered-section
 
   - if @community_customization && @community_customization.signup_info_content
@@ -53,6 +50,6 @@
         = link_to "Terms of Service", terms_about_path, :target => "_blank" 
         and that you're at least 18 years old.
 
-    = button_tag t('.create_new_account')
+    = button_tag t('.create_new_account'), :class => "md-button md-primary md-raised"
 
 = render :partial => "help_texts", :collection => ["terms", "help_invitation_code"], :as => :field
